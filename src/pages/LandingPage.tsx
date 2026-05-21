@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Code2, Atom, LayoutTemplate, Server } from 'lucide-react';
+// import { Code2, Atom, LayoutTemplate, Server } from 'lucide-react';
+import { Atom, Server } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
