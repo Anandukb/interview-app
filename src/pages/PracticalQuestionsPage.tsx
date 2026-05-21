@@ -39,6 +39,7 @@ const PracticalQuestionsPage = () => {
         <motion.div 
           className="questions-list-area"
           layout
+          transition={{ type: 'spring', stiffness: 500, damping: 45 }}
         >
           <div className="questions-grid">
             <AnimatePresence>
@@ -63,7 +64,7 @@ const PracticalQuestionsPage = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              transition={{ delay: 0.2 }}
+              transition={{ type: 'tween', ease: 'easeOut', duration: 0.2, delay: 0.1 }}
             >
               <div className="question-details glass">
                 <div className="header-row">

@@ -126,12 +126,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
   {
     "id": "op_8",
     "title": "call, apply, bind",
-    "code": "const person = {\n  name: \"Anandu\"\n};\n\nfunction greet(city) {\n  console.log(this.name + \" from \" + city);\n}\n\ngreet.call(person, \"Doha\");",
+    "code": "const person = {\n  name: \"John\"\n};\n\nfunction greet(city) {\n  console.log(this.name + \" from \" + city);\n}\n\ngreet.call(person, \"Doha\");",
     "expectedOutput": [
-      "Anandu from Doha"
+      "John from Doha"
     ],
     "options": [
-      "Anandu from Doha",
+      "John from Doha",
       "undefined",
       "TypeError",
       "ReferenceError"
@@ -198,12 +198,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
   {
     "id": "op_13",
     "title": "this Keyword Output",
-    "code": "const user = {\n  name: \"Anandu\",\n  greet() {\n    console.log(this.name);\n  }\n};\n\nuser.greet();",
+    "code": "const user = {\n  name: \"John\",\n  greet() {\n    console.log(this.name);\n  }\n};\n\nuser.greet();",
     "expectedOutput": [
-      "Anandu"
+      "John"
     ],
     "options": [
-      "Anandu",
+      "John",
       "undefined",
       "TypeError",
       "ReferenceError"
@@ -254,27 +254,27 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
   {
     "id": "op_17",
     "title": "Shallow copy mutation",
-    "code": "const obj1 = { name: \"Anandu\", details: { age: 25 } };\nconst obj2 = { ...obj1 };\nobj2.name = \"John\";\nobj2.details.age = 30;\n\nconsole.log(obj1.name);\nconsole.log(obj1.details.age);",
+    "code": "const obj1 = { name: \"John\", details: { age: 25 } };\nconst obj2 = { ...obj1 };\nobj2.name = \"John\";\nobj2.details.age = 30;\n\nconsole.log(obj1.name);\nconsole.log(obj1.details.age);",
     "expectedOutput": [
-      "Anandu",
+      "John",
       "30"
     ],
     "options": [
       "30",
-      "Anandu"
+      "John"
     ]
   },
   {
     "id": "op_18",
     "title": "Arrow functions `this` resolution",
-    "code": "const obj = {\n  name: \"Anandu\",\n  regularFn: function() {\n    console.log(this.name);\n  },\n  arrowFn: () => {\n    console.log(this.name);\n  }\n};\n\nobj.regularFn();\nobj.arrowFn();",
+    "code": "const obj = {\n  name: \"John\",\n  regularFn: function() {\n    console.log(this.name);\n  },\n  arrowFn: () => {\n    console.log(this.name);\n  }\n};\n\nobj.regularFn();\nobj.arrowFn();",
     "expectedOutput": [
-      "Anandu",
+      "John",
       "undefined"
     ],
     "options": [
       "undefined",
-      "Anandu"
+      "John"
     ]
   },
   {
@@ -1501,7 +1501,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_33",
     "question": "What is a callback function?",
-    "answer": "A callback function is a function passed into another function as an argument, which is then executed inside the outer function to complete some kind of routine or action.\n\nExample:\n```js\nfunction greet(name, callback) {\n  console.log(\"Hello \" + name);\n  callback();\n}\n\ngreet(\"Anandu\", () => console.log(\"Callback run!\"));\n```"
+    "answer": "A callback function is a function passed into another function as an argument, which is then executed inside the outer function to complete some kind of routine or action.\n\nExample:\n```js\nfunction greet(name, callback) {\n  console.log(\"Hello \" + name);\n  callback();\n}\n\ngreet(\"John\", () => console.log(\"Callback run!\"));\n```"
   },
   {
     "id": "th_34",
@@ -1541,7 +1541,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_41",
     "question": "What is `this` in JavaScript?",
-    "answer": "In JavaScript, `this` refers to the object that is currently executing the code. Its value depends on how the function containing it is invoked:\n\n1. **Global scope**: Refers to `window` (or `global` in Node).\n2. **Object method**: Refers to the object owning the method.\n3. **Arrow functions**: Do not have their own `this`. They inherit it lexically from their enclosing context.\n4. **Strict mode**: If function is called independently, `this` is `undefined`.\n\nExample:\n```js\nconst user = {\n  name: \"Anandu\",\n  greet() { console.log(this.name); }\n};\nuser.greet(); // logs \"Anandu\" (this = user)\n```"
+    "answer": "In JavaScript, `this` refers to the object that is currently executing the code. Its value depends on how the function containing it is invoked:\n\n1. **Global scope**: Refers to `window` (or `global` in Node).\n2. **Object method**: Refers to the object owning the method.\n3. **Arrow functions**: Do not have their own `this`. They inherit it lexically from their enclosing context.\n4. **Strict mode**: If function is called independently, `this` is `undefined`.\n\nExample:\n```js\nconst user = {\n  name: \"John\",\n  greet() { console.log(this.name); }\n};\nuser.greet(); // logs \"John\" (this = user)\n```"
   },
   {
     "id": "th_42",
@@ -1656,7 +1656,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_6",
     "question": "Difference between shallow copy and deep copy",
-    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"Anandu\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
+    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"John\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
   },
   {
     "id": "th_7",
@@ -1676,7 +1676,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_10",
     "question": "Difference between `localStorage` and `sessionStorage`",
-    "answer": "Both are web storage APIs storing key-value pairs in the browser as strings, but they differ in lifetime:\n\n- **`localStorage`**: Persists data with **no expiration date**. Data remains even if the browser tab/window is closed and reopened. Must be cleared programmatically or manually.\n- **`sessionStorage`**: Keeps data only for the duration of the page session. Data is **wiped out** when the browser tab/window is closed.\n\nExample:\n```js\n// Persists indefinitely\nlocalStorage.setItem(\"user\", \"Anandu\");\n\n// Deleted when tab closes\nsessionStorage.setItem(\"session_token\", \"xyz123\");\n```"
+    "answer": "Both are web storage APIs storing key-value pairs in the browser as strings, but they differ in lifetime:\n\n- **`localStorage`**: Persists data with **no expiration date**. Data remains even if the browser tab/window is closed and reopened. Must be cleared programmatically or manually.\n- **`sessionStorage`**: Keeps data only for the duration of the page session. Data is **wiped out** when the browser tab/window is closed.\n\nExample:\n```js\n// Persists indefinitely\nlocalStorage.setItem(\"user\", \"John\");\n\n// Deleted when tab closes\nsessionStorage.setItem(\"session_token\", \"xyz123\");\n```"
   },
   {
     "id": "th_11",
@@ -1751,12 +1751,12 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_30",
     "question": "Difference between call, apply, and bind",
-    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"Anandu\" };\n\ngreet.call(person, \"Doha\"); // \"Anandu from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"Anandu from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"Anandu from Doha\"\n```"
+    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"John\" };\n\ngreet.call(person, \"Doha\"); // \"John from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"John from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"John from Doha\"\n```"
   },
   {
     "id": "th_46",
     "question": "Explain `bind`, `call`, and `apply`",
-    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"Anandu\" };\n\ngreet.call(person, \"Doha\"); // \"Anandu from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"Anandu from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"Anandu from Doha\"\n```"
+    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"John\" };\n\ngreet.call(person, \"Doha\"); // \"John from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"John from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"John from Doha\"\n```"
   },
   {
     "id": "th_47",
@@ -1771,12 +1771,12 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_49",
     "question": "Explain destructuring",
-    "answer": "Destructuring is a clean syntax that lets you unpack values from arrays or properties from objects into distinct variables.\n\nExample:\n```js\nconst person = { name: \"Anandu\", age: 25 };\nconst { name, age } = person; // destructuring object\nconsole.log(name); // \"Anandu\"\n\nconst rgb = [255, 0, 0];\nconst [r, g, b] = rgb; // destructuring array\n```"
+    "answer": "Destructuring is a clean syntax that lets you unpack values from arrays or properties from objects into distinct variables.\n\nExample:\n```js\nconst person = { name: \"John\", age: 25 };\nconst { name, age } = person; // destructuring object\nconsole.log(name); // \"John\"\n\nconst rgb = [255, 0, 0];\nconst [r, g, b] = rgb; // destructuring array\n```"
   },
   {
     "id": "th_50",
     "question": "Explain spread operator",
-    "answer": "The spread operator (`...`) allows an iterable (like an array or object expression) to be expanded in places where zero or more arguments or elements are expected.\n\nExample:\n```js\nconst arr1 = [1, 2];\nconst arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]\n\nconst user = { name: \"Anandu\" };\nconst updatedUser = { ...user, age: 25 };\n```"
+    "answer": "The spread operator (`...`) allows an iterable (like an array or object expression) to be expanded in places where zero or more arguments or elements are expected.\n\nExample:\n```js\nconst arr1 = [1, 2];\nconst arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]\n\nconst user = { name: \"John\" };\nconst updatedUser = { ...user, age: 25 };\n```"
   },
   {
     "id": "th_51",
@@ -1791,7 +1791,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_54",
     "question": "Explain deep copy and shallow copy",
-    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"Anandu\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
+    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"John\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
   },
   {
     "id": "th_61",
@@ -2207,7 +2207,7 @@ export const nodeTheoryQuestions: TheoryQuestion[] = [
   {
     "id": "node_th_5",
     "question": "How does the `EventEmitter` class work?",
-    "answer": "The `EventEmitter` class (from the `events` module) is the core of Node.js's event-driven architecture. Many built-in modules (like Streams and HTTP servers) inherit from it.\n\nIt allows you to define custom events, listen to them, and trigger them:\n- **`.on(event, listener)`**: Adds a listener function for the specified event.\n- **`.emit(event, ...args)`**: Synchronously calls each of the listeners registered for the event, passing the supplied arguments.\n- **`.once(event, listener)`**: Adds a listener that will be invoked at most once.\n\n### Example:\n```js\nconst EventEmitter = require('events');\nconst myEmitter = new EventEmitter();\n\nmyEmitter.on('greet', (name) => {\n  console.log(`Hello, ${name}!`);\n});\n\nmyEmitter.emit('greet', 'Anandu'); // Logs: \"Hello, Anandu!\"\n```\n\n---"
+    "answer": "The `EventEmitter` class (from the `events` module) is the core of Node.js's event-driven architecture. Many built-in modules (like Streams and HTTP servers) inherit from it.\n\nIt allows you to define custom events, listen to them, and trigger them:\n- **`.on(event, listener)`**: Adds a listener function for the specified event.\n- **`.emit(event, ...args)`**: Synchronously calls each of the listeners registered for the event, passing the supplied arguments.\n- **`.once(event, listener)`**: Adds a listener that will be invoked at most once.\n\n### Example:\n```js\nconst EventEmitter = require('events');\nconst myEmitter = new EventEmitter();\n\nmyEmitter.on('greet', (name) => {\n  console.log(`Hello, ${name}!`);\n});\n\nmyEmitter.emit('greet', 'John'); // Logs: \"Hello, John!\"\n```\n\n---"
   },
   {
     "id": "node_th_6",

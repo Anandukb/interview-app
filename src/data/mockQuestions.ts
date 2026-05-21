@@ -184,9 +184,9 @@ export const practicalQuestions: Question[] = [
     id: 'q20',
     title: 'Parse Query Params from URL',
     difficulty: 'Easy',
-    description: 'Given a URL query string (like "?name=anandu&role=admin"), parse it into a JavaScript object.',
+    description: 'Given a URL query string (like "?name=john&role=admin"), parse it into a JavaScript object.',
     hint: 'Remove the "?" prefix, split the string by "&" to get key-value pairs, and use reduce to build the object.',
-    startingCode: `function parseQueryParams(url) {\n  // Your code here\n}\n\nconsole.log(parseQueryParams("?name=anandu&role=admin"));`,
-    answerCode: `function parseQueryParams(url) {\n  return url\n    .replace("?", "")\n    .split("&")\n    .reduce((acc, item) => {\n      const [key, value] = item.split("=");\n      acc[key] = value;\n      return acc;\n    }, {});\n}\n\nconsole.log(parseQueryParams("?name=anandu&role=admin"));`
+    startingCode: `function parseQueryParams(url) {\n  // Your code here\n}\n\nconsole.log(parseQueryParams("?name=john&role=admin"));`,
+    answerCode: `function parseQueryParams(url) {\n  return url\n    .replace("?", "")\n    .split("&")\n    .reduce((acc, item) => {\n      const [key, value] = item.split("=");\n      acc[key] = value;\n      return acc;\n    }, {});\n}\n\nconsole.log(parseQueryParams("?name=john&role=admin"));`
   }
 ];

@@ -112,7 +112,7 @@ Shallow copying and deep copying determine how nested objects are copied:
 
 Example:
 \`\`\`js
-const original = { name: "Anandu", details: { city: "Doha" } };
+const original = { name: "John", details: { city: "Doha" } };
 
 // Shallow copy using spread
 const shallow = { ...original };
@@ -133,7 +133,7 @@ Shallow copying and deep copying determine how nested objects are copied:
 
 Example:
 \`\`\`js
-const original = { name: "Anandu", details: { city: "Doha" } };
+const original = { name: "John", details: { city: "Doha" } };
 
 // Shallow copy using spread
 const shallow = { ...original };
@@ -233,7 +233,7 @@ Both are web storage APIs storing key-value pairs in the browser as strings, but
 Example:
 \`\`\`js
 // Persists indefinitely
-localStorage.setItem("user", "Anandu");
+localStorage.setItem("user", "John");
 
 // Deleted when tab closes
 sessionStorage.setItem("session_token", "xyz123");
@@ -587,12 +587,12 @@ Methods to control the value of \`this\` in JavaScript functions:
 Example:
 \`\`\`js
 function greet(city) { console.log(\`\${this.name} from \${city}\`); }
-const person = { name: "Anandu" };
+const person = { name: "John" };
 
-greet.call(person, "Doha"); // "Anandu from Doha"
-greet.apply(person, ["Doha"]); // "Anandu from Doha"
+greet.call(person, "Doha"); // "John from Doha"
+greet.apply(person, ["Doha"]); // "John from Doha"
 const bound = greet.bind(person, "Doha");
-bound(); // "Anandu from Doha"
+bound(); // "John from Doha"
 \`\`\`
 `,
   "explainbindcallandapply": `
@@ -605,12 +605,12 @@ Methods to control the value of \`this\` in JavaScript functions:
 Example:
 \`\`\`js
 function greet(city) { console.log(\`\${this.name} from \${city}\`); }
-const person = { name: "Anandu" };
+const person = { name: "John" };
 
-greet.call(person, "Doha"); // "Anandu from Doha"
-greet.apply(person, ["Doha"]); // "Anandu from Doha"
+greet.call(person, "Doha"); // "John from Doha"
+greet.apply(person, ["Doha"]); // "John from Doha"
 const bound = greet.bind(person, "Doha");
-bound(); // "Anandu from Doha"
+bound(); // "John from Doha"
 \`\`\`
 `,
 
@@ -701,7 +701,7 @@ function greet(name, callback) {
   callback();
 }
 
-greet("Anandu", () => console.log("Callback run!"));
+greet("John", () => console.log("Callback run!"));
 \`\`\`
 `,
 
@@ -823,10 +823,10 @@ In JavaScript, \`this\` refers to the object that is currently executing the cod
 Example:
 \`\`\`js
 const user = {
-  name: "Anandu",
+  name: "John",
   greet() { console.log(this.name); }
 };
-user.greet(); // logs "Anandu" (this = user)
+user.greet(); // logs "John" (this = user)
 \`\`\`
 `,
 
@@ -910,9 +910,9 @@ Destructuring is a clean syntax that lets you unpack values from arrays or prope
 
 Example:
 \`\`\`js
-const person = { name: "Anandu", age: 25 };
+const person = { name: "John", age: 25 };
 const { name, age } = person; // destructuring object
-console.log(name); // "Anandu"
+console.log(name); // "John"
 
 const rgb = [255, 0, 0];
 const [r, g, b] = rgb; // destructuring array
@@ -926,7 +926,7 @@ Example:
 const arr1 = [1, 2];
 const arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]
 
-const user = { name: "Anandu" };
+const user = { name: "John" };
 const updatedUser = { ...user, age: 25 };
 \`\`\`
 `,

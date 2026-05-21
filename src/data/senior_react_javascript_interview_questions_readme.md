@@ -525,7 +525,7 @@ Expected Output:
 
 ```js
 const person = {
-  name: "Anandu"
+  name: "John"
 };
 
 function greet(city) {
@@ -538,7 +538,7 @@ greet.call(person, "Doha");
 Expected Output:
 
 ```js
-Anandu from Doha
+John from Doha
 ```
 
 ---
@@ -636,7 +636,7 @@ TypeError
 
 ```js
 const user = {
-  name: "Anandu",
+  name: "John",
   greet() {
     console.log(this.name);
   }
@@ -648,7 +648,7 @@ user.greet();
 Expected Output:
 
 ```js
-Anandu
+John
 ```
 
 ---
@@ -715,7 +715,7 @@ Expected Output:
 ## 17. Shallow copy mutation
 
 ```js
-const obj1 = { name: "Anandu", details: { age: 25 } };
+const obj1 = { name: "John", details: { age: 25 } };
 const obj2 = { ...obj1 };
 obj2.name = "John";
 obj2.details.age = 30;
@@ -727,7 +727,7 @@ console.log(obj1.details.age);
 Expected Output:
 
 ```js
-Anandu
+John
 30
 ```
 
@@ -737,7 +737,7 @@ Anandu
 
 ```js
 const obj = {
-  name: "Anandu",
+  name: "John",
   regularFn: function() {
     console.log(this.name);
   },
@@ -753,7 +753,7 @@ obj.arrowFn();
 Expected Output:
 
 ```js
-Anandu
+John
 undefined
 ```
 
