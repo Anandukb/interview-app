@@ -16,7 +16,7 @@ const QuestionTypesPage = () => {
       id: 'output-prediction',
       name: 'Output Prediction',
       icon: <CheckSquare size={40} className="type-icon" />,
-      desc: 'Predict the exact output of tricky JS snippets.'
+      desc: 'Predict the exact output of tricky React/JS snippets.'
     },
     {
       id: 'practical',
@@ -33,7 +33,7 @@ const QuestionTypesPage = () => {
       </button>
 
       <div className="header-content">
-        <h1 className="title">JavaScript <span className="gradient-text">Practice</span></h1>
+        <h1 className="title">React JS <span className="gradient-text">Practice</span></h1>
         <p className="subtitle">Select the format you want to practice today.</p>
       </div>
 

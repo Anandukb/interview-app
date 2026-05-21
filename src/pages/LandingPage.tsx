@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Code2, FileJson, LayoutTemplate } from 'lucide-react';
+import { Code2, Atom, LayoutTemplate } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
@@ -22,10 +22,10 @@ const LandingPage = () => {
     },
     {
       id: 'js',
-      name: 'JavaScript',
-      icon: <FileJson size={48} className="lang-icon js" />,
-      color: '#f7df1e',
-      desc: 'Ace the logic and interactive parts.'
+      name: 'React JS',
+      icon: <Atom size={48} className="lang-icon react" />,
+      color: '#61dafb',
+      desc: 'Master components, state, hooks, and rendering.'
     }
   ];
 
@@ -40,10 +40,10 @@ const LandingPage = () => {
           Select a track below to start practicing real-world interview questions with our interactive compiler.
         </p>
       </div>
-      
+
       <div className="language-grid">
         {languages.map(lang => (
-          <div 
+          <div
             key={lang.id}
             className="lang-card glass-card"
             onClick={() => lang.id === 'js' ? navigate('/js') : alert('Coming soon!')}

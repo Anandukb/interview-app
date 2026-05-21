@@ -1,10 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { Question } from '../data/mockQuestions';
 import './QuestionCard.css';
 
 interface QuestionCardProps {
-  question: Question;
+  question: {
+    id: string;
+    title: string;
+    difficulty?: 'Easy' | 'Medium' | 'Hard';
+    description?: string;
+  };
   isSelected: boolean;
   onClick: () => void;
   compact?: boolean;
@@ -21,14 +25,16 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, isSelected, onCli
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
       <div className="card-header">
-        <span className={`difficulty ${question.difficulty.toLowerCase()}`}>
-          {question.difficulty}
-        </span>
+        {question.difficulty && (
+          <span className={`difficulty ${question.difficulty.toLowerCase()}`}>
+            {question.difficulty}
+          </span>
+        )}
         {!compact && <span className="question-id">#{question.id}</span>}
       </div>
       <h3 className="question-title">{question.title}</h3>
       
-      {!compact && (
+      {!compact && question.description && (
         <p className="question-desc-short">
           {question.description.length > 80 
             ? `${question.description.substring(0, 80)}...` 

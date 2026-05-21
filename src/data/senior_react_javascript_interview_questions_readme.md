@@ -671,9 +671,234 @@ Expected Output:
 
 ---
 
-## 15. Reduce Output
+## 15. Array reduce Output
 
 ```js
 const arr = [1, 2, 3, 4];
 
-const total = arr.reduce((acc, curr
+const total = arr.reduce((acc, curr) => {
+  return acc + curr;
+}, 10);
+
+console.log(total);
+```
+
+Expected Output:
+
+```js
+20
+```
+
+---
+
+## 16. Object key evaluation (String coercion)
+
+```js
+const a = {};
+const b = { key: 'b' };
+const c = { key: 'c' };
+
+a[b] = 123;
+a[c] = 456;
+
+console.log(a[b]);
+```
+
+Expected Output:
+
+```js
+456
+```
+
+---
+
+## 17. Shallow copy mutation
+
+```js
+const obj1 = { name: "Anandu", details: { age: 25 } };
+const obj2 = { ...obj1 };
+obj2.name = "John";
+obj2.details.age = 30;
+
+console.log(obj1.name);
+console.log(obj1.details.age);
+```
+
+Expected Output:
+
+```js
+Anandu
+30
+```
+
+---
+
+## 18. Arrow functions `this` resolution
+
+```js
+const obj = {
+  name: "Anandu",
+  regularFn: function() {
+    console.log(this.name);
+  },
+  arrowFn: () => {
+    console.log(this.name);
+  }
+};
+
+obj.regularFn();
+obj.arrowFn();
+```
+
+Expected Output:
+
+```js
+Anandu
+undefined
+```
+
+---
+
+## 19. Nested setTimeout & Promise Event Loop
+
+```js
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Timeout 1");
+  Promise.resolve().then(() => console.log("Promise inside Timeout"));
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log("Promise 1");
+  setTimeout(() => console.log("Timeout inside Promise"), 0);
+});
+
+console.log("End");
+```
+
+Expected Output:
+
+```js
+Start
+End
+Promise 1
+Timeout 1
+Promise inside Timeout
+Timeout inside Promise
+```
+
+---
+
+## 20. Array filter and map combination
+
+```js
+const items = [1, 2, 3, 4];
+const result = items
+  .filter(x => x % 2 === 0)
+  .map(x => x * 3);
+
+console.log(result);
+```
+
+Expected Output:
+
+```js
+[6, 12]
+```
+
+---
+
+## 21. Logical OR vs Nullish Coalescing
+
+```js
+const speed = 0;
+const defaultSpeed1 = speed || 10;
+const defaultSpeed2 = speed ?? 10;
+
+console.log(defaultSpeed1);
+console.log(defaultSpeed2);
+```
+
+Expected Output:
+
+```js
+10
+0
+```
+
+---
+
+## 22. Scope & Closures TDZ inside a function
+
+```js
+let x = 10;
+function test() {
+  console.log(x);
+  let x = 20;
+}
+test();
+```
+
+Expected Output:
+
+```js
+ReferenceError
+```
+
+---
+
+## 23. IIFE and global variable assignment leak
+
+```js
+(function() {
+  var a = b = 5;
+})();
+
+console.log(typeof a);
+console.log(typeof b);
+```
+
+Expected Output:
+
+```js
+undefined
+number
+```
+
+---
+
+## 24. Array push return value
+
+```js
+const arr = [1, 2];
+const res = arr.push(3);
+console.log(res);
+```
+
+Expected Output:
+
+```js
+3
+```
+
+---
+
+## 25. Object freeze property mutations
+
+```js
+const obj = { age: 20 };
+Object.freeze(obj);
+obj.age = 30;
+obj.name = "Test";
+
+console.log(obj.age);
+console.log(obj.name);
+```
+
+Expected Output:
+
+```js
+20
+undefined
+```

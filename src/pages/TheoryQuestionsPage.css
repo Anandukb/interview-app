@@ -103,3 +103,38 @@
     transform: translateY(0);
   }
 }
+
+.answer-paragraph {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.answer-list {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-left: 20px;
+}
+
+.answer-list li {
+  margin-bottom: 8px;
+}
+
+.answer-list li::marker {
+  color: var(--accent-primary, #6366f1);
+}
+
+.answer-h1, .answer-h2, .answer-h3, .answer-h4, .answer-h5, .answer-h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.answer-h3 {
+  font-size: 1.2rem;
+}
+
+.answer-h4 {
+  font-size: 1.1rem;
+}
+

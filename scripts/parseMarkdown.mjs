@@ -1,14 +1,32 @@
 import fs from 'fs';
 import path from 'path';
+import { theoryAnswers } from './theoryAnswersData.mjs';
 
 const markdownPath = path.resolve('src/data/senior_react_javascript_interview_questions_readme.md');
+const mcqPath = path.resolve('src/data/mcq.md');
 const outputPath = path.resolve('src/data/parsedQuestions.ts');
 
-const markdownContent = fs.readFileSync(markdownPath, 'utf-8');
+const readmeContent = fs.readFileSync(markdownPath, 'utf-8');
+const mcqContent = fs.readFileSync(mcqPath, 'utf-8');
+const markdownContent = readmeContent; // For backward compatibility with the theory parsing logic below
 
-// Helper to generate generic answers for theory questions
-const generateGenericAnswer = (question) => {
-  return `This is a comprehensive answer to "${question}". In an actual interview, you should explain the core concept, provide a brief example, and discuss any trade-offs or best practices related to the topic.`;
+// Helper to look up comprehensive answers for theory questions
+const getAnswerForQuestion = (q) => {
+  const norm = q.toLowerCase().replace(/[^a-z0-9-]/g, ''); // keep hyphen
+  const normNoHyphen = norm.replace(/-/g, '');
+  
+  if (theoryAnswers[norm]) return theoryAnswers[norm].trim();
+  if (theoryAnswers[normNoHyphen]) return theoryAnswers[normNoHyphen].trim();
+  
+  // Fallback if not found
+  return `This is a comprehensive answer to "${q}".\n\n${theoryAnswers["default"].trim()}`;
+};
+
+const cleanCode = (code) => {
+  return code
+    .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '') // remove comments
+    .replace(/\s+/g, ' ') // collapse whitespace
+    .trim();
 };
 
 const parsedData = {
@@ -16,52 +34,92 @@ const parsedData = {
   outputPrediction: []
 };
 
-// 1. Extract Output Prediction Questions
-const outputPredictionSectionIndex = markdownContent.indexOf('# Output Prediction Questions');
+const codeMap = new Map(); // normalizedCode -> true
+let opId = 1;
+
+// Helper to add and shuffle output prediction question
+const addPredictionQuestion = (title, code, expectedOutput) => {
+  const normCode = cleanCode(code);
+  if (codeMap.has(normCode)) {
+    return; // skip duplicate
+  }
+  codeMap.set(normCode, true);
+
+  const uniqueExpected = [...new Set(expectedOutput)];
+  let scrambledOutput = [...uniqueExpected];
+  if (uniqueExpected.length > 1) {
+    for (let i = scrambledOutput.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [scrambledOutput[i], scrambledOutput[j]] = [scrambledOutput[j], scrambledOutput[i]];
+    }
+  } else {
+    const answer = uniqueExpected[0];
+    const defaultDistractors = ['undefined', 'TypeError', 'ReferenceError', 'null', 'NaN', 'false', 'true', '0'];
+    const filtered = defaultDistractors.filter(d => d !== answer);
+    scrambledOutput.push(filtered[0], filtered[1], filtered[2]);
+  }
+  scrambledOutput = [...new Set(scrambledOutput)];
+
+  parsedData.outputPrediction.push({
+    id: `op_${opId++}`,
+    title,
+    code,
+    expectedOutput,
+    options: scrambledOutput
+  });
+};
+
+// 1. Extract Output Prediction Questions from README
+const outputPredictionSectionIndex = readmeContent.indexOf('# Output Prediction Questions');
 if (outputPredictionSectionIndex !== -1) {
-  const outputContent = markdownContent.slice(outputPredictionSectionIndex);
-  
-  // Regex to match:
-  // ## 1. Title
-  // ```js
-  // <code>
-  // ```
-  // Expected Output:
-  // ```js
-  // <output>
-  // ```
+  const outputContent = readmeContent.slice(outputPredictionSectionIndex);
   const regex = /## \d+\.\s+(.*?)\n+```js\n([\s\S]*?)```\n+Expected Output:\n+```js\n([\s\S]*?)```/g;
   
   let match;
-  let id = 1;
   while ((match = regex.exec(outputContent)) !== null) {
     const title = match[1].trim();
     const code = match[2].trim();
     const expectedOutput = match[3].trim().split('\n').map(line => line.trim());
-    
-    // Scramble the output for the chips, ensuring it's not the exact same as expected
-    let scrambledOutput = [...expectedOutput];
-    if (scrambledOutput.length > 1) {
-      for (let i = scrambledOutput.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [scrambledOutput[i], scrambledOutput[j]] = [scrambledOutput[j], scrambledOutput[i]];
-      }
-    } else {
-      // If there's only 1 line, let's add some distractor options
-      scrambledOutput.push('undefined', 'TypeError', 'ReferenceError');
-    }
-    
-    // Remove duplicates from scrambled to make it cleaner
-    scrambledOutput = [...new Set(scrambledOutput)];
-
-    parsedData.outputPrediction.push({
-      id: `op_${id++}`,
-      title,
-      code,
-      expectedOutput,
-      options: scrambledOutput
-    });
+    addPredictionQuestion(title, code, expectedOutput);
   }
+}
+
+// 2. Extract Output Prediction Questions from mcq.md
+const blocks = mcqContent.split(/\n## /);
+for (let i = 1; i < blocks.length; i++) {
+  const block = blocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const titleLine = block.slice(0, firstLineEnd).trim();
+  const titleMatch = titleLine.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const title = titleMatch[1].trim();
+  const content = block.slice(firstLineEnd).trim();
+  
+  const codeBlockMatch = content.match(/```(js|jsx|javascript)\n([\s\S]*?)```/);
+  if (!codeBlockMatch) continue;
+  
+  const code = codeBlockMatch[2].trim();
+  const answerIdx = content.indexOf('### Answer');
+  if (answerIdx === -1) continue;
+  
+  const answerContent = content.slice(answerIdx + '### Answer'.length).trim();
+  const answerCodeBlockMatch = answerContent.match(/```(?:js|jsx|javascript|)\n([\s\S]*?)```/);
+  
+  let expectedOutput = [];
+  if (answerCodeBlockMatch) {
+    expectedOutput = answerCodeBlockMatch[1].trim().split('\n').map(line => line.trim());
+  } else {
+    const plainText = answerContent.split('\n')[0].trim();
+    if (plainText) {
+      expectedOutput = [plainText];
+    }
+  }
+  
+  if (expectedOutput.length === 0) continue;
+  addPredictionQuestion(title, code, expectedOutput);
 }
 
 // 2. Extract Theory Questions (we'll grab JS and React ones)
@@ -77,7 +135,7 @@ while ((match = theoryRegex.exec(markdownContent)) !== null) {
     parsedData.theory.push({
       id: `th_${theoryId++}`,
       question: q,
-      answer: generateGenericAnswer(q)
+      answer: getAnswerForQuestion(q)
     });
   }
 }

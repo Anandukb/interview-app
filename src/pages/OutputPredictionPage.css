@@ -5,16 +5,26 @@
   flex-direction: column;
 }
 
-.prediction-layout {
+.output-prediction-container.locked {
+  height: 100vh;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
+.prediction-layout-panel {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 32px;
   flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
 }
 
-@media (max-width: 1024px) {
-  .prediction-layout {
+@media (max-width: 1200px) {
+  .prediction-layout-panel {
     grid-template-columns: 1fr;
+    overflow-y: visible;
   }
 }
 
@@ -83,6 +93,24 @@
 .chip:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.chip.option-chip.correct {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: var(--success) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  cursor: default;
+  transform: none !important;
+}
+
+.chip.option-chip.incorrect {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: var(--danger) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  cursor: default;
+  transform: none !important;
 }
 
 .no-options {
@@ -256,4 +284,69 @@
 
 .next-btn:hover {
   background: var(--bg-tertiary);
+}
+
+/* Prediction Placeholder for Single-Select */
+.prediction-placeholder {
+  padding: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 350px;
+}
+
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 280px;
+}
+
+.placeholder-icon {
+  color: var(--accent-primary);
+  opacity: 0.6;
+}
+
+.placeholder-content h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.placeholder-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Validation Actions for Retry & Next */
+.validation-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.validation-actions .retry-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--border-highlight);
+  color: var(--text-primary);
+}
+
+.validation-actions .retry-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--text-secondary);
+}
+
+.validation-actions .next-btn {
+  flex: 2;
 }

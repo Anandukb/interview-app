@@ -1248,6 +1248,180 @@ Example:
 \`\`\`
 `,
 
+  "differencebetweenssgssrandcsrinnextjs": `
+Next.js supports multiple rendering paradigms depending on page requirements:
+
+1. **Static Site Generation (SSG)**: HTML is built **once at build time** (via \`getStaticProps\` or default in App Router). Best for static content (e.g., blogs, documentation). Extremely fast and CDN-cacheable.
+2. **Server-Side Rendering (SSR)**: HTML is generated **on each request** (via \`getServerSideProps\` or dynamic rendering in App Router). Best for dynamic, personalized, or real-time data.
+3. **Client-Side Rendering (CSR)**: Standard React rendering in the browser. Data is fetched in \`useEffect\` or via client-side libraries like SWR/React Query.
+
+Example (App Router configuration):
+\`\`\`jsx
+// SSG (Static page by default in Next.js App Router)
+export default async function Page() {
+  const res = await fetch('https://api.example.com/data'); // cached by default
+  const data = await res.json();
+  return <div>{data.title}</div>;
+}
+
+// SSR (Dynamic page)
+export default async function DynamicPage() {
+  const res = await fetch('https://api.example.com/data', { cache: 'no-store' }); // bypass cache
+  const data = await res.json();
+  return <div>{data.title}</div>;
+}
+\`\`\`
+`,
+
+  "whatisasyncawait": `
+\`async/await\` is a modern JavaScript syntax built on top of Promises. It allows you to write asynchronous code that reads and behaves like synchronous code, improving readability and error handling.
+
+- **\`async\` keyword**: Placed before a function declaration. It ensures the function always returns a Promise.
+- **\`await\` keyword**: Can only be used inside an \`async\` function. It pauses the function execution until the Promise resolves or rejects.
+
+Example:
+\`\`\`js
+async function getUserData(userId) {
+  try {
+    const response = await fetch(\`/api/users/\${userId}\`);
+    if (!response.ok) throw new Error("User not found");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+  }
+}
+\`\`\`
+
+**Best Practices / Trade-offs**:
+- **Always use try/catch**: Unhandled promise rejections inside async functions can cause runtime errors.
+- **Avoid sequential bottleneck**: Do not await independent promises sequentially; use \`Promise.all()\` to run them concurrently.
+`,
+
+  "whatisdebounce": `
+Debouncing is a programming practice used to limit the rate at which a function gets invoked. It delays the execution of a function until a certain amount of idle time has passed since the last time the function was triggered.
+
+**Use Case**: Search inputs, window resizing, or typing indicators where you only want to process the final input after the user has stopped action.
+
+Example:
+\`\`\`js
+function debounce(func, delay) {
+  let timerId;
+  return function (...args) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+// Usage
+const handleSearch = debounce((query) => {
+  console.log("Searching database for:", query);
+}, 300);
+\`\`\`
+`,
+
+  "whatisthrottle": `
+Throttling is a technique used to limit the execution rate of a function. It ensures that a function is called at most once during a specified time interval, regardless of how many times the event is fired.
+
+**Use Case**: Scroll listeners, mouse movement tracking, resizing, or rate-limiting button clicks to prevent spam.
+
+Example:
+\`\`\`js
+function throttle(func, limit) {
+  let inThrottle = false;
+  return function (...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
+// Usage
+const handleScroll = throttle(() => {
+  console.log("Scroll event processed");
+}, 200);
+window.addEventListener("scroll", handleScroll);
+\`\`\`
+`,
+
+  "whatisreactandwhyuseit": `
+React is a free, open-source front-end JavaScript library developed by Facebook for building component-based user interfaces.
+
+**Why Use It**:
+1. **Component-Based Architecture**: Allows building encapsulated, reusable UI components that manage their own state.
+2. **Virtual DOM**: Updates the DOM efficiently by comparing state changes in memory and batching real DOM operations, maximizing performance.
+3. **Declarative UI**: You design simple views for each state in your application, and React efficiently updates and renders just the right components when data changes.
+4. **Rich Ecosystem & SEO Friendly**: Large community support, custom state management tools, and support for SSR frameworks like Next.js for high SEO visibility.
+
+Example:
+\`\`\`jsx
+import React, { useState } from 'react';
+
+function SimpleCounter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>Clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+\`\`\`
+`,
+
+  "whatiscodesplittinginnextjs": `
+Code splitting is a technique that splits the application bundle into smaller chunks that are loaded on demand. In Next.js, this is done automatically out-of-the-box:
+
+1. **Page-Based Splitting**: Every page inside the router is split into its own bundle. Navigating to a page only loads the JavaScript needed for that specific page.
+2. **Component-Based Splitting**: You can lazily load components dynamically using \`next/dynamic\` to split large components or libraries from the main bundle.
+
+Example:
+\`\`\`jsx
+import dynamic from 'next/dynamic';
+
+// Heavy component loaded only on demand
+const HeavyChart = dynamic(() => import('../components/HeavyChart'), {
+  loading: () => <p>Loading Chart...</p>,
+  ssr: false // Optional: disable SSR for client-only libraries
+});
+
+export default function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <HeavyChart />
+    </div>
+  );
+}
+\`\`\`
+`,
+
+  "whatisdynamicroutinginnextjs": `
+Dynamic routing in Next.js allows you to define routes that match variable URL parameters (e.g., product IDs, usernames) rather than static paths.
+
+- **App Router**: Created by naming folder with square brackets: \`app/blog/[slug]/page.js\`.
+- **Pages Router**: Created by naming file with square brackets: \`pages/blog/[slug].js\`.
+
+Example (App Router \`app/blog/[slug]/page.jsx\`):
+\`\`\`jsx
+export default async function BlogPost({ params }) {
+  // Access the dynamic slug parameter
+  const { slug } = await params;
+  
+  return (
+    <article>
+      <h1>Blog Post: {slug}</h1>
+      <p>Content for {slug} will be loaded here.</p>
+    </article>
+  );
+}
+\`\`\`
+`,
+
   // Default Fallback
   "default": `
 In an actual interview, you should structure your response around three core areas:

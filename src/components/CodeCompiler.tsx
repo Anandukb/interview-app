@@ -109,7 +109,10 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
         <div className="tabs">
           <div 
             className={`tab ${activeTab === 'index.js' ? 'active' : ''}`}
-            onClick={() => setActiveTab('index.js')}
+            onClick={() => {
+              setActiveTab('index.js');
+              setOutput('');
+            }}
           >
             index.js
           </div>
@@ -163,6 +166,7 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
           }
         >
           <Editor
+            key={activeTab}
             height="100%"
             defaultLanguage="javascript"
             theme="vs-dark"
