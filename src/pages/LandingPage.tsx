@@ -6,20 +6,20 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const languages = [
-    {
-      id: 'html',
-      name: 'HTML',
-      icon: <LayoutTemplate size={48} className="lang-icon html" />,
-      color: '#e34f26',
-      desc: 'Master the skeleton of the web.'
-    },
-    {
-      id: 'css',
-      name: 'CSS',
-      icon: <Code2 size={48} className="lang-icon css" />,
-      color: '#264de4',
-      desc: 'Style and animate your components.'
-    },
+    // {
+    //   id: 'html',
+    //   name: 'HTML',
+    //   icon: <LayoutTemplate size={48} className="lang-icon html" />,
+    //   color: '#e34f26',
+    //   desc: 'Master the skeleton of the web.'
+    // },
+    // {
+    //   id: 'css',
+    //   name: 'CSS',
+    //   icon: <Code2 size={48} className="lang-icon css" />,
+    //   color: '#264de4',
+    //   desc: 'Style and animate your components.'
+    // },
     {
       id: 'js',
       name: 'React JS',
