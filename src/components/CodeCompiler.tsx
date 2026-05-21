@@ -81,7 +81,7 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
       let consoleOutput = '';
       const originalLog = console.log;
       console.log = (...args) => {
-        consoleOutput += args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') + '\\n';
+        consoleOutput += args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') + '\n';
       };
 
       // Wrap code to execute
