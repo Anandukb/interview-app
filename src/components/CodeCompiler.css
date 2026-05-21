@@ -1,0 +1,250 @@
+.compiler-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1e1e1e; /* Monaco default dark background */
+}
+
+.compiler-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2d2d2d;
+  padding: 0 16px;
+  border-bottom: 1px solid #444;
+  flex-shrink: 0;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  padding: 12px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: #888;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  background: #222;
+  color: #ccc;
+}
+
+.tab.active {
+  color: #fff;
+  background: #1e1e1e;
+  border-bottom-color: var(--accent-primary);
+}
+
+.tab.solution-tab.active {
+  border-bottom-color: var(--success);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hint-btn {
+  color: var(--warning);
+}
+
+.answer-btn {
+  color: var(--accent-secondary);
+}
+
+.run-btn {
+  background: var(--success);
+  color: #fff;
+}
+
+.run-btn:hover {
+  background: #059669;
+}
+
+.layout-btn {
+  color: #888;
+  background: transparent;
+}
+
+.layout-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hint-box {
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 4px solid var(--warning);
+  padding: 12px 16px;
+  margin: 16px;
+  font-size: 0.95rem;
+  color: #fff;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.workspace {
+  display: flex;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+/* Bottom layout */
+.layout-bottom {
+  flex-direction: column;
+}
+
+.layout-bottom .editor-wrapper {
+  flex-grow: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.layout-bottom .output-panel {
+  border-top: 1px solid #333;
+  flex-shrink: 0;
+}
+
+/* Side layout */
+.layout-side {
+  flex-direction: row;
+}
+
+.layout-side .editor-wrapper {
+  position: relative;
+  min-width: 0;
+}
+
+.layout-side .output-panel {
+  border-left: 1px solid #333;
+  border-top: none;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Resizable Splitter Divider */
+.divider {
+  background-color: #2a2a2a;
+  transition: background-color 0.15s ease;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.divider:hover,
+.workspace.dragging .divider {
+  background-color: var(--accent-primary, #6366f1);
+}
+
+.divider-vertical {
+  width: 6px;
+  cursor: col-resize;
+  height: 100%;
+}
+
+.divider-vertical::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 24px;
+  background-color: #555;
+  border-radius: 1px;
+  transition: background-color 0.15s ease;
+}
+
+.divider-vertical:hover::after,
+.workspace.dragging .divider-vertical::after {
+  background-color: #fff;
+}
+
+.divider-horizontal {
+  height: 6px;
+  cursor: row-resize;
+  width: 100%;
+}
+
+.divider-horizontal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 2px;
+  background-color: #555;
+  border-radius: 1px;
+  transition: background-color 0.15s ease;
+}
+
+.divider-horizontal:hover::after,
+.workspace.dragging .divider-horizontal::after {
+  background-color: #fff;
+}
+
+/* Workspace drag states */
+.workspace.dragging {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.workspace.dragging.layout-side {
+  cursor: col-resize;
+}
+
+.workspace.dragging.layout-bottom {
+  cursor: row-resize;
+}
+
+/* Common output styles */
+.output-panel {
+  background: #181818;
+  display: flex;
+  flex-direction: column;
+}
+
+.output-header {
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #888;
+  background: #222;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.output-content {
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: #e5e5e5;
+  overflow-y: auto;
+  margin: 0;
+  flex-grow: 1;
+  white-space: pre-wrap;
+}

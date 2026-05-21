@@ -1,0 +1,88 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { practicalQuestions } from '../data/mockQuestions';
+import type { Question } from '../data/mockQuestions';
+import QuestionCard from '../components/QuestionCard';
+import CodeCompiler from '../components/CodeCompiler';
+import './PracticalQuestionsPage.css';
+
+const PracticalQuestionsPage = () => {
+  const navigate = useNavigate();
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+
+  const handleBack = () => {
+    if (selectedQuestion) {
+      setSelectedQuestion(null);
+    } else {
+      navigate('/js');
+    }
+  };
+
+  return (
+    <div className={`practical-container container ${selectedQuestion ? 'locked' : ''}`}>
+      <div className="page-header">
+        <button className="back-btn" onClick={handleBack}>
+          &larr; {selectedQuestion ? 'Back to List' : 'Back to Formats'}
+        </button>
+        <h1 className="title">Practical <span className="gradient-text">Challenges</span></h1>
+      </div>
+
+      <div className={`layout-wrapper ${selectedQuestion ? 'has-selection' : ''}`}>
+        
+        {/* Sidebar / Grid Area */}
+        <motion.div 
+          className="questions-list-area"
+          layout
+        >
+          <div className="questions-grid">
+            <AnimatePresence>
+              {practicalQuestions.map(q => (
+                <QuestionCard
+                  key={q.id}
+                  question={q}
+                  isSelected={selectedQuestion?.id === q.id}
+                  compact={!!selectedQuestion}
+                  onClick={() => setSelectedQuestion(q)}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Main Content Area (Compiler) */}
+        <AnimatePresence>
+          {selectedQuestion && (
+            <motion.div 
+              className="active-question-area"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="question-details glass">
+                <div className="header-row">
+                  <h2>{selectedQuestion.title}</h2>
+                  <span className={`difficulty ${selectedQuestion.difficulty.toLowerCase()}`}>
+                    {selectedQuestion.difficulty}
+                  </span>
+                </div>
+                <p className="description">{selectedQuestion.description}</p>
+              </div>
+
+              <div className="compiler-section">
+                <CodeCompiler
+                  initialCode={selectedQuestion.startingCode}
+                  answerCode={selectedQuestion.answerCode}
+                  hint={selectedQuestion.hint}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+export default PracticalQuestionsPage;

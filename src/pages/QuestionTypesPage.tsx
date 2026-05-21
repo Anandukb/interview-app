@@ -1,0 +1,67 @@
+import { useNavigate } from 'react-router-dom';
+import { HelpCircle, CheckSquare, Laptop } from 'lucide-react';
+import './QuestionTypesPage.css';
+
+const QuestionTypesPage = () => {
+  const navigate = useNavigate();
+
+  const types = [
+    {
+      id: 'theory',
+      name: 'Theory Questions',
+      icon: <HelpCircle size={40} className="type-icon" />,
+      desc: 'Theory and concept-based interview questions.'
+    },
+    {
+      id: 'output-prediction',
+      name: 'Output Prediction',
+      icon: <CheckSquare size={40} className="type-icon" />,
+      desc: 'Predict the exact output of tricky JS snippets.'
+    },
+    {
+      id: 'practical',
+      name: 'Practical Coding',
+      icon: <Laptop size={40} className="type-icon" />,
+      desc: 'Hands-on coding challenges in an interactive environment.'
+    }
+  ];
+
+  return (
+    <div className="types-container container">
+      <button className="back-btn" onClick={() => navigate('/')}>
+        &larr; Back to Languages
+      </button>
+
+      <div className="header-content">
+        <h1 className="title">JavaScript <span className="gradient-text">Practice</span></h1>
+        <p className="subtitle">Select the format you want to practice today.</p>
+      </div>
+
+      <div className="types-grid">
+        {types.map(type => (
+          <div 
+            key={type.id} 
+            className="type-card glass-card"
+            onClick={() => {
+              if (type.id === 'practical') navigate('/js/practical');
+              else if (type.id === 'theory') navigate('/js/theory');
+              else if (type.id === 'output-prediction') navigate('/js/output-prediction');
+              else alert('Coming soon!');
+            }}
+          >
+            <div className="icon-wrapper glass">
+              {type.icon}
+            </div>
+            <div className="card-content">
+              <h2>{type.name}</h2>
+              <p>{type.desc}</p>
+            </div>
+            <div className="arrow">&rarr;</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default QuestionTypesPage;
