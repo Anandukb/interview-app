@@ -29,9 +29,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "Start",
-      "End",
+      "Promise",
       "Timeout",
-      "Promise"
+      "End"
     ]
   },
   {
@@ -60,9 +60,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
       "0",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -75,9 +75,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Timeout",
       "Sync",
-      "Promise"
+      "Promise",
+      "Timeout"
     ]
   },
   {
@@ -118,9 +118,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
+      "3",
       "1",
-      "2",
-      "3"
+      "2"
     ]
   },
   {
@@ -148,10 +148,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
       "1",
       "4",
-      "3"
+      "3",
+      "2"
     ]
   },
   {
@@ -163,8 +163,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -260,8 +260,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "30"
     ],
     "options": [
-      "Anandu",
-      "30"
+      "30",
+      "Anandu"
     ]
   },
   {
@@ -290,11 +290,11 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside Promise"
     ],
     "options": [
+      "Start",
+      "End",
       "Timeout 1",
       "Promise 1",
       "Timeout inside Promise",
-      "End",
-      "Start",
       "Promise inside Timeout"
     ]
   },
@@ -321,8 +321,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "0"
     ],
     "options": [
-      "0",
-      "10"
+      "10",
+      "0"
     ]
   },
   {
@@ -348,8 +348,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "number"
     ],
     "options": [
-      "undefined",
-      "number"
+      "number",
+      "undefined"
     ]
   },
   {
@@ -443,8 +443,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
-      "1"
+      "1",
+      "2"
     ]
   },
   {
@@ -512,8 +512,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "52"
     ],
     "options": [
-      "3",
-      "52"
+      "52",
+      "3"
     ]
   },
   {
@@ -525,8 +525,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "false",
-      "true"
+      "true",
+      "false"
     ]
   },
   {
@@ -538,8 +538,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "true",
-      "false"
+      "false",
+      "true"
     ]
   },
   {
@@ -581,9 +581,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
+      "3",
       "1",
       "4",
-      "3",
       "2"
     ]
   },
@@ -598,8 +598,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "3",
-      "2",
-      "1"
+      "1",
+      "2"
     ]
   },
   {
@@ -628,8 +628,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
       "0",
+      "1",
       "2"
     ]
   },
@@ -642,8 +642,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -655,8 +655,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Recovered"
     ],
     "options": [
-      "Recovered",
-      "Error"
+      "Error",
+      "Recovered"
     ]
   },
   {
@@ -683,9 +683,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "timeout"
     ],
     "options": [
+      "sync",
       "micro",
-      "timeout",
-      "sync"
+      "timeout"
     ]
   },
   {
@@ -699,10 +699,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "1",
       "3",
       "4",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -1304,9 +1304,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "4",
       "1",
       "3",
+      "4",
       "2"
     ]
   },
@@ -1422,10 +1422,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "A",
-      "C",
       "E",
-      "F",
       "B",
+      "C",
+      "F",
       "D"
     ]
   },
@@ -1444,14 +1444,14 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "setTimeout"
     ],
     "options": [
-      "async1 start",
-      "script start",
-      "async2",
-      "promise1",
-      "script end",
       "setTimeout",
+      "script start",
+      "async1 end",
+      "async2",
+      "async1 start",
+      "promise1",
       "promise2",
-      "async1 end"
+      "script end"
     ]
   },
   {
@@ -1467,12 +1467,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside then"
     ],
     "options": [
-      "End",
-      "Timeout outside",
+      "Promise Resolved",
       "Timeout inside then",
       "Inside Promise Constructor",
-      "Start",
-      "Promise Resolved"
+      "End",
+      "Timeout outside",
+      "Start"
     ]
   }
 ];
@@ -1947,5 +1947,341 @@ export const theoryQuestions: TheoryQuestion[] = [
     "id": "th_94",
     "question": "Explain debounce and throttle practically",
     "answer": "Both rate-limit execution, but serve different scenarios:\n\n- **Debounce**: Delays execution of a function until after a specific amount of time has elapsed since the **last time** the function was triggered. Best for search inputs, where you only run the API request after the user stops typing.\n- **Throttle**: Ensures a function is called **at most once** within a specified time window. Best for scroll listeners, resize handlers, or mouse movement tracking.\n\nExample:\n```js\n// Debounce search\nconst handleSearch = debounce((query) => searchAPI(query), 300);\n```"
+  }
+];
+
+export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
+  {
+    "id": "node_op_1",
+    "title": "Top-Level NextTick vs Promise vs Timers",
+    "code": "console.log('1');\n\nsetTimeout(() => {\n  console.log('2');\n}, 0);\n\nprocess.nextTick(() => {\n  console.log('3');\n});\n\nPromise.resolve().then(() => {\n  console.log('4');\n});\n\nsetImmediate(() => {\n  console.log('5');\n});\n\nconsole.log('6');",
+    "expectedOutput": [
+      "1",
+      "6",
+      "3",
+      "4",
+      "2",
+      "5"
+    ],
+    "options": [
+      "4",
+      "1",
+      "2",
+      "3",
+      "5",
+      "6"
+    ]
+  },
+  {
+    "id": "node_op_2",
+    "title": "Timers vs setImmediate inside I/O Callback",
+    "code": "const fs = require('fs');\n\nfs.readFile(__filename, () => {\n  setTimeout(() => {\n    console.log('Timeout');\n  }, 0);\n\n  setImmediate(() => {\n    console.log('Immediate');\n  });\n});",
+    "expectedOutput": [
+      "Immediate",
+      "Timeout"
+    ],
+    "options": [
+      "Timeout",
+      "Immediate"
+    ]
+  },
+  {
+    "id": "node_op_3",
+    "title": "EventEmitter Listener Execution Order",
+    "code": "const EventEmitter = require('events');\nconst emitter = new EventEmitter();\n\nemitter.on('data', () => {\n  console.log('Listener 1');\n});\n\nemitter.on('data', () => {\n  console.log('Listener 2');\n});\n\nconsole.log('Before Emit');\nemitter.emit('data');\nconsole.log('After Emit');",
+    "expectedOutput": [
+      "Before Emit",
+      "Listener 1",
+      "Listener 2",
+      "After Emit"
+    ],
+    "options": [
+      "Listener 2",
+      "After Emit",
+      "Before Emit",
+      "Listener 1"
+    ]
+  },
+  {
+    "id": "node_op_4",
+    "title": "Module Caching and State Mutation",
+    "code": "// counter.js\nmodule.exports = { count: 0 };\n\n// app.js\nconst counterA = require('./counter');\ncounterA.count++;\n\nconst counterB = require('./counter');\nconsole.log(counterB.count);\n\ncounterB.count = 10;\nconst counterC = require('./counter');\nconsole.log(counterC.count);",
+    "expectedOutput": [
+      "1",
+      "10"
+    ],
+    "options": [
+      "10",
+      "1"
+    ]
+  },
+  {
+    "id": "node_op_5",
+    "title": "EventEmitter once() listener modification",
+    "code": "const EventEmitter = require('events');\nconst emitter = new EventEmitter();\n\nlet count = 0;\n\nemitter.once('increment', () => {\n  count++;\n  console.log(`Once: ${count}`);\n});\n\nemitter.on('increment', () => {\n  count++;\n  console.log(`On: ${count}`);\n});\n\nemitter.emit('increment');\nemitter.emit('increment');",
+    "expectedOutput": [
+      "Once: 1",
+      "On: 2",
+      "On: 3"
+    ],
+    "options": [
+      "On: 2",
+      "On: 3",
+      "Once: 1"
+    ]
+  },
+  {
+    "id": "node_op_6",
+    "title": "Uncaught Error Event Behavior",
+    "code": "const EventEmitter = require('events');\nconst emitter = new EventEmitter();\n\nemitter.emit('error', new Error('Something went wrong'));\nconsole.log('Will this print?');",
+    "expectedOutput": [
+      "Uncaught Error Crash"
+    ],
+    "options": [
+      "Uncaught Error Crash",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "node_op_7",
+    "title": "Recursive process.nextTick Starvation",
+    "code": "let runs = 0;\n\nfunction tick() {\n  runs++;\n  if (runs <= 3) {\n    console.log(`Tick ${runs}`);\n    process.nextTick(tick);\n  }\n}\n\nsetTimeout(() => {\n  console.log('Timeout');\n}, 0);\n\nprocess.nextTick(tick);\nconsole.log('Start');",
+    "expectedOutput": [
+      "Start",
+      "Tick 1",
+      "Tick 2",
+      "Tick 3",
+      "Timeout"
+    ],
+    "options": [
+      "Timeout",
+      "Tick 2",
+      "Start",
+      "Tick 1",
+      "Tick 3"
+    ]
+  },
+  {
+    "id": "node_op_8",
+    "title": "EventEmitter Listeners addition inside emit",
+    "code": "const EventEmitter = require('events');\nconst emitter = new EventEmitter();\n\nemitter.on('event', () => {\n  console.log('A');\n  emitter.on('event', () => {\n    console.log('B');\n  });\n});\n\nemitter.emit('event');\nconsole.log('---');\nemitter.emit('event');",
+    "expectedOutput": [
+      "A",
+      "---",
+      "A",
+      "B"
+    ],
+    "options": [
+      "---",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "id": "node_op_9",
+    "title": "Buffer memory sharing via slice",
+    "code": "const buf1 = Buffer.from('hello');\nconst buf2 = buf1.slice(1, 3);\nbuf2[0] = 111; // ASCII value for 'o'\n\nconsole.log(buf1.toString());\nconsole.log(buf2.toString());",
+    "expectedOutput": [
+      "hollo",
+      "ol"
+    ],
+    "options": [
+      "ol",
+      "hollo"
+    ]
+  },
+  {
+    "id": "node_op_10",
+    "title": "process.nextTick inside setTimeout vs setImmediate",
+    "code": "setTimeout(() => {\n  console.log('Timeout');\n  process.nextTick(() => console.log('NextTick'));\n  Promise.resolve().then(() => console.log('Promise'));\n}, 0);\n\nsetImmediate(() => {\n  console.log('Immediate');\n});",
+    "expectedOutput": [
+      "Timeout",
+      "NextTick",
+      "Promise",
+      "Immediate"
+    ],
+    "options": [
+      "NextTick",
+      "Immediate",
+      "Promise",
+      "Timeout"
+    ]
+  },
+  {
+    "id": "node_op_11",
+    "title": "Module exports vs module.exports reference replacement",
+    "code": "// math.js\nexports.add = (a, b) => a + b;\nmodule.exports = { subtract: (a, b) => a - b };\n\n// app.js\nconst math = require('./math');\nconsole.log(typeof math.add);\nconsole.log(typeof math.subtract);",
+    "expectedOutput": [
+      "undefined",
+      "function"
+    ],
+    "options": [
+      "undefined",
+      "function"
+    ]
+  },
+  {
+    "id": "node_op_12",
+    "title": "EventEmitter prepending listeners",
+    "code": "const EventEmitter = require('events');\nconst emitter = new EventEmitter();\n\nemitter.on('msg', () => console.log('A'));\nemitter.prependListener('msg', () => console.log('B'));\nemitter.on('msg', () => console.log('C'));\n\nemitter.emit('msg');",
+    "expectedOutput": [
+      "B",
+      "A",
+      "C"
+    ],
+    "options": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "id": "node_op_13",
+    "title": "Event Loop with unhandled promise rejection",
+    "code": "process.on('unhandledRejection', (reason) => {\n  console.log('Handled:', reason.message);\n});\n\nPromise.reject(new Error('Rejected!'));\nconsole.log('Script end');",
+    "expectedOutput": [
+      "Script end",
+      "Handled: Rejected!"
+    ],
+    "options": [
+      "Script end",
+      "Handled: Rejected!"
+    ]
+  },
+  {
+    "id": "node_op_14",
+    "title": "EventEmitter error emission inside event listener",
+    "code": "const EventEmitter = require('events');\nconst emitter = new EventEmitter();\n\nemitter.on('error', (err) => {\n  console.log('Caught Error:', err.message);\n});\n\nemitter.on('data', () => {\n  throw new Error('Data Failure');\n});\n\ntry {\n  emitter.emit('data');\n} catch (err) {\n  console.log('Caught in Try:', err.message);\n}",
+    "expectedOutput": [
+      "Caught in Try: Data Failure"
+    ],
+    "options": [
+      "Caught in Try: Data Failure",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "node_op_15",
+    "title": "NextTick and setImmediate execution inside process.nextTick",
+    "code": "process.nextTick(() => {\n  console.log('nextTick 1');\n  setImmediate(() => console.log('immediate 1'));\n  process.nextTick(() => console.log('nextTick 2'));\n});\n\nsetImmediate(() => {\n  console.log('immediate 2');\n});",
+    "expectedOutput": [
+      "nextTick 1",
+      "nextTick 2",
+      "immediate 2",
+      "immediate 1"
+    ],
+    "options": [
+      "nextTick 1",
+      "immediate 2",
+      "immediate 1",
+      "nextTick 2"
+    ]
+  }
+];
+
+export const nodeTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "node_th_1",
+    "question": "What is Node.js and how does it work?",
+    "answer": "Node.js is an open-source, cross-platform JavaScript runtime environment built on Chrome's V8 engine. It allows developers to run JavaScript on the server side.\n\n### How it Works:\n- **Single-Threaded Event Loop**: Unlike traditional multithreaded servers (like Apache) that create a new thread for each client request, Node.js runs on a single main thread.\n- **Non-Blocking, Asynchronous I/O**: Operations like file system reads, database queries, and network requests are offloaded to the operating system or the Node.js internal thread pool (libuv). While these operations run in the background, the main thread is free to handle other incoming requests.\n- **Libuv and V8**: V8 compiles and executes the JS code, while the Libuv C library manages the event loop, thread pool (default 4 threads), and asynchronous tasks.\n\n---"
+  },
+  {
+    "id": "node_th_2",
+    "question": "Explain the Event Loop phases in Node.js",
+    "answer": "The event loop is what allows Node.js to perform non-blocking I/O operations by offloading tasks to the system kernel whenever possible.\n\nThe event loop consists of **6 main phases**, executed in a loop:\n1. **Timers**: Executes callbacks scheduled by `setTimeout()` and `setInterval()`.\n2. **Pending Callbacks**: Executes I/O callbacks deferred to the next loop iteration (e.g., certain TCP errors).\n3. **Idle, Prepare**: Used only internally by Node.\n4. **Poll**: Retrieves new I/O events; executes I/O-related callbacks. If the queue is empty, the loop will block here and wait for connections, unless a `setImmediate` is scheduled.\n5. **Check**: Executes callbacks scheduled by `setImmediate()`.\n6. **Close Callbacks**: Executes close events (e.g., `socket.on('close', ...)`).\n\n*Note*: **Microtasks** (promises and `process.nextTick()`) are not part of the event loop itself. They are executed **between phases** of the event loop as soon as the current operation completes.\n\n---"
+  },
+  {
+    "id": "node_th_3",
+    "question": "What is the difference between `process.nextTick()` and `setImmediate()`?",
+    "answer": "Both schedule execution for a future point, but they execute at completely different stages of the event loop:\n\n- **`process.nextTick()`**: Schedules a callback to be run in the **microtask queue** immediately after the current operation finishes, *before* the event loop continues to the next phase. Recursively calling `process.nextTick()` can starve the event loop by preventing it from reaching the next phase.\n- **`setImmediate()`**: Schedules a callback to be run in the **Check phase** of the event loop, which occurs *after* the Poll phase completes.\n\n### Example:\n```js\nsetTimeout(() => console.log('Timeout'), 0);\nsetImmediate(() => console.log('Immediate'));\nprocess.nextTick(() => console.log('NextTick'));\n\n// Output order:\n// 1. NextTick (Runs immediately after the current script)\n// 2. Timeout (Scheduled in the Timers phase)\n// 3. Immediate (Scheduled in the Check phase)\n```\n\n---"
+  },
+  {
+    "id": "node_th_4",
+    "question": "What are Streams in Node.js and what are their types?",
+    "answer": "Streams are collection-like structures—similar to arrays or strings—but the data is processed in chunks rather than all at once. This makes them highly memory efficient when working with large volumes of data.\n\n### Types of Streams:\n1. **Readable**: Streams from which data can be read (e.g., `fs.createReadStream()`, `http.IncomingMessage`).\n2. **Writable**: Streams to which data can be written (e.g., `fs.createWriteStream()`, `http.ServerResponse`).\n3. **Duplex**: Streams that are both Readable and Writable (e.g., TCP sockets).\n4. **Transform**: Duplex streams that can modify or transform the data as it is written and read (e.g., `zlib.createGzip()` for compression).\n\n### Example:\n```js\nconst fs = require('fs');\nconst readable = fs.createReadStream('largeFile.txt');\nconst writable = fs.createWriteStream('copyFile.txt');\n\n// Pipe reads to write chunk-by-chunk automatically\nreadable.pipe(writable);\n```\n\n---"
+  },
+  {
+    "id": "node_th_5",
+    "question": "How does the `EventEmitter` class work?",
+    "answer": "The `EventEmitter` class (from the `events` module) is the core of Node.js's event-driven architecture. Many built-in modules (like Streams and HTTP servers) inherit from it.\n\nIt allows you to define custom events, listen to them, and trigger them:\n- **`.on(event, listener)`**: Adds a listener function for the specified event.\n- **`.emit(event, ...args)`**: Synchronously calls each of the listeners registered for the event, passing the supplied arguments.\n- **`.once(event, listener)`**: Adds a listener that will be invoked at most once.\n\n### Example:\n```js\nconst EventEmitter = require('events');\nconst myEmitter = new EventEmitter();\n\nmyEmitter.on('greet', (name) => {\n  console.log(`Hello, ${name}!`);\n});\n\nmyEmitter.emit('greet', 'Anandu'); // Logs: \"Hello, Anandu!\"\n```\n\n---"
+  },
+  {
+    "id": "node_th_6",
+    "question": "Explain the difference between CommonJS (`require`) and ES Modules (`import`)",
+    "answer": "Node.js supports two different module systems:\n\n| Feature | CommonJS (CJS) | ES Modules (ESM) |\n|---|---|---|\n| **Syntax** | `const module = require('./module')` | `import module from './module.js'` |\n| **Loading** | Synchronous (blocking) | Asynchronous (non-blocking) |\n| **Parsing** | Resolved at runtime | Resolved at parse/compile time (static) |\n| **`this` context** | Points to `exports` object | `undefined` |\n| **Default in Node** | Filenames ending in `.js` (by default) | Filenames ending in `.mjs` or `\"type\": \"module\"` |\n| **Global variables** | Has `__dirname`, `__filename` | Needs `import.meta.url` to derive paths |\n\n---"
+  },
+  {
+    "id": "node_th_7",
+    "question": "What is the `cluster` module and how does it differ from `worker_threads`?",
+    "answer": "Both are used to run JavaScript concurrently, but they target different scenarios:\n\n- **`cluster`**: Spawns multiple instances of the *same* Node.js process (child processes). Each process runs on its own CPU core, has its own memory space, and listens on a shared port. Communication is done via IPC (Inter-Process Communication). Best for scaling web servers to utilize all CPU cores.\n- **`worker_threads`**: Spawns separate threads within the *same* process. These threads share the same memory space, enabling fast data sharing via `SharedArrayBuffer`. Best for offloading CPU-intensive calculations (like image processing or cryptography) without blocking the main event loop.\n\n---"
+  },
+  {
+    "id": "node_th_8",
+    "question": "What is backpressure in streams and how is it handled?",
+    "answer": "Backpressure occurs when the data-producing stream (Readable) writes data faster than the data-consuming stream (Writable) can process and write it.\n\nIf backpressure is not handled, unconsumed chunks accumulate in memory (buffers), which can lead to high RAM usage and process crashes.\n\n### How it is handled:\n- The `.write()` method of a Writable stream returns `false` when its internal buffer is full, signaling the Readable stream to pause.\n- When the buffer drains, the Writable stream emits a `drain` event, signaling the Readable stream to resume.\n- **Best Practice**: Using `.pipe()` handles backpressure automatically.\n```js\n// pipe automatically manages pausing and resuming on backpressure\nreadable.pipe(writable);\n```\n\n---"
+  },
+  {
+    "id": "node_th_9",
+    "question": "Explain the difference between `spawn`, `fork`, `exec`, and `execFile` in the `child_process` module",
+    "answer": "These methods are used to launch external commands or scripts:\n\n1. **`exec`**: Runs a command in a shell and buffers the output. Returns the entire output at once in a callback. Ideal for running short shell commands where output size is small (buffers up to 1MB).\n2. **`execFile`**: Similar to `exec`, but executes the file directly without spawning a shell, making it slightly more efficient and secure.\n3. **`spawn`**: Spawns a new process asynchronously and streams the output via stdout/stderr. Ideal for long-running processes or when outputting large amounts of data.\n4. **`fork`**: A special case of `spawn` designed specifically to run other Node.js files. It establishes a dedicated IPC channel between the parent and child, allowing message passing via `process.send()`.\n\n---"
+  },
+  {
+    "id": "node_th_10",
+    "question": "What is the purpose of the `Buffer` class in Node.js?",
+    "answer": "The `Buffer` class is a global class in Node.js designed to handle raw binary data directly in memory. It represents a fixed-size chunk of memory allocated outside the V8 heap.\n\n### Usage:\n- Buffers are primarily used when reading files, receiving network streams, or handling binary protocols (like cryptography or TCP sockets).\n- It allows easy conversions between raw bytes and various encodings (like `utf-8`, `hex`, `base64`).\n\n### Example:\n```js\nconst buf = Buffer.from('Hello', 'utf-8');\nconsole.log(buf); // <Buffer 48 65 6c 6c 6f>\nconsole.log(buf.toString('base64')); // SGVsbG8=\n```\n\n---"
+  },
+  {
+    "id": "node_th_11",
+    "question": "How do you handle uncaught exceptions and unhandled promise rejections in Node.js?",
+    "answer": "By default, uncaught errors and unhandled promise rejections will cause the Node.js process to exit with a non-zero exit code. You can register process-level event listeners to catch them:\n\n- **Uncaught Exceptions**:\n  ```js\n  process.on('uncaughtException', (err) => {\n    console.error('There was an uncaught error', err);\n    // Best Practice: Log, clean up connections, and restart the process\n    process.exit(1);\n  });\n  ```\n- **Unhandled Promise Rejections**:\n  ```js\n  process.on('unhandledRejection', (reason, promise) => {\n    console.error('Unhandled Rejection at:', promise, 'reason:', reason);\n    // Restart process recommended\n    process.exit(1);\n  });\n  ```\n\n*Warning*: Keeping a process running after an uncaught exception is dangerous because the application state may be corrupted or unstable.\n\n---"
+  },
+  {
+    "id": "node_th_12",
+    "question": "What is the role of `package-lock.json` and how does it differ from `package.json`?",
+    "answer": "- **`package.json`**: Defines the project's metadata, dependencies, scripts, and target version ranges (often using semver ranges like `^1.2.0` or `~1.2.0`). It tells NPM *which* versions are compatible.\n- **`package-lock.json`**: Automatically generated when running `npm install`. It locks down the **exact versions** of every package and its nested dependencies that were installed. This guarantees that every developer, server, or CI/CD container installs the exact same dependency tree, preventing \"works on my machine\" issues.\n\n---"
+  },
+  {
+    "id": "node_th_13",
+    "question": "What is the REPL in Node.js?",
+    "answer": "REPL stands for **Read-Eval-Print Loop**. It is an interactive computer programming environment (shell) that takes single user inputs, evaluates them, and returns the result to the user.\n\nNode.js comes with a built-in REPL environment. It is extremely useful to test simple JavaScript/Node.js code snippets quickly. You can launch it by running `node` in your terminal with no arguments.\n\n---"
+  },
+  {
+    "id": "node_th_14",
+    "question": "What is the purpose of the `crypto` module in Node.js?",
+    "answer": "The `crypto` module provides cryptographic functionality that includes a set of wrappers for OpenSSL's hash, HMAC, cipher, decipher, sign, and verify methods.\n\nIt is commonly used for:\n- Hashing passwords (using algorithms like PBKDF2 or scrypt).\n- Encrypting and decrypting data (AES encryption).\n- Generating secure random tokens or keys (via `crypto.randomBytes()`).\n\n---"
+  },
+  {
+    "id": "node_th_15",
+    "question": "What is the difference between `dns.lookup()` and `dns.resolve()`?",
+    "answer": "Both are used to resolve domain names to IP addresses, but they do it differently:\n\n- **`dns.lookup()`**: Uses the operating system's underlying resolution facilities (e.g., `getaddrinfo` system call). This is a **synchronous, blocking** call in the OS, so Node.js executes it in the **libuv thread pool**. It respects the local `/etc/hosts` configurations.\n- **`dns.resolve()`**: Makes an actual network request to a DNS server over the network and performs resolution **asynchronously** without using the libuv thread pool. It completely bypasses local `/etc/hosts` configurations.\n\n---"
+  },
+  {
+    "id": "node_th_16",
+    "question": "How does garbage collection differ between Node.js and browser JS?",
+    "answer": "While both run on V8, their environments offer different tools and memory constraints:\n\n1. **Memory Configuration**: In Node.js, you can manually configure the maximum size of V8's heap memory using flags like `--max-old-space-size=4096` (e.g. to set it to 4GB). In browsers, this is controlled strictly by the browser process limits.\n2. **Programmatic Collection**: Node.js allows exposing the Garbage Collector using the command-line flag `--expose-gc`. This lets developers invoke `global.gc()` in code to manually trigger garbage collection, which is highly useful during memory leak profiling or testing.\n3. **Process Lifespan**: Node.js processes can run indefinitely (long-running servers), making them far more susceptible to slow-growing memory leaks than a browser tab, which is frequently closed or reloaded.\n\n---"
+  },
+  {
+    "id": "node_th_17",
+    "question": "What is the purpose of `perf_hooks` in Node.js?",
+    "answer": "The `perf_hooks` module provides an implementation of the W3C Web Performance APIs, allowing developers to collect detailed performance metrics from their application.\n\nIt is primarily used to measure the execution time of code blocks or monitor Event Loop lag:\n```js\nconst { performance, PerformanceObserver } = require('perf_hooks');\n\nconst obs = new PerformanceObserver((items) => {\n  console.log(items.getEntries()[0].duration);\n});\nobs.observe({ entryTypes: ['measure'] });\n\nperformance.mark('A');\n// Execute code\nperformance.mark('B');\nperformance.measure('A to B', 'A', 'B');\n```\n\n---"
+  },
+  {
+    "id": "node_th_18",
+    "question": "Explain the concept of Thread Pool size adjustment in Node.js",
+    "answer": "Node.js offloads heavy operations (like file system `fs`, cryptography `crypto`, compression `zlib`, and dns lookups `dns.lookup`) to an internal thread pool managed by Libuv.\n\nBy default, the thread pool size is set to **4**. If you run many concurrent cryptographic operations or file reads, they will queue up, slowing down your server.\n\nYou can increase the thread pool size by setting the environmental variable `UV_THREADPOOL_SIZE` before starting your app (up to a maximum of **1024**):\n```bash\nUV_THREADPOOL_SIZE=16 node app.js\n```\n\n---"
+  },
+  {
+    "id": "node_th_19",
+    "question": "What are the key differences between `fs.readFile` and `fs.createReadStream`?",
+    "answer": "- **`fs.readFile()`**: Reads the entire file into memory (RAM) buffer all at once before calling the callback. If the file is 2GB, it consumes 2GB of RAM, and will throw a RangeError if the file size exceeds V8's maximum buffer limit (approx 2GB).\n- **`fs.createReadStream()`**: Reads the file in small, sequential chunks (default chunk size is 64KB) and emits them via events. It consumes very little memory (only enough to buffer the current chunk) and can handle files of infinite size.\n\n---"
+  },
+  {
+    "id": "node_th_20",
+    "question": "What is the difference between `process.exit(0)` and `process.exit(1)`?",
+    "answer": "- **`process.exit(0)`**: Instructs Node.js to terminate the current process with an exit code of `0`. In Unix/Windows environments, `0` indicates a **successful exit** (no errors).\n- **`process.exit(1)`**: Instructs Node.js to terminate the process with an exit code of `1` (or any non-zero integer). This indicates that the process terminated due to an **unhandled error, failure, or crash**. Process managers like PM2 or Kubernetes use this exit code to decide whether they should automatically restart the crashed container."
   }
 ];

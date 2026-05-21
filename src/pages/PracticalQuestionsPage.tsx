@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { practicalQuestions } from '../data/mockQuestions';
+import { nodePracticalQuestions } from '../data/nodeMockQuestions';
 import type { Question } from '../data/mockQuestions';
 import QuestionCard from '../components/QuestionCard';
 import CodeCompiler from '../components/CodeCompiler';
@@ -9,13 +10,17 @@ import './PracticalQuestionsPage.css';
 
 const PracticalQuestionsPage = () => {
   const navigate = useNavigate();
+  const { track } = useParams<{ track: string }>();
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+
+  const isNode = track === 'node';
+  const questions = isNode ? nodePracticalQuestions : practicalQuestions;
 
   const handleBack = () => {
     if (selectedQuestion) {
       setSelectedQuestion(null);
     } else {
-      navigate('/js');
+      navigate(`/${track}`);
     }
   };
 
@@ -37,7 +42,7 @@ const PracticalQuestionsPage = () => {
         >
           <div className="questions-grid">
             <AnimatePresence>
-              {practicalQuestions.map(q => (
+              {questions.map(q => (
                 <QuestionCard
                   key={q.id}
                   question={q}

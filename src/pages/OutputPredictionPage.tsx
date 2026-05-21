@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { outputPredictionQuestions } from '../data/parsedQuestions';
+import { useNavigate, useParams } from 'react-router-dom';
+import { outputPredictionQuestions, nodeOutputPredictionQuestions } from '../data/parsedQuestions';
 import type { OutputPredictionQuestion } from '../data/parsedQuestions';
 import Editor from '@monaco-editor/react';
 import { CheckCircle, XCircle, RotateCcw } from 'lucide-react';
@@ -10,11 +10,14 @@ import './OutputPredictionPage.css';
 
 const OutputPredictionPage = () => {
   const navigate = useNavigate();
+  const { track } = useParams<{ track: string }>();
   const [selectedQuestion, setSelectedQuestion] = useState<OutputPredictionQuestion | null>(null);
   const [selectedOutput, setSelectedOutput] = useState<string[]>([]);
   const [isAnswerShown, setIsAnswerShown] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
+  const isNode = track === 'node';
+  const questions = isNode ? nodeOutputPredictionQuestions : outputPredictionQuestions;
   const isMultiSelect = selectedQuestion ? selectedQuestion.expectedOutput.length > 1 : false;
 
   useEffect(() => {
@@ -60,15 +63,15 @@ const OutputPredictionPage = () => {
     if (selectedQuestion) {
       setSelectedQuestion(null);
     } else {
-      navigate('/js');
+      navigate(`/${track}`);
     }
   };
 
   const handleNextQuestion = () => {
     if (!selectedQuestion) return;
-    const currentIndex = outputPredictionQuestions.findIndex(q => q.id === selectedQuestion.id);
-    const nextIndex = (currentIndex + 1) % outputPredictionQuestions.length;
-    setSelectedQuestion(outputPredictionQuestions[nextIndex]);
+    const currentIndex = questions.findIndex(q => q.id === selectedQuestion.id);
+    const nextIndex = (currentIndex + 1) % questions.length;
+    setSelectedQuestion(questions[nextIndex]);
   };
 
   return (
@@ -89,7 +92,7 @@ const OutputPredictionPage = () => {
         >
           <div className="questions-grid">
             <AnimatePresence>
-              {outputPredictionQuestions.map(q => (
+              {questions.map(q => (
                 <QuestionCard
                   key={q.id}
                   question={q}

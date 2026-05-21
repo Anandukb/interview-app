@@ -100,6 +100,7 @@
 .lang-icon.html { color: #e34f26; }
 .lang-icon.css { color: #264de4; }
 .lang-icon.react { color: #61dafb; }
+.lang-icon.node { color: #339933; }
 
 .lang-card h2 {
   font-size: 1.8rem;

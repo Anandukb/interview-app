@@ -4,13 +4,17 @@ import { theoryAnswers } from './theoryAnswersData.mjs';
 
 const markdownPath = path.resolve('src/data/senior_react_javascript_interview_questions_readme.md');
 const mcqPath = path.resolve('src/data/mcq.md');
+const nodeTheoryPath = path.resolve('src/data/node_theory.md');
+const nodeMcqPath = path.resolve('src/data/node_mcq.md');
 const outputPath = path.resolve('src/data/parsedQuestions.ts');
 
 const readmeContent = fs.readFileSync(markdownPath, 'utf-8');
 const mcqContent = fs.readFileSync(mcqPath, 'utf-8');
-const markdownContent = readmeContent; // For backward compatibility with the theory parsing logic below
+const nodeTheoryContent = fs.readFileSync(nodeTheoryPath, 'utf-8');
+const nodeMcqContent = fs.readFileSync(nodeMcqPath, 'utf-8');
+const markdownContent = readmeContent;
 
-// Helper to look up comprehensive answers for theory questions
+// Helper to look up comprehensive answers for theory questions (JS/React)
 const getAnswerForQuestion = (q) => {
   const norm = q.toLowerCase().replace(/[^a-z0-9-]/g, ''); // keep hyphen
   const normNoHyphen = norm.replace(/-/g, '');
@@ -31,19 +35,18 @@ const cleanCode = (code) => {
 
 const parsedData = {
   theory: [],
-  outputPrediction: []
+  outputPrediction: [],
+  nodeTheory: [],
+  nodeOutputPrediction: []
 };
 
-const codeMap = new Map(); // normalizedCode -> true
-let opId = 1;
-
 // Helper to add and shuffle output prediction question
-const addPredictionQuestion = (title, code, expectedOutput) => {
+const addPredictionQuestion = (title, code, expectedOutput, targetList, targetCodeMap, prefix) => {
   const normCode = cleanCode(code);
-  if (codeMap.has(normCode)) {
+  if (targetCodeMap.has(normCode)) {
     return; // skip duplicate
   }
-  codeMap.set(normCode, true);
+  targetCodeMap.set(normCode, true);
 
   const uniqueExpected = [...new Set(expectedOutput)];
   let scrambledOutput = [...uniqueExpected];
@@ -60,8 +63,8 @@ const addPredictionQuestion = (title, code, expectedOutput) => {
   }
   scrambledOutput = [...new Set(scrambledOutput)];
 
-  parsedData.outputPrediction.push({
-    id: `op_${opId++}`,
+  targetList.push({
+    id: `${prefix}_${targetList.length + 1}`,
     title,
     code,
     expectedOutput,
@@ -69,7 +72,8 @@ const addPredictionQuestion = (title, code, expectedOutput) => {
   });
 };
 
-// 1. Extract Output Prediction Questions from README
+// 1. Extract Output Prediction Questions from README (React JS)
+const jsCodeMap = new Map();
 const outputPredictionSectionIndex = readmeContent.indexOf('# Output Prediction Questions');
 if (outputPredictionSectionIndex !== -1) {
   const outputContent = readmeContent.slice(outputPredictionSectionIndex);
@@ -80,11 +84,11 @@ if (outputPredictionSectionIndex !== -1) {
     const title = match[1].trim();
     const code = match[2].trim();
     const expectedOutput = match[3].trim().split('\n').map(line => line.trim());
-    addPredictionQuestion(title, code, expectedOutput);
+    addPredictionQuestion(title, code, expectedOutput, parsedData.outputPrediction, jsCodeMap, 'op');
   }
 }
 
-// 2. Extract Output Prediction Questions from mcq.md
+// 2. Extract Output Prediction Questions from mcq.md (React JS)
 const blocks = mcqContent.split(/\n## /);
 for (let i = 1; i < blocks.length; i++) {
   const block = blocks[i].trim();
@@ -119,10 +123,10 @@ for (let i = 1; i < blocks.length; i++) {
   }
   
   if (expectedOutput.length === 0) continue;
-  addPredictionQuestion(title, code, expectedOutput);
+  addPredictionQuestion(title, code, expectedOutput, parsedData.outputPrediction, jsCodeMap, 'op');
 }
 
-// 2. Extract Theory Questions (we'll grab JS and React ones)
+// 3. Extract Theory Questions (React JS)
 const theoryRegex = /\d+\.\s+(What is.*?\?|Explain.*|Difference between.*)/gi;
 let match;
 let theoryId = 1;
@@ -154,6 +158,66 @@ const getScore = (q) => {
 
 parsedData.theory.sort((a, b) => getScore(a.question) - getScore(b.question));
 
+// 4. Extract Node JS Theory Questions from node_theory.md
+const nodeTheoryBlocks = nodeTheoryContent.split(/\n## /);
+for (let i = 1; i < nodeTheoryBlocks.length; i++) {
+  const block = nodeTheoryBlocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const heading = block.slice(0, firstLineEnd).trim();
+  const answer = block.slice(firstLineEnd).trim();
+  
+  const titleMatch = heading.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const question = titleMatch[1].trim();
+  parsedData.nodeTheory.push({
+    id: `node_th_${i}`,
+    question,
+    answer
+  });
+}
+
+// 5. Extract Node JS Output Prediction Questions from node_mcq.md
+const nodeCodeMap = new Map();
+const nodeMcqBlocks = nodeMcqContent.split(/\n## /);
+for (let i = 1; i < nodeMcqBlocks.length; i++) {
+  const block = nodeMcqBlocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const titleLine = block.slice(0, firstLineEnd).trim();
+  const titleMatch = titleLine.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const title = titleMatch[1].trim();
+  const content = block.slice(firstLineEnd).trim();
+  
+  const codeBlockMatch = content.match(/```(js|javascript)\n([\s\S]*?)```/);
+  if (!codeBlockMatch) continue;
+  
+  const code = codeBlockMatch[2].trim();
+  const answerIdx = content.indexOf('### Answer');
+  if (answerIdx === -1) continue;
+  
+  const answerContent = content.slice(answerIdx + '### Answer'.length).trim();
+  const answerCodeBlockMatch = answerContent.match(/```(?:js|javascript|)\n([\s\S]*?)```/);
+  
+  let expectedOutput = [];
+  if (answerCodeBlockMatch) {
+    expectedOutput = answerCodeBlockMatch[1].trim().split('\n').map(line => line.trim());
+  } else {
+    const plainText = answerContent.split('\n')[0].trim();
+    if (plainText) {
+      expectedOutput = [plainText];
+    }
+  }
+  
+  if (expectedOutput.length === 0) continue;
+  addPredictionQuestion(title, code, expectedOutput, parsedData.nodeOutputPrediction, nodeCodeMap, 'node_op');
+}
+
 // Write to file
 const tsContent = `
 // AUTOGENERATED FILE - DO NOT EDIT MANUALLY
@@ -176,9 +240,15 @@ export interface TheoryQuestion {
 export const outputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.outputPrediction, null, 2)};
 
 export const theoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.theory, null, 2)};
+
+export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.nodeOutputPrediction, null, 2)};
+
+export const nodeTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.nodeTheory, null, 2)};
 `;
 
 fs.writeFileSync(outputPath, tsContent, 'utf-8');
 console.log('Successfully parsed questions to src/data/parsedQuestions.ts');
-console.log(`Extracted \${parsedData.outputPrediction.length} Output Prediction questions.`);
-console.log(`Extracted \${parsedData.theory.length} Theory questions.`);
+console.log(`Extracted ${parsedData.outputPrediction.length} JS Output Prediction questions.`);
+console.log(`Extracted ${parsedData.theory.length} JS Theory questions.`);
+console.log(`Extracted ${parsedData.nodeOutputPrediction.length} Node JS Output Prediction questions.`);
+console.log(`Extracted ${parsedData.nodeTheory.length} Node JS Theory questions.`);

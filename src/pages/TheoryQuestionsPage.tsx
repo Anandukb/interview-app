@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { theoryQuestions } from '../data/parsedQuestions';
+import { useNavigate, useParams } from 'react-router-dom';
+import { theoryQuestions, nodeTheoryQuestions } from '../data/parsedQuestions';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import './TheoryQuestionsPage.css';
 
@@ -132,7 +132,12 @@ const renderFormattedAnswer = (text: string) => {
 
 const TheoryQuestionsPage = () => {
   const navigate = useNavigate();
+  const { track } = useParams<{ track: string }>();
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
+
+  const isNode = track === 'node';
+  const questions = isNode ? nodeTheoryQuestions : theoryQuestions;
+  const trackTitle = isNode ? 'Node JS' : 'Theory';
 
   const toggleQuestion = (id: string) => {
     const newOpenIds = new Set(openIds);
@@ -147,14 +152,14 @@ const TheoryQuestionsPage = () => {
   return (
     <div className="theory-container container">
       <div className="page-header">
-        <button className="back-btn" onClick={() => navigate('/js')}>
+        <button className="back-btn" onClick={() => navigate(`/${track}`)}>
           &larr; Back to Formats
         </button>
-        <h1 className="title">Theory <span className="gradient-text">Questions</span></h1>
+        <h1 className="title">{trackTitle} <span className="gradient-text">Questions</span></h1>
       </div>
 
       <div className="theory-list">
-        {theoryQuestions.map((q, index) => {
+        {questions.map((q, index) => {
           const isOpen = openIds.has(q.id);
           return (
             <div key={q.id} className={`theory-card glass-card ${isOpen ? 'open' : ''}`}>

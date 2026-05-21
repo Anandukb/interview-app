@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Code2, Atom, LayoutTemplate } from 'lucide-react';
+import { Code2, Atom, LayoutTemplate, Server } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
@@ -26,6 +26,13 @@ const LandingPage = () => {
       icon: <Atom size={48} className="lang-icon react" />,
       color: '#61dafb',
       desc: 'Master components, state, hooks, and rendering.'
+    },
+    {
+      id: 'node',
+      name: 'Node JS',
+      icon: <Server size={48} className="lang-icon node" />,
+      color: '#339933',
+      desc: 'Master Event Loop, streams, processes, and APIs.'
     }
   ];
 
@@ -46,7 +53,13 @@ const LandingPage = () => {
           <div
             key={lang.id}
             className="lang-card glass-card"
-            onClick={() => lang.id === 'js' ? navigate('/js') : alert('Coming soon!')}
+            onClick={() => {
+              if (lang.id === 'js' || lang.id === 'node') {
+                navigate(`/${lang.id}`);
+              } else {
+                alert('Coming soon!');
+              }
+            }}
             style={{ '--hover-color': lang.color } as React.CSSProperties}
           >
             <div className="icon-wrapper glass">
