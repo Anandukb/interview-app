@@ -1154,10 +1154,24 @@ function useWindowWidth() {
 
   // Reconciliation & Fiber
   "whatisreconciliationinreact": `
-Reconciliation is React's algorithm for diffing the virtual DOM tree against the actual DOM tree. React checks differences in node types, keys, and properties to determine the absolute minimum number of DOM updates required.
+Reconciliation in React is the process React uses to compare the previous Virtual DOM with the updated Virtual DOM whenever state or props change. React identifies the differences between them and updates only the necessary parts of the real DOM, making UI updates efficient and improving performance.
+
+You can also explain it step by step in an interview:
+1. **State or props change**
+2. **React creates a new Virtual DOM**
+3. **React compares it with the previous Virtual DOM** (Diffing Algorithm)
+4. **React finds what changed**
+5. **Only the changed parts are updated in the real DOM**
 `,
   "whatisreconciliation": `
-Reconciliation is React's algorithm for diffing the virtual DOM tree against the actual DOM tree. React checks differences in node types, keys, and properties to determine the absolute minimum number of DOM updates required.
+Reconciliation in React is the process React uses to compare the previous Virtual DOM with the updated Virtual DOM whenever state or props change. React identifies the differences between them and updates only the necessary parts of the real DOM, making UI updates efficient and improving performance.
+
+You can also explain it step by step in an interview:
+1. **State or props change**
+2. **React creates a new Virtual DOM**
+3. **React compares it with the previous Virtual DOM** (Diffing Algorithm)
+4. **React finds what changed**
+5. **Only the changed parts are updated in the real DOM**
 `,
   "whatisreactfiber": `
 React Fiber is React's core reconciliation engine introduced in React 16. Its primary goal is to enable **incremental rendering** — the ability to split rendering work into chunks and spread it out over multiple frames. This prevents heavy renders from blocking the main browser thread.

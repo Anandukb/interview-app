@@ -28,9 +28,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
+      "Timeout",
       "Start",
       "Promise",
-      "Timeout",
       "End"
     ]
   },
@@ -60,9 +60,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "0",
+      "1",
       "2",
-      "1"
+      "0"
     ]
   },
   {
@@ -75,9 +75,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Sync",
       "Promise",
-      "Timeout"
+      "Timeout",
+      "Sync"
     ]
   },
   {
@@ -118,9 +118,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "3",
       "1",
-      "2"
+      "2",
+      "3"
     ]
   },
   {
@@ -149,8 +149,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "1",
-      "4",
       "3",
+      "4",
       "2"
     ]
   },
@@ -163,8 +163,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
-      "1"
+      "1",
+      "2"
     ]
   },
   {
@@ -290,12 +290,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside Promise"
     ],
     "options": [
-      "Start",
-      "End",
-      "Timeout 1",
-      "Promise 1",
       "Timeout inside Promise",
-      "Promise inside Timeout"
+      "Promise inside Timeout",
+      "End",
+      "Start",
+      "Timeout 1",
+      "Promise 1"
     ]
   },
   {
@@ -321,8 +321,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "0"
     ],
     "options": [
-      "10",
-      "0"
+      "0",
+      "10"
     ]
   },
   {
@@ -348,8 +348,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "number"
     ],
     "options": [
-      "number",
-      "undefined"
+      "undefined",
+      "number"
     ]
   },
   {
@@ -525,8 +525,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "true",
-      "false"
+      "false",
+      "true"
     ]
   },
   {
@@ -581,10 +581,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "3",
+      "2",
       "1",
       "4",
-      "2"
+      "3"
     ]
   },
   {
@@ -597,9 +597,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "3",
+      "2",
       "1",
-      "2"
+      "3"
     ]
   },
   {
@@ -628,9 +628,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "0",
       "1",
-      "2"
+      "2",
+      "0"
     ]
   },
   {
@@ -642,8 +642,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
-      "1"
+      "1",
+      "2"
     ]
   },
   {
@@ -655,8 +655,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Recovered"
     ],
     "options": [
-      "Error",
-      "Recovered"
+      "Recovered",
+      "Error"
     ]
   },
   {
@@ -683,9 +683,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "timeout"
     ],
     "options": [
-      "sync",
       "micro",
-      "timeout"
+      "timeout",
+      "sync"
     ]
   },
   {
@@ -699,10 +699,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "3",
+      "1",
       "4",
-      "2",
-      "1"
+      "3",
+      "2"
     ]
   },
   {
@@ -1304,10 +1304,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "1",
       "3",
+      "2",
       "4",
-      "2"
+      "1"
     ]
   },
   {
@@ -1421,12 +1421,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
-      "A",
-      "E",
-      "B",
-      "C",
+      "D",
       "F",
-      "D"
+      "A",
+      "C",
+      "E",
+      "B"
     ]
   },
   {
@@ -1445,12 +1445,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "setTimeout",
-      "script start",
-      "async1 end",
-      "async2",
-      "async1 start",
-      "promise1",
       "promise2",
+      "async2",
+      "script start",
+      "promise1",
+      "async1 end",
+      "async1 start",
       "script end"
     ]
   },
@@ -1468,166 +1468,16 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "Promise Resolved",
+      "End",
       "Timeout inside then",
       "Inside Promise Constructor",
-      "End",
-      "Timeout outside",
-      "Start"
+      "Start",
+      "Timeout outside"
     ]
   }
 ];
 
 export const theoryQuestions: TheoryQuestion[] = [
-  {
-    "id": "th_17",
-    "question": "Difference between state and props",
-    "answer": "In React, state and props represent different types of data:\n\n- **Props** (Properties): Read-only variables passed from a parent component down to a child. They allow components to be configured and reused. A component cannot change its own props.\n- **State**: Locally owned, private data that can change over time. When state changes (via the setter callback like `setState`), the component re-renders to reflect the updates.\n\nExample:\n```jsx\n// Parent\nfunction CounterParent() {\n  const [count, setCount] = useState(0); // State\n  return <CounterChild count={count} />; // Passing as prop\n}\n\n// Child\nfunction CounterChild(props) {\n  // props.count is read-only\n  return <h1>Count: {props.count}</h1>;\n}\n```"
-  },
-  {
-    "id": "th_21",
-    "question": "Difference between `useState` and `useReducer`",
-    "answer": "Both are React state hooks, but cater to different complexity levels:\n\n- **`useState`**: Simple state management. Best for independent, primitive states (e.g., toggles, inputs).\n- **`useReducer`**: Complex state logic. Best for managing state objects containing multiple sub-values, or when the next state depends on the previous one. It forces unidirectional data flow via actions and a reducer function.\n\nExample:\n```jsx\n// useReducer reducer pattern\nconst reducer = (state, action) => {\n  switch (action.type) {\n    case 'increment': return { count: state.count + 1 };\n    default: return state;\n  }\n};\nconst [state, dispatch] = useReducer(reducer, { count: 0 });\n// dispatch({ type: 'increment' })\n```"
-  },
-  {
-    "id": "th_31",
-    "question": "What is hoisting?",
-    "answer": "Hoisting is a JavaScript mechanism where variable and function declarations are moved to the top of their containing scope before code execution begins.\n\n- **Function Declarations**: Completely hoisted (both declaration and implementation are moved).\n- **`var` variables**: Hoisted but initialized to `undefined`.\n- **`let` and `const` variables**: Hoisted but stay in the Temporal Dead Zone (TDZ). Calling them before they are declared yields a `ReferenceError`.\n\nExample:\n```js\nconsole.log(x); // undefined (var is hoisted and initialized to undefined)\nvar x = 5;\n\nsayHello(); // \"Hello!\" (Function declaration is fully hoisted)\nfunction sayHello() { console.log(\"Hello!\"); }\n```"
-  },
-  {
-    "id": "th_32",
-    "question": "What is the Temporal Dead Zone (TDZ)?",
-    "answer": "The Temporal Dead Zone (TDZ) is the period between variable hosting and the line of code where the variable is explicitly declared. It affects variables declared with `let` and `const`. \n\nAccessing a variable in the TDZ throws a `ReferenceError`.\n\nExample:\n```js\nfunction test() {\n  // TDZ starts here\n  // console.log(val); // ReferenceError: Cannot access 'val' before initialization\n  \n  let val = 10; // TDZ ends here\n  console.log(val); // 10\n}\n```"
-  },
-  {
-    "id": "th_33",
-    "question": "What is a callback function?",
-    "answer": "A callback function is a function passed into another function as an argument, which is then executed inside the outer function to complete some kind of routine or action.\n\nExample:\n```js\nfunction greet(name, callback) {\n  console.log(\"Hello \" + name);\n  callback();\n}\n\ngreet(\"John\", () => console.log(\"Callback run!\"));\n```"
-  },
-  {
-    "id": "th_34",
-    "question": "What is a closure?",
-    "answer": "A closure is the combination of a function bundled together with references to its surrounding state (the lexical environment). In other words, a closure gives an inner function access to the outer function's scope even after the outer function has returned.\n\nExample:\n```js\nfunction makeCounter() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\n\nconst counter = makeCounter();\nconsole.log(counter()); // 1\nconsole.log(counter()); // 2 (count variable persists in memory)\n```"
-  },
-  {
-    "id": "th_35",
-    "question": "What is lexical scope?",
-    "answer": "Lexical scope (static scope) means that the accessibility of variables is determined by their position in the source code nesting. An inner scope has access to variables declared in its outer scope, but not vice versa.\n\nExample:\n```js\nconst globalVar = \"global\";\n\nfunction outer() {\n  const outerVar = \"outer\";\n  \n  function inner() {\n    console.log(globalVar, outerVar); // Both accessible\n  }\n  inner();\n}\n```"
-  },
-  {
-    "id": "th_36",
-    "question": "What is the event loop?",
-    "answer": "The Event Loop is JavaScript's engine coordinator. Because JavaScript is single-threaded, it can only execute one chunk of code at a time. The event loop continually monitors the **Call Stack** and the **Callback Queue**:\n\n1. Synchronous code executes first on the call stack.\n2. Async tasks (like fetch or timeouts) are handled by Web APIs and then added to task queues (Microtask Queue for Promises, Macrotask Queue for setTimeout).\n3. When the Call Stack is empty, the Event Loop pushes tasks from the queues (prioritizing the Microtask queue) onto the stack to run."
-  },
-  {
-    "id": "th_37",
-    "question": "What is the call stack?",
-    "answer": "The Call Stack is a LIFO (Last In, First Out) data structure used by the JavaScript engine to keep track of function execution. When a function is called, it is pushed onto the stack. When the function returns, it is popped off the stack.\n\nExample:\n```js\nfunction first() { second(); }\nfunction second() { console.log(\"Two\"); }\nfirst(); // stack: first -> second -> console.log\n```"
-  },
-  {
-    "id": "th_38",
-    "question": "What is a Promise?",
-    "answer": "A Promise is an object representing the eventual completion (or failure) of an asynchronous operation and its resulting value. It can be in one of three states:\n- **Pending**: Initial state, neither fulfilled nor rejected.\n- **Fulfilled**: Operation completed successfully.\n- **Rejected**: Operation failed.\n\nExample:\n```js\nconst myPromise = new Promise((resolve, reject) => {\n  const success = true;\n  if (success) resolve(\"Success!\");\n  else reject(\"Error!\");\n});\n```"
-  },
-  {
-    "id": "th_39",
-    "question": "What is Promise chaining?",
-    "answer": "Promise chaining is a pattern where multiple asynchronous operations are executed sequentially by appending `.then()` blocks. Each `.then()` receives the result of the previous promise and returns a new promise/value.\n\nExample:\n```js\nfetchData()\n  .then(res => res.json())\n  .then(data => processData(data))\n  .catch(err => console.error(err));\n```"
-  },
-  {
-    "id": "th_40",
-    "question": "What is event delegation and why use it?",
-    "answer": "Event delegation is a design pattern where instead of attaching an event listener to multiple child elements individually, you attach a single event listener to a common parent element. The parent uses event bubbling (specifically checking `event.target`) to identify which child was clicked.\n\n- **Why use it**: Saves memory (fewer listeners) and handles dynamically added children automatically.\n\nExample:\n```js\ndocument.getElementById(\"parent-list\").addEventListener(\"click\", (e) => {\n  if (e.target && e.target.nodeName === \"LI\") {\n    console.log(\"Item clicked: \", e.target.innerText);\n  }\n});\n```"
-  },
-  {
-    "id": "th_41",
-    "question": "What is `this` in JavaScript?",
-    "answer": "In JavaScript, `this` refers to the object that is currently executing the code. Its value depends on how the function containing it is invoked:\n\n1. **Global scope**: Refers to `window` (or `global` in Node).\n2. **Object method**: Refers to the object owning the method.\n3. **Arrow functions**: Do not have their own `this`. They inherit it lexically from their enclosing context.\n4. **Strict mode**: If function is called independently, `this` is `undefined`.\n\nExample:\n```js\nconst user = {\n  name: \"John\",\n  greet() { console.log(this.name); }\n};\nuser.greet(); // logs \"John\" (this = user)\n```"
-  },
-  {
-    "id": "th_42",
-    "question": "What is async/await?",
-    "answer": "`async/await` is a modern JavaScript syntax built on top of Promises. It allows you to write asynchronous code that reads and behaves like synchronous code, improving readability and error handling.\n\n- **`async` keyword**: Placed before a function declaration. It ensures the function always returns a Promise.\n- **`await` keyword**: Can only be used inside an `async` function. It pauses the function execution until the Promise resolves or rejects.\n\nExample:\n```js\nasync function getUserData(userId) {\n  try {\n    const response = await fetch(`/api/users/${userId}`);\n    if (!response.ok) throw new Error(\"User not found\");\n    const data = await response.json();\n    return data;\n  } catch (error) {\n    console.error(\"Failed to fetch user:\", error);\n  }\n}\n```\n\n**Best Practices / Trade-offs**:\n- **Always use try/catch**: Unhandled promise rejections inside async functions can cause runtime errors.\n- **Avoid sequential bottleneck**: Do not await independent promises sequentially; use `Promise.all()` to run them concurrently."
-  },
-  {
-    "id": "th_44",
-    "question": "What is a Polyfill?",
-    "answer": "A polyfill is a browser-compatibility helper. It is a piece of JavaScript code used to provide modern features (like `Array.prototype.flat` or `Promise.all`) on older browsers that do not natively support them.\n\nExample:\n```js\nif (!Array.prototype.includes) {\n  Array.prototype.includes = function(searchElement) {\n    return this.indexOf(searchElement) !== -1;\n  };\n}\n```"
-  },
-  {
-    "id": "th_53",
-    "question": "What is synchronous and asynchronous execution?",
-    "answer": "Execution models in JavaScript handle tasks differently:\n\n- **Synchronous Execution**: Code is executed line-by-line in sequential order. Each statement blocks the execution of subsequent code until it finishes.\n- **Asynchronous Execution**: Tasks (like API calls or timeouts) are offloaded to Web APIs, allowing the main execution thread to continue running other code. Once complete, they enter a queue and execute without blocking the main flow.\n\nExample:\n```js\n// Synchronous\nconsole.log(\"1\");\nconsole.log(\"2\"); // logs: 1, 2\n\n// Asynchronous\nconsole.log(\"1\");\nsetTimeout(() => console.log(\"2\"), 100);\nconsole.log(\"3\"); // logs: 1, 3, 2\n```"
-  },
-  {
-    "id": "th_55",
-    "question": "What is event bubbling?",
-    "answer": "Event bubbling is the second stage of DOM event propagation where an event triggered on a nested child element \"bubbles up\" through its parent elements (ancestors) until it reaches the root element (document/window).\n\nExample:\n```js\nchild.addEventListener(\"click\", () => console.log(\"Child\"));\nparent.addEventListener(\"click\", () => console.log(\"Parent\")); // Triggers second\n```"
-  },
-  {
-    "id": "th_56",
-    "question": "What is event capturing?",
-    "answer": "Event capturing (or trickling) is the first stage of DOM event propagation. The event travels down from the top level (Document/Window) down to the target element that was clicked.\n\nTo register a listener in the capture phase, pass `true` as the third parameter to `addEventListener`.\n\nExample:\n```js\nparent.addEventListener(\"click\", () => console.log(\"Captured Parent\"), true);\n```"
-  },
-  {
-    "id": "th_60",
-    "question": "What is React and why use it?",
-    "answer": "React is a free, open-source front-end JavaScript library developed by Facebook for building component-based user interfaces.\n\n**Why Use It**:\n1. **Component-Based Architecture**: Allows building encapsulated, reusable UI components that manage their own state.\n2. **Virtual DOM**: Updates the DOM efficiently by comparing state changes in memory and batching real DOM operations, maximizing performance.\n3. **Declarative UI**: You design simple views for each state in your application, and React efficiently updates and renders just the right components when data changes.\n4. **Rich Ecosystem & SEO Friendly**: Large community support, custom state management tools, and support for SSR frameworks like Next.js for high SEO visibility.\n\nExample:\n```jsx\nimport React, { useState } from 'react';\n\nfunction SimpleCounter() {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <p>Clicked {count} times</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n    </div>\n  );\n}\n```"
-  },
-  {
-    "id": "th_64",
-    "question": "What is JSX?",
-    "answer": "JSX stands for JavaScript XML. It is a syntax extension for JavaScript that allows you to write HTML-like markup directly inside React components. Browsers cannot execute JSX; it is compiled into standard React API calls (like `React.createElement`) by transpilers like Babel.\n\nExample:\n```jsx\nconst element = <h1 className=\"title\">Hello</h1>;\n// Compiles to:\n// const element = React.createElement('h1', { className: 'title' }, 'Hello');\n```"
-  },
-  {
-    "id": "th_65",
-    "question": "What is prop drilling and how to avoid it?",
-    "answer": "Prop drilling is the process of passing props through multiple levels of intermediate components that do not actually need the data, just to deliver it to a deeply nested child component.\n\n**How to avoid it**:\n1. **Context API**: Subscribes to global context without passing props.\n2. **State Management Libraries**: Redux, Zustand, Recoil.\n3. **Component Composition**: Passing elements directly."
-  },
-  {
-    "id": "th_68",
-    "question": "What is a Pure Component?",
-    "answer": "A Pure Component is a React component that does not re-render if its input props and state are identical. In class components, this is achieved by inheriting from `React.PureComponent` (which implements a shallow comparison in `shouldComponentUpdate`). In functional components, you wrap the component in `React.memo()`."
-  },
-  {
-    "id": "th_71",
-    "question": "What is batching in React updates?",
-    "answer": "Batching is a React performance optimization where React groups multiple state updates into a single re-render. In React 18, automatic batching applies to all updates inside promises, timeouts, and native event handlers."
-  },
-  {
-    "id": "th_75",
-    "question": "What is React.memo?",
-    "answer": "`React.memo` is a higher-order component. If your component renders the same result given the same props, wrapping it in `React.memo` prevents unnecessary re-renders. It performs a shallow comparison of props."
-  },
-  {
-    "id": "th_77",
-    "question": "Explain lifting state up",
-    "answer": "Lifting state up is a pattern where state shared by multiple sibling components is moved up to their closest common ancestor. The ancestor passes the state down as props, along with callback setters to allow children to trigger changes."
-  },
-  {
-    "id": "th_79",
-    "question": "What is Next.js?",
-    "answer": "Next.js is a React framework for building production-ready applications. It provides built-in configurations like server-side rendering (SSR), static site generation (SSG), automatic code splitting, API routing, dynamic routing, and SEO optimization."
-  },
-  {
-    "id": "th_83",
-    "question": "What is dynamic routing in Next.js?",
-    "answer": "Dynamic routing in Next.js allows you to define routes that match variable URL parameters (e.g., product IDs, usernames) rather than static paths.\n\n- **App Router**: Created by naming folder with square brackets: `app/blog/[slug]/page.js`.\n- **Pages Router**: Created by naming file with square brackets: `pages/blog/[slug].js`.\n\nExample (App Router `app/blog/[slug]/page.jsx`):\n```jsx\nexport default async function BlogPost({ params }) {\n  // Access the dynamic slug parameter\n  const { slug } = await params;\n  \n  return (\n    <article>\n      <h1>Blog Post: {slug}</h1>\n      <p>Content for {slug} will be loaded here.</p>\n    </article>\n  );\n}\n```"
-  },
-  {
-    "id": "th_84",
-    "question": "What is Redux?",
-    "answer": "Redux is a pattern and library for managing global application state using a centralized store. It follows three principles:\n1. **Single Source of Truth**: State is stored in a single object tree.\n2. **State is Read-Only**: State changes only by dispatching an action.\n3. **Changes are Made with Pure Functions**: Reducers capture actions and return new state trees."
-  },
-  {
-    "id": "th_86",
-    "question": "What is Redux Toolkit?",
-    "answer": "Redux Toolkit (RTK) is the official, recommended template for writing Redux logic. It resolves Redux configuration boilerplates, default dependencies, and mutable state pitfalls:\n- Provides `configureStore()` to bundle DevTools, middleware.\n- Provides `createSlice()` which uses **Immer** internally, letting you write mutating state update code that is converted to pure immutable updates.\n\nExample:\n```js\nconst counterSlice = createSlice({\n  name: 'counter',\n  initialState: { value: 0 },\n  reducers: {\n    increment: state => { state.value += 1; } // safe to write \"mutations\" here\n  }\n});\n```"
-  },
-  {
-    "id": "th_87",
-    "question": "Difference between local state and global state",
-    "answer": "- **Local State**: Managed inside a single component (e.g. `useState`). Only the component itself and its immediate children (via props) have access.\n- **Global State**: Shared across multiple independent components throughout the application tree. Managed via Context API, Redux, Zustand, etc."
-  },
   {
     "id": "th_1",
     "question": "Difference between `let`, `const`, and `var`",
@@ -1635,318 +1485,433 @@ export const theoryQuestions: TheoryQuestion[] = [
   },
   {
     "id": "th_2",
-    "question": "Difference between `==` and `===`",
-    "answer": "The difference between loose equality (`==`) and strict equality (`===`) is type coercion:\n\n- **`==` (Loose Equality)**: Compares two values for equality after performing implicit type conversion (coercion) if their types differ.\n- **`===` (Strict Equality)**: Compares both the value and the type. No type coercion is performed. If the types are different, it immediately returns `false`.\n\nExample:\n```js\nconsole.log(5 == \"5\");  // true (string \"5\" is coerced to number 5)\nconsole.log(5 === \"5\"); // false (types differ: number vs string)\nconsole.log(null == undefined);  // true\nconsole.log(null === undefined); // false\n```\n\n**Best Practice**: Always use `===` to prevent unexpected bugs caused by implicit coercion."
+    "question": "What is hoisting?",
+    "answer": "Hoisting is a JavaScript mechanism where variable and function declarations are moved to the top of their containing scope before code execution begins.\n\n- **Function Declarations**: Completely hoisted (both declaration and implementation are moved).\n- **`var` variables**: Hoisted but initialized to `undefined`.\n- **`let` and `const` variables**: Hoisted but stay in the Temporal Dead Zone (TDZ). Calling them before they are declared yields a `ReferenceError`.\n\nExample:\n```js\nconsole.log(x); // undefined (var is hoisted and initialized to undefined)\nvar x = 5;\n\nsayHello(); // \"Hello!\" (Function declaration is fully hoisted)\nfunction sayHello() { console.log(\"Hello!\"); }\n```"
   },
   {
     "id": "th_3",
-    "question": "Difference between `every()` and `some()`",
-    "answer": "Both `every()` and `some()` are JavaScript array iteration methods that test elements against a callback function, but they differ in completion conditions:\n\n- **`every()`**: Returns `true` if **all** elements in the array pass the test. It short-circuits (returns `false`) as soon as it finds one failing element.\n- **`some()`**: Returns `true` if **at least one** element passes the test. It short-circuits (returns `true`) as soon as it finds one passing element.\n\nExample:\n```js\nconst nums = [1, 2, -3, 4];\n\nconst allPositive = nums.every(n => n > 0); // false\nconst hasNegative = nums.some(n => n < 0);  // true\n```"
+    "question": "What is the Temporal Dead Zone (TDZ)?",
+    "answer": "The Temporal Dead Zone (TDZ) is the period between variable hosting and the line of code where the variable is explicitly declared. It affects variables declared with `let` and `const`. \n\nAccessing a variable in the TDZ throws a `ReferenceError`.\n\nExample:\n```js\nfunction test() {\n  // TDZ starts here\n  // console.log(val); // ReferenceError: Cannot access 'val' before initialization\n  \n  let val = 10; // TDZ ends here\n  console.log(val); // 10\n}\n```"
   },
   {
     "id": "th_4",
-    "question": "Difference between `map()` and `forEach()`",
-    "answer": "Both methods iterate over arrays, but they serve different purposes:\n\n- **`map()`**: Creates and returns a **new array** containing the results of calling the provided function on every element. It is pure and does not mutate the original array.\n- **`forEach()`**: Executes a provided function once for each array element. It **returns `undefined`** and is used to perform side effects (e.g., logging, modifying external state).\n\nExample:\n```js\nconst numbers = [1, 2, 3];\n\n// map returns a new array\nconst doubled = numbers.map(num => num * 2); // [2, 4, 6]\n\n// forEach performs a side effect\nnumbers.forEach(num => console.log(num)); // logs 1, 2, 3\n```\n\n**Best Practice**: Use `map()` when you need to transform data, and `forEach()` when you need side effects. Never use `map()` if you aren't using the returned array."
+    "question": "What is a closure?",
+    "answer": "A closure is the combination of a function bundled together with references to its surrounding state (the lexical environment). In other words, a closure gives an inner function access to the outer function's scope even after the outer function has returned.\n\nExample:\n```js\nfunction makeCounter() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\n\nconst counter = makeCounter();\nconsole.log(counter()); // 1\nconsole.log(counter()); // 2 (count variable persists in memory)\n```"
   },
   {
     "id": "th_5",
-    "question": "Difference between `Promise.all()` and `Promise.race()`",
-    "answer": "These methods handle concurrent promises differently:\n\n- **`Promise.all()`**: Takes an array of promises and returns a single Promise that resolves when **all** input promises resolve, or rejects immediately when **any** promise rejects (fail-fast).\n- **`Promise.race()`**: Resolves or rejects as soon as **any one** of the input promises settles (either resolves or rejects).\n\nExample:\n```js\nconst p1 = new Promise(resolve => setTimeout(() => resolve('P1 Fast'), 100));\nconst p2 = new Promise(resolve => setTimeout(() => resolve('P2 Slow'), 500));\n\nPromise.all([p1, p2]).then(console.log);  // ['P1 Fast', 'P2 Slow'] (takes 500ms)\nPromise.race([p1, p2]).then(console.log); // 'P1 Fast' (takes 100ms)\n```"
+    "question": "What is lexical scope?",
+    "answer": "Lexical scope (static scope) means that the accessibility of variables is determined by their position in the source code nesting. An inner scope has access to variables declared in its outer scope, but not vice versa.\n\nExample:\n```js\nconst globalVar = \"global\";\n\nfunction outer() {\n  const outerVar = \"outer\";\n  \n  function inner() {\n    console.log(globalVar, outerVar); // Both accessible\n  }\n  inner();\n}\n```"
   },
   {
     "id": "th_6",
-    "question": "Difference between shallow copy and deep copy",
-    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"John\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
+    "question": "Difference between call, apply, and bind",
+    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"Anandu\" };\n\ngreet.call(person, \"Doha\"); // \"Anandu from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"Anandu from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"Anandu from Doha\"\n```"
   },
   {
     "id": "th_7",
-    "question": "Difference between synchronous and asynchronous execution",
-    "answer": "Execution models in JavaScript handle tasks differently:\n\n- **Synchronous Execution**: Code is executed line-by-line in sequential order. Each statement blocks the execution of subsequent code until it finishes.\n- **Asynchronous Execution**: Tasks (like API calls or timeouts) are offloaded to Web APIs, allowing the main execution thread to continue running other code. Once complete, they enter a queue and execute without blocking the main flow.\n\nExample:\n```js\n// Synchronous\nconsole.log(\"1\");\nconsole.log(\"2\"); // logs: 1, 2\n\n// Asynchronous\nconsole.log(\"1\");\nsetTimeout(() => console.log(\"2\"), 100);\nconsole.log(\"3\"); // logs: 1, 3, 2\n```"
+    "question": "What is `this` in JavaScript?",
+    "answer": "In JavaScript, `this` refers to the object that is currently executing the code. Its value depends on how the function containing it is invoked:\n\n1. **Global scope**: Refers to `window` (or `global` in Node).\n2. **Object method**: Refers to the object owning the method.\n3. **Arrow functions**: Do not have their own `this`. They inherit it lexically from their enclosing context.\n4. **Strict mode**: If function is called independently, `this` is `undefined`.\n\nExample:\n```js\nconst user = {\n  name: \"Anandu\",\n  greet() { console.log(this.name); }\n};\nuser.greet(); // logs \"Anandu\" (this = user)\n```"
   },
   {
     "id": "th_8",
-    "question": "Difference between function declaration and function expression",
-    "answer": "The primary difference is **hoisting** behavior:\n\n- **Function Declaration**: Loaded into memory before execution begins. Can be called *before* they are declared in the code.\n- **Function Expression**: Created when the execution reaches that line. Since they are usually assigned to variables (`var`, `let`, `const`), they follow variable hoisting rules (calling them before definition triggers an error).\n\nExample:\n```js\n// Declaration works before line\ngreetDecl(); // \"Hello!\"\nfunction greetDecl() { console.log(\"Hello!\"); }\n\n// Expression fails before line\ngreetExpr(); // TypeError or ReferenceError\nvar greetExpr = function() { console.log(\"Hi!\"); };\n```"
-  },
-  {
-    "id": "th_9",
-    "question": "Difference between `setTimeout` and `setInterval`",
-    "answer": "Both are timer methods in JavaScript but have different recurring behaviors:\n\n- **`setTimeout()`**: Executes a callback function **exactly once** after a specified delay.\n- **`setInterval()`**: Repeatedly executes a callback function **at intervals** of a specified delay.\n\nExample:\n```js\n// Runs once after 1 second\nsetTimeout(() => console.log(\"Hello\"), 1000);\n\n// Runs every 1 second continuously\nconst id = setInterval(() => console.log(\"Tick\"), 1000);\n// To stop it:\nclearInterval(id);\n```"
-  },
-  {
-    "id": "th_10",
-    "question": "Difference between `localStorage` and `sessionStorage`",
-    "answer": "Both are web storage APIs storing key-value pairs in the browser as strings, but they differ in lifetime:\n\n- **`localStorage`**: Persists data with **no expiration date**. Data remains even if the browser tab/window is closed and reopened. Must be cleared programmatically or manually.\n- **`sessionStorage`**: Keeps data only for the duration of the page session. Data is **wiped out** when the browser tab/window is closed.\n\nExample:\n```js\n// Persists indefinitely\nlocalStorage.setItem(\"user\", \"John\");\n\n// Deleted when tab closes\nsessionStorage.setItem(\"session_token\", \"xyz123\");\n```"
-  },
-  {
-    "id": "th_11",
-    "question": "Difference between event bubbling and event capturing",
-    "answer": "These are the two phases of event propagation in the DOM:\n\n- **Event Bubbling**: The event starts at the target element that triggered it and bubbles **upward** through its parent elements in the DOM tree. (Default behavior).\n- **Event Capturing (Trickling)**: The event starts at the top of the DOM tree (Document/Window) and trickles **downward** to the target element.\n\nExample:\n```js\n// Capture phase (third param true)\nelement.addEventListener(\"click\", handler, true);\n\n// Bubbling phase (default, third param false)\nelement.addEventListener(\"click\", handler, false);\n```"
-  },
-  {
-    "id": "th_12",
-    "question": "Difference between `for...in` and `for...of`",
-    "answer": "Both iterate over structures but target different values:\n\n- **`for...in`**: Iterates over the enumerable **keys (properties)** of an object (including prototype keys).\n- **`for...of`**: Iterates over the iterable **values** of an iterable object (like Arrays, Strings, Sets, Maps).\n\nExample:\n```js\nconst arr = [\"a\", \"b\"];\n\nfor (let key in arr) {\n  console.log(key); // \"0\", \"1\" (indexes)\n}\n\nfor (let val of arr) {\n  console.log(val); // \"a\", \"b\" (elements)\n}\n```"
-  },
-  {
-    "id": "th_13",
-    "question": "Difference between `slice`, `splice`, and `substring`",
-    "answer": "These methods extract or modify parts of arrays/strings:\n\n1. **`slice(start, end)`**: (Array & String) Extracts a section and returns a **new** array/string without mutating the original. Supports negative indexes.\n2. **`splice(start, count, ...items)`**: (Array only) Adds/removes elements to/from the original array and **mutates** it.\n3. **`substring(start, end)`**: (String only) Similar to `slice`, but doesn't support negative indexes (treats them as `0`).\n\nExample:\n```js\n// Array slice (no mutation)\nconst arr = [1, 2, 3];\nconst sliced = arr.slice(0, 2); // [1, 2]\n\n// Array splice (mutates)\narr.splice(1, 1, 9); // arr is now [1, 9, 3]\n```"
-  },
-  {
-    "id": "th_14",
-    "question": "Difference between mutable and immutable objects",
-    "answer": "- **Mutable**: Objects whose state/content can be modified after creation (Objects, Arrays, Functions in JS).\n- **Immutable**: Values that cannot be changed once created (Primitives: Numbers, Strings, Booleans, Symbol, null, undefined). If you modify a string, a new string is allocated in memory.\n\nExample:\n```js\n// Mutable\nconst user = { name: \"John\" };\nuser.name = \"Doe\"; // Modified in-place\n\n// Immutable (making an object shallowly immutable)\nconst frozenUser = Object.freeze({ name: \"John\" });\nfrozenUser.name = \"Doe\"; // Silent failure or error in strict mode\n```"
-  },
-  {
-    "id": "th_15",
-    "question": "Difference between `fetch` and `axios`",
-    "answer": "- **`fetch`**: Native Web API built into modern browsers. It returns a Promise, but does not reject on HTTP errors (e.g., 404, 500) — you must manually check `response.ok`. It also requires a manual call to `.json()` to parse the response body.\n- **`axios`**: Third-party library. Automatically transforms JSON data, rejects the promise on HTTP error codes, supports request/response interceptors, and can cancel requests.\n\nExample:\n```js\n// Native fetch\nfetch('/api/data')\n  .then(res => {\n    if (!res.ok) throw new Error(\"HTTP error\");\n    return res.json();\n  })\n  .then(data => console.log(data));\n\n// Axios\naxios.get('/api/data')\n  .then(res => console.log(res.data));\n```"
-  },
-  {
-    "id": "th_18",
-    "question": "Difference between absolute and relative positioning",
-    "answer": "These are CSS position properties:\n\n- **`position: relative`**: Element is positioned relative to its **normal flow position**. It reserves its original space in the layout, and offsets do not disrupt other elements.\n- **`position: absolute`**: Element is removed from the normal document flow. It is positioned relative to its **nearest positioned ancestor** (an ancestor with a position other than `static`). If none exists, it positions relative to the initial containing block (viewport/html).\n\nExample:\n```css\n.parent {\n  position: relative; /* Anchor for absolute children */\n}\n.child {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}\n```"
-  },
-  {
-    "id": "th_19",
-    "question": "Difference between client-side rendering and server-side rendering",
-    "answer": "- **Client-Side Rendering (CSR)**: The server sends a barebones HTML file and a bundle of JavaScript. The browser downloads the JS and builds the entire page client-side.\n  - *Pros*: Fast transitions after initial load, rich interactions.\n  - *Cons*: Slow initial load (FCP), poorer SEO since crawlers see empty HTML initially.\n- **Server-Side Rendering (SSR)**: The server renders the HTML for the requested page on the fly for each request and sends the fully populated HTML to the browser.\n  - *Pros*: Excellent SEO, fast First Contentful Paint.\n  - *Cons*: Server load is higher, page transitions require a roundtrip to the server unless optimized."
-  },
-  {
-    "id": "th_22",
-    "question": "Difference between class components and functional components",
-    "answer": "- **Class Components**: Legacy React components using ES6 classes. State is managed via `this.state` and updates via `this.setState()`. Lifecycle methods like `componentDidMount` and `componentWillUnmount` are used to handle side effects.\n- **Functional Components**: Modern standard React components using simple functions. Hooks (`useState`, `useEffect`) are used to manage state and lifecycles. They are easier to read, write, and test, and enable better tree-shaking optimizations.\n\nExample:\n```jsx\n// Functional Component\nfunction Greet({ name }) {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c => c + 1)}>Clicked {count}</button>;\n}\n```"
-  },
-  {
-    "id": "th_23",
-    "question": "Difference between Promises and async/await",
-    "answer": "`async/await` is built on top of Promises, providing syntactic sugar:\n\n- **Promises**: Use chainable methods like `.then()` and `.catch()` to handle async outcomes, which can lead to nested boilerplate.\n- **`async/await`**: Writes asynchronous code that looks and behaves like synchronous code. Utilizes standard `try/catch` blocks for error handling.\n\nExample:\n```js\n// Promise chaining\nfetchData()\n  .then(res => res.json())\n  .catch(err => console.error(err));\n\n// Async/await\nasync function get() {\n  try {\n    const res = await fetchData();\n    const data = await res.json();\n  } catch (err) {\n    console.error(err);\n  }\n}\n```"
-  },
-  {
-    "id": "th_24",
-    "question": "Difference between deep comparison and shallow comparison",
-    "answer": "Comparison strategies check properties inside objects:\n\n- **Shallow Comparison**: Checks references (e.g., `obj1 === obj2`) and properties at the first level. If references match or all first-level properties match, they are considered equal.\n- **Deep Comparison**: Recursively checks references and values of all nested properties inside the objects to see if their structures are identical.\n\nExample:\n```js\nconst o1 = { details: { id: 1 } };\nconst o2 = { details: { id: 1 } };\n\n// Shallow comparison fails because details references differ\nconsole.log(o1.details === o2.details); // false\n\n// Deep comparison (e.g., using lodash isEqual) would return true\n```"
-  },
-  {
-    "id": "th_25",
-    "question": "Difference between React hooks and lifecycle methods",
-    "answer": "- **Lifecycle Methods**: Exclusive to Class components (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`). Logic is partitioned by the lifecycle stage, often splitting related code (e.g., timer creation in mount, removal in unmount) across different methods.\n- **React Hooks**: Exclusively for Functional components (`useEffect`). Let you group side effects by feature instead of lifecycle stage, simplifying code and facilitating state reuse across custom hooks.\n\nExample:\n```jsx\n// useEffect encapsulates setup and cleanup in one block\nuseEffect(() => {\n  const id = setInterval(() => console.log(\"tick\"), 1000);\n  return () => clearInterval(id);\n}, []);\n```"
-  },
-  {
-    "id": "th_26",
-    "question": "Difference between controlled and uncontrolled components",
-    "answer": "Refers to how form input values are managed:\n\n- **Controlled Component**: Input value is driven by React state. React is the \"single source of truth\". Any changes update the state, which triggers a re-render to update the input's visual value.\n- **Uncontrolled Component**: Input value is managed by the DOM. You query the DOM directly using a React `ref` when you need to read the value (e.g., on submit).\n\nExample:\n```jsx\n// Controlled\nconst [val, setVal] = useState(\"\");\n<input value={val} onChange={e => setVal(e.target.value)} />\n\n// Uncontrolled\nconst inputRef = useRef(null);\n<input ref={inputRef} /> // read value via inputRef.current.value\n```"
-  },
-  {
-    "id": "th_28",
-    "question": "Difference between map, filter, and reduce",
-    "answer": "Array methods that transform data:\n\n- **`map()`**: Transforms each element and returns a **new array** of the same length.\n- **`filter()`**: Evaluates elements against a boolean check and returns a **new array** containing only matching elements.\n- **`reduce()`**: Processes array elements and aggregates them into a **single output value** (like a sum, object, or new list).\n\nExample:\n```js\nconst nums = [1, 2, 3, 4];\n\nconst doubled = nums.map(n => n * 2); // [2, 4, 6, 8]\nconst evens = nums.filter(n => n % 2 === 0); // [2, 4]\nconst sum = nums.reduce((acc, curr) => acc + curr, 0); // 10\n```"
-  },
-  {
-    "id": "th_29",
-    "question": "Difference between null, undefined, and NaN",
-    "answer": "- **`undefined`**: Variable is declared but **no value has been assigned** to it yet.\n- **`null`**: Representation of an **intentional absence** of value (assigned explicitly).\n- **`NaN`** (Not a Number): Represents an invalid numerical calculation (e.g. `0 / 0` or `parseInt(\"hello\")`).\n\nExample:\n```js\nlet a;\nconsole.log(a); // undefined\n\nlet b = null;\nconsole.log(b); // null\n\nconsole.log(\"text\" * 2); // NaN\n```"
-  },
-  {
-    "id": "th_30",
-    "question": "Difference between call, apply, and bind",
-    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"John\" };\n\ngreet.call(person, \"Doha\"); // \"John from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"John from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"John from Doha\"\n```"
-  },
-  {
-    "id": "th_46",
-    "question": "Explain `bind`, `call`, and `apply`",
-    "answer": "Methods to control the value of `this` in JavaScript functions:\n\n- **`call()`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).\n- **`apply()`**: Invokes the function immediately. Arguments are passed as an **array**.\n- **`bind()`**: Does not execute the function. Returns a **new function** with its `this` keyword bound permanently to the provided object.\n\nExample:\n```js\nfunction greet(city) { console.log(`${this.name} from ${city}`); }\nconst person = { name: \"John\" };\n\ngreet.call(person, \"Doha\"); // \"John from Doha\"\ngreet.apply(person, [\"Doha\"]); // \"John from Doha\"\nconst bound = greet.bind(person, \"Doha\");\nbound(); // \"John from Doha\"\n```"
-  },
-  {
-    "id": "th_47",
-    "question": "Explain garbage collection in JavaScript",
-    "answer": "Garbage Collection in JavaScript is an automatic memory management process. The engine monitors memory allocation and periodically frees up memory occupied by values that are no longer accessible (unreachable) in the program.\n\nIt primarily uses the **Mark-and-Sweep** algorithm:\n1. The engine defines a set of \"roots\" (like global variables, local execution stack).\n2. It traces references and marks all reachable nodes.\n3. Any unmarked memory is deemed garbage and is swept (released)."
-  },
-  {
-    "id": "th_48",
     "question": "Explain prototype and prototypal inheritance",
     "answer": "In JavaScript, objects have a private link pointing to another object called its **prototype**. That prototype has its own prototype, forming a chain:\n\n- **Prototypal Inheritance**: When you attempt to access a property/method on an object, JavaScript first looks at the object itself. If it doesn't find it, it searches up the prototype chain until it either finds the property or reaches `null`.\n\nExample:\n```js\nconst animal = { eat: true };\nconst dog = Object.create(animal); // animal is prototype of dog\nconsole.log(dog.eat); // true (inherited)\n```"
   },
   {
-    "id": "th_49",
-    "question": "Explain destructuring",
-    "answer": "Destructuring is a clean syntax that lets you unpack values from arrays or properties from objects into distinct variables.\n\nExample:\n```js\nconst person = { name: \"John\", age: 25 };\nconst { name, age } = person; // destructuring object\nconsole.log(name); // \"John\"\n\nconst rgb = [255, 0, 0];\nconst [r, g, b] = rgb; // destructuring array\n```"
+    "id": "th_9",
+    "question": "Explain garbage collection in JavaScript",
+    "answer": "Garbage Collection in JavaScript is an automatic memory management process. The engine monitors memory allocation and periodically frees up memory occupied by values that are no longer accessible (unreachable) in the program.\n\nIt primarily uses the **Mark-and-Sweep** algorithm:\n1. The engine defines a set of \"roots\" (like global variables, local execution stack).\n2. It traces references and marks all reachable nodes.\n3. Any unmarked memory is deemed garbage and is swept (released)."
   },
   {
-    "id": "th_50",
-    "question": "Explain spread operator",
-    "answer": "The spread operator (`...`) allows an iterable (like an array or object expression) to be expanded in places where zero or more arguments or elements are expected.\n\nExample:\n```js\nconst arr1 = [1, 2];\nconst arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]\n\nconst user = { name: \"John\" };\nconst updatedUser = { ...user, age: 25 };\n```"
+    "id": "th_10",
+    "question": "Difference between `==` and `===`",
+    "answer": "The difference between loose equality (`==`) and strict equality (`===`) is type coercion:\n\n- **`==` (Loose Equality)**: Compares two values for equality after performing implicit type conversion (coercion) if their types differ.\n- **`===` (Strict Equality)**: Compares both the value and the type. No type coercion is performed. If the types are different, it immediately returns `false`.\n\nExample:\n```js\nconsole.log(5 == \"5\");  // true (string \"5\" is coerced to number 5)\nconsole.log(5 === \"5\"); // false (types differ: number vs string)\nconsole.log(null == undefined);  // true\nconsole.log(null === undefined); // false\n```\n\n**Best Practice**: Always use `===` to prevent unexpected bugs caused by implicit coercion."
   },
   {
-    "id": "th_51",
-    "question": "Explain rest operator",
-    "answer": "The rest operator (`...`) looks identical to the spread operator but does the opposite. It collects multiple elements and condenses them into a single array/object. Used in function parameters or destructuring.\n\nExample:\n```js\nfunction sum(...args) { // collects arguments into args array\n  return args.reduce((acc, c) => acc + c, 0);\n}\nconsole.log(sum(1, 2, 3)); // 6\n```"
+    "id": "th_11",
+    "question": "Difference between null, undefined, and NaN",
+    "answer": "- **`undefined`**: Variable is declared but **no value has been assigned** to it yet.\n- **`null`**: Representation of an **intentional absence** of value (assigned explicitly).\n- **`NaN`** (Not a Number): Represents an invalid numerical calculation (e.g. `0 / 0` or `parseInt(\"hello\")`).\n\nExample:\n```js\nlet a;\nconsole.log(a); // undefined\n\nlet b = null;\nconsole.log(b); // null\n\nconsole.log(\"text\" * 2); // NaN\n```"
   },
   {
-    "id": "th_52",
-    "question": "Explain string methods:",
-    "answer": "Common string methods:\n- `split(separator)`: Divides a string into an array of substrings.\n- `includes(search)`: Checks if a string contains a substring.\n- `startsWith(search)` / `endsWith(search)`: Checks boundary conditions.\n- `trim()` / `trimEnd()`: Trims whitespace from edges.\n\nExample:\n```js\nconst str = \"  hello world  \";\nconsole.log(str.trim().split(\" \")); // [\"hello\", \"world\"]\n```"
+    "id": "th_12",
+    "question": "Difference between function declaration and function expression",
+    "answer": "The primary difference is **hoisting** behavior:\n\n- **Function Declaration**: Loaded into memory before execution begins. Can be called *before* they are declared in the code.\n- **Function Expression**: Created when the execution reaches that line. Since they are usually assigned to variables (`var`, `let`, `const`), they follow variable hoisting rules (calling them before definition triggers an error).\n\nExample:\n```js\n// Declaration works before line\ngreetDecl(); // \"Hello!\"\nfunction greetDecl() { console.log(\"Hello!\"); }\n\n// Expression fails before line\ngreetExpr(); // TypeError or ReferenceError\nvar greetExpr = function() { console.log(\"Hi!\"); };\n```"
   },
   {
-    "id": "th_54",
-    "question": "Explain deep copy and shallow copy",
-    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"John\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
+    "id": "th_13",
+    "question": "What is a callback function?",
+    "answer": "A callback function is a function passed into another function as an argument, which is then executed inside the outer function to complete some kind of routine or action.\n\nExample:\n```js\nfunction greet(name, callback) {\n  console.log(\"Hello \" + name);\n  callback();\n}\n\ngreet(\"Anandu\", () => console.log(\"Callback run!\"));\n```"
   },
   {
-    "id": "th_61",
-    "question": "Explain Virtual DOM",
-    "answer": "The Virtual DOM (VDOM) is a lightweight, in-memory representation of the real DOM. Direct manipulation of the real DOM is slow and expensive. \n\nReact optimizes rendering using the VDOM:\n1. On state changes, React builds a new VDOM tree.\n2. It compares it with the previous VDOM tree using a process called **reconciliation (diffing)**.\n3. React calculates the minimum batch of changes needed and updates only those specific nodes in the real DOM."
-  },
-  {
-    "id": "th_62",
-    "question": "Explain commonly used hooks",
-    "answer": "React hooks are functions that let functional components tap into React state and lifecycle features:\n- `useState`: Declares a local state variable.\n- `useEffect`: Performs side effects (data fetching, subscriptions).\n- `useContext`: Subscribes to React context updates.\n- `useRef`: Keeps a mutable reference that does not trigger re-renders.\n\nExample:\n```jsx\nconst [count, setCount] = useState(0);\nuseEffect(() => {\n  document.title = `Clicked ${count} times`;\n}, [count]);\n```"
-  },
-  {
-    "id": "th_63",
-    "question": "Explain lifecycle methods",
-    "answer": "Lifecycle methods are hook points in class components called during phases of a component's lifecycle:\n1. **Mounting**: `constructor()`, `componentDidMount()` (runs once after render, best for API calls).\n2. **Updating**: `componentDidUpdate()` (called on prop/state changes).\n3. **Unmounting**: `componentWillUnmount()` (called before removal, best for cleaning timers/listeners)."
-  },
-  {
-    "id": "th_66",
-    "question": "Explain Context API",
-    "answer": "The Context API is a built-in React feature that allows you to share global state across the component tree without manually drilling props through every intermediate level.\n\nExample:\n```jsx\nconst ThemeContext = React.createContext('dark');\n\nfunction App() {\n  return (\n    <ThemeContext.Provider value=\"light\">\n      <Toolbar />\n    </ThemeContext.Provider>\n  );\n}\n\nfunction Button() {\n  const theme = useContext(ThemeContext); // theme = 'light'\n  return <button className={theme}>Button</button>;\n}\n```"
-  },
-  {
-    "id": "th_67",
-    "question": "Explain Redux",
-    "answer": "Redux is a pattern and library for managing global application state using a centralized store. It follows three principles:\n1. **Single Source of Truth**: State is stored in a single object tree.\n2. **State is Read-Only**: State changes only by dispatching an action.\n3. **Changes are Made with Pure Functions**: Reducers capture actions and return new state trees."
-  },
-  {
-    "id": "th_76",
-    "question": "Explain the `useEffect` hook",
-    "answer": "The `useEffect` hook lets you perform side effects in functional components. It takes a callback function and a dependency array:\n- **No dependencies**: Runs after every single render.\n- **Empty dependency array `[]`**: Runs once after mounting (like `componentDidMount`).\n- **State/prop dependencies `[val]`**: Runs on mount and whenever the specified dependencies change.\n\nReturn cleanups from `useEffect` to clear intervals or listeners:\n```js\nuseEffect(() => {\n  console.log(\"Mounted\");\n  return () => console.log(\"Cleanup\");\n}, []);\n```"
-  },
-  {
-    "id": "th_85",
-    "question": "Explain Redux data flow",
-    "answer": "Redux state operates in a strict unidirectional flow:\n1. **Action**: An event containing a type (e.g. `INCREMENT`) is dispatched.\n2. **Reducer**: A pure function intercepting the action and returning the next state.\n3. **Store**: Houses the state. Emits state updates.\n4. **View**: React components subscribe to the store and re-render."
-  },
-  {
-    "id": "th_16",
-    "question": "Difference between `useMemo` and `useCallback`",
-    "answer": "Both are React optimization hooks used to prevent unnecessary computations and re-renders:\n\n- **`useMemo`**: Memorizes the **result of a calculation**. Runs only when dependencies change.\n- **`useCallback`**: Memorizes the **function definition itself**. Prevates children receiving new function references on every re-render (which breaks `React.memo`).\n\nExample:\n```jsx\n// Memoizes the calculated array\nconst sortedItems = useMemo(() => items.sort(), [items]);\n\n// Memoizes the callback handler reference\nconst handleClick = useCallback(() => console.log(\"clicked\"), []);\n```"
-  },
-  {
-    "id": "th_43",
-    "question": "What is memoization?",
-    "answer": "Memoization is an optimization technique used to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again."
-  },
-  {
-    "id": "th_45",
+    "id": "th_14",
     "question": "What is currying in JavaScript?",
     "answer": "Currying is a transformation of functions that translates a function from callable as `f(a, b, c)` into callable as `f(a)(b)(c)`.\n\nExample:\n```js\nconst curriedSum = a => b => c => a + b + c;\nconsole.log(curriedSum(1)(2)(3)); // 6\n```"
   },
   {
-    "id": "th_57",
-    "question": "What is debounce?",
-    "answer": "Debouncing is a programming practice used to limit the rate at which a function gets invoked. It delays the execution of a function until a certain amount of idle time has passed since the last time the function was triggered.\n\n**Use Case**: Search inputs, window resizing, or typing indicators where you only want to process the final input after the user has stopped action.\n\nExample:\n```js\nfunction debounce(func, delay) {\n  let timerId;\n  return function (...args) {\n    clearTimeout(timerId);\n    timerId = setTimeout(() => {\n      func.apply(this, args);\n    }, delay);\n  };\n}\n\n// Usage\nconst handleSearch = debounce((query) => {\n  console.log(\"Searching database for:\", query);\n}, 300);\n```"
+    "id": "th_15",
+    "question": "What is a Polyfill?",
+    "answer": "A polyfill is a browser-compatibility helper. It is a piece of JavaScript code used to provide modern features (like `Array.prototype.flat` or `Promise.all`) on older browsers that do not natively support them.\n\nExample:\n```js\nif (!Array.prototype.includes) {\n  Array.prototype.includes = function(searchElement) {\n    return this.indexOf(searchElement) !== -1;\n  };\n}\n```"
   },
   {
-    "id": "th_58",
-    "question": "What is throttle?",
-    "answer": "Throttling is a technique used to limit the execution rate of a function. It ensures that a function is called at most once during a specified time interval, regardless of how many times the event is fired.\n\n**Use Case**: Scroll listeners, mouse movement tracking, resizing, or rate-limiting button clicks to prevent spam.\n\nExample:\n```js\nfunction throttle(func, limit) {\n  let inThrottle = false;\n  return function (...args) {\n    if (!inThrottle) {\n      func.apply(this, args);\n      inThrottle = true;\n      setTimeout(() => inThrottle = false, limit);\n    }\n  };\n}\n\n// Usage\nconst handleScroll = throttle(() => {\n  console.log(\"Scroll event processed\");\n}, 200);\nwindow.addEventListener(\"scroll\", handleScroll);\n```"
+    "id": "th_16",
+    "question": "Explain destructuring",
+    "answer": "Destructuring is a clean syntax that lets you unpack values from arrays or properties from objects into distinct variables.\n\nExample:\n```js\nconst person = { name: \"Anandu\", age: 25 };\nconst { name, age } = person; // destructuring object\nconsole.log(name); // \"Anandu\"\n\nconst rgb = [255, 0, 0];\nconst [r, g, b] = rgb; // destructuring array\n```"
   },
   {
-    "id": "th_59",
-    "question": "What is GraphQL?",
-    "answer": "GraphQL is a query language and runtime for APIs. Unlike REST APIs, which return rigid data structures from specific endpoints, GraphQL allows client applications to request **exactly the fields they need**, combining multiple resources in a single HTTP request.\n\nExample query:\n```graphql\nquery {\n  user(id: \"1\") {\n    name\n    email\n  }\n}\n```"
+    "id": "th_17",
+    "question": "Explain spread operator",
+    "answer": "The spread operator (`...`) allows an iterable (like an array or object expression) to be expanded in places where zero or more arguments or elements are expected.\n\nExample:\n```js\nconst arr1 = [1, 2];\nconst arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]\n\nconst user = { name: \"Anandu\" };\nconst updatedUser = { ...user, age: 25 };\n```"
   },
   {
-    "id": "th_69",
-    "question": "What is a custom hook?",
-    "answer": "A custom hook is a JavaScript function whose name starts with `use` and that can call other React hooks. It allows you to extract component stateful logic into reusable functions.\n\nExample:\n```js\nfunction useWindowWidth() {\n  const [width, setWidth] = useState(window.innerWidth);\n  useEffect(() => {\n    const handleResize = () => setWidth(window.innerWidth);\n    window.addEventListener('resize', handleResize);\n    return () => window.removeEventListener('resize', handleResize);\n  }, []);\n  return width;\n}\n```"
+    "id": "th_18",
+    "question": "Explain rest operator",
+    "answer": "The rest operator (`...`) looks identical to the spread operator but does the opposite. It collects multiple elements and condenses them into a single array/object. Used in function parameters or destructuring.\n\nExample:\n```js\nfunction sum(...args) { // collects arguments into args array\n  return args.reduce((acc, c) => acc + c, 0);\n}\nconsole.log(sum(1, 2, 3)); // 6\n```"
   },
   {
-    "id": "th_70",
-    "question": "What is reconciliation in React?",
-    "answer": "Reconciliation is React's algorithm for diffing the virtual DOM tree against the actual DOM tree. React checks differences in node types, keys, and properties to determine the absolute minimum number of DOM updates required."
+    "id": "th_19",
+    "question": "Difference between `every()` and `some()`",
+    "answer": "Both `every()` and `some()` are JavaScript array iteration methods that test elements against a callback function, but they differ in completion conditions:\n\n- **`every()`**: Returns `true` if **all** elements in the array pass the test. It short-circuits (returns `false`) as soon as it finds one failing element.\n- **`some()`**: Returns `true` if **at least one** element passes the test. It short-circuits (returns `true`) as soon as it finds one passing element.\n\nExample:\n```js\nconst nums = [1, 2, -3, 4];\n\nconst allPositive = nums.every(n => n > 0); // false\nconst hasNegative = nums.some(n => n < 0);  // true\n```"
   },
   {
-    "id": "th_72",
+    "id": "th_20",
+    "question": "Difference between `map()` and `forEach()`",
+    "answer": "Both methods iterate over arrays, but they serve different purposes:\n\n- **`map()`**: Creates and returns a **new array** containing the results of calling the provided function on every element. It is pure and does not mutate the original array.\n- **`forEach()`**: Executes a provided function once for each array element. It **returns `undefined`** and is used to perform side effects (e.g., logging, modifying external state).\n\nExample:\n```js\nconst numbers = [1, 2, 3];\n\n// map returns a new array\nconst doubled = numbers.map(num => num * 2); // [2, 4, 6]\n\n// forEach performs a side effect\nnumbers.forEach(num => console.log(num)); // logs 1, 2, 3\n```\n\n**Best Practice**: Use `map()` when you need to transform data, and `forEach()` when you need side effects. Never use `map()` if you aren't using the returned array."
+  },
+  {
+    "id": "th_21",
+    "question": "Difference between `slice`, `splice`, and `substring`",
+    "answer": "These methods extract or modify parts of arrays/strings:\n\n1. **`slice(start, end)`**: (Array & String) Extracts a section and returns a **new** array/string without mutating the original. Supports negative indexes.\n2. **`splice(start, count, ...items)`**: (Array only) Adds/removes elements to/from the original array and **mutates** it.\n3. **`substring(start, end)`**: (String only) Similar to `slice`, but doesn't support negative indexes (treats them as `0`).\n\nExample:\n```js\n// Array slice (no mutation)\nconst arr = [1, 2, 3];\nconst sliced = arr.slice(0, 2); // [1, 2]\n\n// Array splice (mutates)\narr.splice(1, 1, 9); // arr is now [1, 9, 3]\n```"
+  },
+  {
+    "id": "th_22",
+    "question": "Difference between map, filter, and reduce",
+    "answer": "Array methods that transform data:\n\n- **`map()`**: Transforms each element and returns a **new array** of the same length.\n- **`filter()`**: Evaluates elements against a boolean check and returns a **new array** containing only matching elements.\n- **`reduce()`**: Processes array elements and aggregates them into a **single output value** (like a sum, object, or new list).\n\nExample:\n```js\nconst nums = [1, 2, 3, 4];\n\nconst doubled = nums.map(n => n * 2); // [2, 4, 6, 8]\nconst evens = nums.filter(n => n % 2 === 0); // [2, 4]\nconst sum = nums.reduce((acc, curr) => acc + curr, 0); // 10\n```"
+  },
+  {
+    "id": "th_23",
+    "question": "Difference between shallow copy and deep copy",
+    "answer": "Shallow copying and deep copying determine how nested objects are copied:\n\n- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.\n- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.\n\nExample:\n```js\nconst original = { name: \"Anandu\", details: { city: \"Doha\" } };\n\n// Shallow copy using spread\nconst shallow = { ...original };\nshallow.details.city = \"London\";\nconsole.log(original.details.city); // \"London\" (original mutated!)\n\n// Deep copy using structuredClone\nconst deep = structuredClone(original);\ndeep.details.city = \"Tokyo\";\nconsole.log(original.details.city); // \"London\" (original untouched)\n```"
+  },
+  {
+    "id": "th_24",
+    "question": "Difference between mutable and immutable objects",
+    "answer": "- **Mutable**: Objects whose state/content can be modified after creation (Objects, Arrays, Functions in JS).\n- **Immutable**: Values that cannot be changed once created (Primitives: Numbers, Strings, Booleans, Symbol, null, undefined). If you modify a string, a new string is allocated in memory.\n\nExample:\n```js\n// Mutable\nconst user = { name: \"John\" };\nuser.name = \"Doe\"; // Modified in-place\n\n// Immutable (making an object shallowly immutable)\nconst frozenUser = Object.freeze({ name: \"John\" });\nfrozenUser.name = \"Doe\"; // Silent failure or error in strict mode\n```"
+  },
+  {
+    "id": "th_25",
+    "question": "Difference between deep comparison and shallow comparison",
+    "answer": "Comparison strategies check properties inside objects:\n\n- **Shallow Comparison**: Checks references (e.g., `obj1 === obj2`) and properties at the first level. If references match or all first-level properties match, they are considered equal.\n- **Deep Comparison**: Recursively checks references and values of all nested properties inside the objects to see if their structures are identical.\n\nExample:\n```js\nconst o1 = { details: { id: 1 } };\nconst o2 = { details: { id: 1 } };\n\n// Shallow comparison fails because details references differ\nconsole.log(o1.details === o2.details); // false\n\n// Deep comparison (e.g., using lodash isEqual) would return true\n```"
+  },
+  {
+    "id": "th_26",
+    "question": "Explain string methods:",
+    "answer": "Common string methods:\n- `split(separator)`: Divides a string into an array of substrings.\n- `includes(search)`: Checks if a string contains a substring.\n- `startsWith(search)` / `endsWith(search)`: Checks boundary conditions.\n- `trim()` / `trimEnd()`: Trims whitespace from edges.\n\nExample:\n```js\nconst str = \"  hello world  \";\nconsole.log(str.trim().split(\" \")); // [\"hello\", \"world\"]\n```"
+  },
+  {
+    "id": "th_27",
+    "question": "Difference between synchronous and asynchronous execution",
+    "answer": "Execution models in JavaScript handle tasks differently:\n\n- **Synchronous Execution**: Code is executed line-by-line in sequential order. Each statement blocks the execution of subsequent code until it finishes.\n- **Asynchronous Execution**: Tasks (like API calls or timeouts) are offloaded to Web APIs, allowing the main execution thread to continue running other code. Once complete, they enter a queue and execute without blocking the main flow.\n\nExample:\n```js\n// Synchronous\nconsole.log(\"1\");\nconsole.log(\"2\"); // logs: 1, 2\n\n// Asynchronous\nconsole.log(\"1\");\nsetTimeout(() => console.log(\"2\"), 100);\nconsole.log(\"3\"); // logs: 1, 3, 2\n```"
+  },
+  {
+    "id": "th_28",
+    "question": "What is the event loop?",
+    "answer": "The Event Loop is JavaScript's engine coordinator. Because JavaScript is single-threaded, it can only execute one chunk of code at a time. The event loop continually monitors the **Call Stack** and the **Callback Queue**:\n\n1. Synchronous code executes first on the call stack.\n2. Async tasks (like fetch or timeouts) are handled by Web APIs and then added to task queues (Microtask Queue for Promises, Macrotask Queue for setTimeout).\n3. When the Call Stack is empty, the Event Loop pushes tasks from the queues (prioritizing the Microtask queue) onto the stack to run."
+  },
+  {
+    "id": "th_29",
+    "question": "What is the call stack?",
+    "answer": "The Call Stack is a LIFO (Last In, First Out) data structure used by the JavaScript engine to keep track of function execution. When a function is called, it is pushed onto the stack. When the function returns, it is popped off the stack.\n\nExample:\n```js\nfunction first() { second(); }\nfunction second() { console.log(\"Two\"); }\nfirst(); // stack: first -> second -> console.log\n```"
+  },
+  {
+    "id": "th_30",
+    "question": "Difference between `setTimeout` and `setInterval`",
+    "answer": "Both are timer methods in JavaScript but have different recurring behaviors:\n\n- **`setTimeout()`**: Executes a callback function **exactly once** after a specified delay.\n- **`setInterval()`**: Repeatedly executes a callback function **at intervals** of a specified delay.\n\nExample:\n```js\n// Runs once after 1 second\nsetTimeout(() => console.log(\"Hello\"), 1000);\n\n// Runs every 1 second continuously\nconst id = setInterval(() => console.log(\"Tick\"), 1000);\n// To stop it:\nclearInterval(id);\n```"
+  },
+  {
+    "id": "th_31",
+    "question": "Difference between `Promise.all()` and `Promise.race()`",
+    "answer": "These methods handle concurrent promises differently:\n\n- **`Promise.all()`**: Takes an array of promises and returns a single Promise that resolves when **all** input promises resolve, or rejects immediately when **any** promise rejects (fail-fast).\n- **`Promise.race()`**: Resolves or rejects as soon as **any one** of the input promises settles (either resolves or rejects).\n\nExample:\n```js\nconst p1 = new Promise(resolve => setTimeout(() => resolve('P1 Fast'), 100));\nconst p2 = new Promise(resolve => setTimeout(() => resolve('P2 Slow'), 500));\n\nPromise.all([p1, p2]).then(console.log);  // ['P1 Fast', 'P2 Slow'] (takes 500ms)\nPromise.race([p1, p2]).then(console.log); // 'P1 Fast' (takes 100ms)\n```"
+  },
+  {
+    "id": "th_32",
+    "question": "What is a Promise?",
+    "answer": "A Promise is an object representing the eventual completion (or failure) of an asynchronous operation and its resulting value. It can be in one of three states:\n- **Pending**: Initial state, neither fulfilled nor rejected.\n- **Fulfilled**: Operation completed successfully.\n- **Rejected**: Operation failed.\n\nExample:\n```js\nconst myPromise = new Promise((resolve, reject) => {\n  const success = true;\n  if (success) resolve(\"Success!\");\n  else reject(\"Error!\");\n});\n```"
+  },
+  {
+    "id": "th_33",
+    "question": "What is Promise chaining?",
+    "answer": "Promise chaining is a pattern where multiple asynchronous operations are executed sequentially by appending `.then()` blocks. Each `.then()` receives the result of the previous promise and returns a new promise/value.\n\nExample:\n```js\nfetchData()\n  .then(res => res.json())\n  .then(data => processData(data))\n  .catch(err => console.error(err));\n```"
+  },
+  {
+    "id": "th_34",
+    "question": "Difference between Promises and async/await",
+    "answer": "`async/await` is built on top of Promises, providing syntactic sugar:\n\n- **Promises**: Use chainable methods like `.then()` and `.catch()` to handle async outcomes, which can lead to nested boilerplate.\n- **`async/await`**: Writes asynchronous code that looks and behaves like synchronous code. Utilizes standard `try/catch` blocks for error handling.\n\nExample:\n```js\n// Promise chaining\nfetchData()\n  .then(res => res.json())\n  .catch(err => console.error(err));\n\n// Async/await\nasync function get() {\n  try {\n    const res = await fetchData();\n    const data = await res.json();\n  } catch (err) {\n    console.error(err);\n  }\n}\n```"
+  },
+  {
+    "id": "th_35",
+    "question": "What is async/await?",
+    "answer": "`async/await` is a modern JavaScript syntax built on top of Promises. It allows you to write asynchronous code that reads and behaves like synchronous code, improving readability and error handling.\n\n- **`async` keyword**: Placed before a function declaration. It ensures the function always returns a Promise.\n- **`await` keyword**: Can only be used inside an `async` function. It pauses the function execution until the Promise resolves or rejects.\n\nExample:\n```js\nasync function getUserData(userId) {\n  try {\n    const response = await fetch(`/api/users/${userId}`);\n    if (!response.ok) throw new Error(\"User not found\");\n    const data = await response.json();\n    return data;\n  } catch (error) {\n    console.error(\"Failed to fetch user:\", error);\n  }\n}\n```\n\n**Best Practices / Trade-offs**:\n- **Always use try/catch**: Unhandled promise rejections inside async functions can cause runtime errors.\n- **Avoid sequential bottleneck**: Do not await independent promises sequentially; use `Promise.all()` to run them concurrently."
+  },
+  {
+    "id": "th_36",
+    "question": "Difference between event bubbling and event capturing",
+    "answer": "These are the two phases of event propagation in the DOM:\n\n- **Event Bubbling**: The event starts at the target element that triggered it and bubbles **upward** through its parent elements in the DOM tree. (Default behavior).\n- **Event Capturing (Trickling)**: The event starts at the top of the DOM tree (Document/Window) and trickles **downward** to the target element.\n\nExample:\n```js\n// Capture phase (third param true)\nelement.addEventListener(\"click\", handler, true);\n\n// Bubbling phase (default, third param false)\nelement.addEventListener(\"click\", handler, false);\n```"
+  },
+  {
+    "id": "th_37",
+    "question": "What is event delegation and why use it?",
+    "answer": "Event delegation is a design pattern where instead of attaching an event listener to multiple child elements individually, you attach a single event listener to a common parent element. The parent uses event bubbling (specifically checking `event.target`) to identify which child was clicked.\n\n- **Why use it**: Saves memory (fewer listeners) and handles dynamically added children automatically.\n\nExample:\n```js\ndocument.getElementById(\"parent-list\").addEventListener(\"click\", (e) => {\n  if (e.target && e.target.nodeName === \"LI\") {\n    console.log(\"Item clicked: \", e.target.innerText);\n  }\n});\n```"
+  },
+  {
+    "id": "th_38",
+    "question": "What is event bubbling?",
+    "answer": "Event bubbling is the second stage of DOM event propagation where an event triggered on a nested child element \"bubbles up\" through its parent elements (ancestors) until it reaches the root element (document/window).\n\nExample:\n```js\nchild.addEventListener(\"click\", () => console.log(\"Child\"));\nparent.addEventListener(\"click\", () => console.log(\"Parent\")); // Triggers second\n```"
+  },
+  {
+    "id": "th_39",
+    "question": "What is event capturing?",
+    "answer": "Event capturing (or trickling) is the first stage of DOM event propagation. The event travels down from the top level (Document/Window) down to the target element that was clicked.\n\nTo register a listener in the capture phase, pass `true` as the third parameter to `addEventListener`.\n\nExample:\n```js\nparent.addEventListener(\"click\", () => console.log(\"Captured Parent\"), true);\n```"
+  },
+  {
+    "id": "th_40",
+    "question": "Difference between `localStorage` and `sessionStorage`",
+    "answer": "Both are web storage APIs storing key-value pairs in the browser as strings, but they differ in lifetime:\n\n- **`localStorage`**: Persists data with **no expiration date**. Data remains even if the browser tab/window is closed and reopened. Must be cleared programmatically or manually.\n- **`sessionStorage`**: Keeps data only for the duration of the page session. Data is **wiped out** when the browser tab/window is closed.\n\nExample:\n```js\n// Persists indefinitely\nlocalStorage.setItem(\"user\", \"Anandu\");\n\n// Deleted when tab closes\nsessionStorage.setItem(\"session_token\", \"xyz123\");\n```"
+  },
+  {
+    "id": "th_41",
+    "question": "Difference between `fetch` and `axios`",
+    "answer": "- **`fetch`**: Native Web API built into modern browsers. It returns a Promise, but does not reject on HTTP errors (e.g., 404, 500) — you must manually check `response.ok`. It also requires a manual call to `.json()` to parse the response body.\n- **`axios`**: Third-party library. Automatically transforms JSON data, rejects the promise on HTTP error codes, supports request/response interceptors, and can cancel requests.\n\nExample:\n```js\n// Native fetch\nfetch('/api/data')\n  .then(res => {\n    if (!res.ok) throw new Error(\"HTTP error\");\n    return res.json();\n  })\n  .then(data => console.log(data));\n\n// Axios\naxios.get('/api/data')\n  .then(res => console.log(res.data));\n```"
+  },
+  {
+    "id": "th_42",
+    "question": "What is React and why use it?",
+    "answer": "React is a free, open-source front-end JavaScript library developed by Facebook for building component-based user interfaces.\n\n**Why Use It**:\n1. **Component-Based Architecture**: Allows building encapsulated, reusable UI components that manage their own state.\n2. **Virtual DOM**: Updates the DOM efficiently by comparing state changes in memory and batching real DOM operations, maximizing performance.\n3. **Declarative UI**: You design simple views for each state in your application, and React efficiently updates and renders just the right components when data changes.\n4. **Rich Ecosystem & SEO Friendly**: Large community support, custom state management tools, and support for SSR frameworks like Next.js for high SEO visibility.\n\nExample:\n```jsx\nimport React, { useState } from 'react';\n\nfunction SimpleCounter() {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <p>Clicked {count} times</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n    </div>\n  );\n}\n```"
+  },
+  {
+    "id": "th_43",
+    "question": "What is JSX?",
+    "answer": "JSX stands for JavaScript XML. It is a syntax extension for JavaScript that allows you to write HTML-like markup directly inside React components. Browsers cannot execute JSX; it is compiled into standard React API calls (like `React.createElement`) by transpilers like Babel.\n\nExample:\n```jsx\nconst element = <h1 className=\"title\">Hello</h1>;\n// Compiles to:\n// const element = React.createElement('h1', { className: 'title' }, 'Hello');\n```"
+  },
+  {
+    "id": "th_44",
     "question": "What is React Fiber?",
     "answer": "React Fiber is React's core reconciliation engine introduced in React 16. Its primary goal is to enable **incremental rendering** — the ability to split rendering work into chunks and spread it out over multiple frames. This prevents heavy renders from blocking the main browser thread."
   },
   {
-    "id": "th_73",
+    "id": "th_45",
+    "question": "What is React.memo?",
+    "answer": "`React.memo` is a higher-order component. If your component renders the same result given the same props, wrapping it in `React.memo` prevents unnecessary re-renders. It performs a shallow comparison of props."
+  },
+  {
+    "id": "th_46",
+    "question": "Explain Virtual DOM",
+    "answer": "The Virtual DOM (VDOM) is a lightweight, in-memory representation of the real DOM. Direct manipulation of the real DOM is slow and expensive. \n\nReact optimizes rendering using the VDOM:\n1. On state changes, React builds a new VDOM tree.\n2. It compares it with the previous VDOM tree using a process called **reconciliation (diffing)**.\n3. React calculates the minimum batch of changes needed and updates only those specific nodes in the real DOM."
+  },
+  {
+    "id": "th_47",
+    "question": "What is a Pure Component?",
+    "answer": "A Pure Component is a React component that does not re-render if its input props and state are identical. In class components, this is achieved by inheriting from `React.PureComponent` (which implements a shallow comparison in `shouldComponentUpdate`). In functional components, you wrap the component in `React.memo()`."
+  },
+  {
+    "id": "th_48",
+    "question": "Difference between state and props",
+    "answer": "In React, state and props represent different types of data:\n\n- **Props** (Properties): Read-only variables passed from a parent component down to a child. They allow components to be configured and reused. A component cannot change its own props.\n- **State**: Locally owned, private data that can change over time. When state changes (via the setter callback like `setState`), the component re-renders to reflect the updates.\n\nExample:\n```jsx\n// Parent\nfunction CounterParent() {\n  const [count, setCount] = useState(0); // State\n  return <CounterChild count={count} />; // Passing as prop\n}\n\n// Child\nfunction CounterChild(props) {\n  // props.count is read-only\n  return <h1>Count: {props.count}</h1>;\n}\n```"
+  },
+  {
+    "id": "th_49",
+    "question": "What is prop drilling and how to avoid it?",
+    "answer": "Prop drilling is the process of passing props through multiple levels of intermediate components that do not actually need the data, just to deliver it to a deeply nested child component.\n\n**How to avoid it**:\n1. **Context API**: Subscribes to global context without passing props.\n2. **State Management Libraries**: Redux, Zustand, Recoil.\n3. **Component Composition**: Passing elements directly."
+  },
+  {
+    "id": "th_50",
+    "question": "Explain lifting state up",
+    "answer": "Lifting state up is a pattern where state shared by multiple sibling components is moved up to their closest common ancestor. The ancestor passes the state down as props, along with callback setters to allow children to trigger changes."
+  },
+  {
+    "id": "th_51",
+    "question": "Difference between local state and global state",
+    "answer": "- **Local State**: Managed inside a single component (e.g. `useState`). Only the component itself and its immediate children (via props) have access.\n- **Global State**: Shared across multiple independent components throughout the application tree. Managed via Context API, Redux, Zustand, etc."
+  },
+  {
+    "id": "th_52",
+    "question": "Explain Context API",
+    "answer": "The Context API is a built-in React feature that allows you to share global state across the component tree without manually drilling props through every intermediate level.\n\nExample:\n```jsx\nconst ThemeContext = React.createContext('dark');\n\nfunction App() {\n  return (\n    <ThemeContext.Provider value=\"light\">\n      <Toolbar />\n    </ThemeContext.Provider>\n  );\n}\n\nfunction Button() {\n  const theme = useContext(ThemeContext); // theme = 'light'\n  return <button className={theme}>Button</button>;\n}\n```"
+  },
+  {
+    "id": "th_53",
+    "question": "Difference between React hooks and lifecycle methods",
+    "answer": "- **Lifecycle Methods**: Exclusive to Class components (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`). Logic is partitioned by the lifecycle stage, often splitting related code (e.g., timer creation in mount, removal in unmount) across different methods.\n- **React Hooks**: Exclusively for Functional components (`useEffect`). Let you group side effects by feature instead of lifecycle stage, simplifying code and facilitating state reuse across custom hooks.\n\nExample:\n```jsx\n// useEffect encapsulates setup and cleanup in one block\nuseEffect(() => {\n  const id = setInterval(() => console.log(\"tick\"), 1000);\n  return () => clearInterval(id);\n}, []);\n```"
+  },
+  {
+    "id": "th_54",
+    "question": "Explain lifecycle methods",
+    "answer": "Lifecycle methods are hook points in class components called during phases of a component's lifecycle:\n1. **Mounting**: `constructor()`, `componentDidMount()` (runs once after render, best for API calls).\n2. **Updating**: `componentDidUpdate()` (called on prop/state changes).\n3. **Unmounting**: `componentWillUnmount()` (called before removal, best for cleaning timers/listeners)."
+  },
+  {
+    "id": "th_55",
+    "question": "Explain commonly used hooks",
+    "answer": "React hooks are functions that let functional components tap into React state and lifecycle features:\n- `useState`: Declares a local state variable.\n- `useEffect`: Performs side effects (data fetching, subscriptions).\n- `useContext`: Subscribes to React context updates.\n- `useRef`: Keeps a mutable reference that does not trigger re-renders.\n\nExample:\n```jsx\nconst [count, setCount] = useState(0);\nuseEffect(() => {\n  document.title = `Clicked ${count} times`;\n}, [count]);\n```"
+  },
+  {
+    "id": "th_56",
+    "question": "Difference between `useState` and `useReducer`",
+    "answer": "Both are React state hooks, but cater to different complexity levels:\n\n- **`useState`**: Simple state management. Best for independent, primitive states (e.g., toggles, inputs).\n- **`useReducer`**: Complex state logic. Best for managing state objects containing multiple sub-values, or when the next state depends on the previous one. It forces unidirectional data flow via actions and a reducer function.\n\nExample:\n```jsx\n// useReducer reducer pattern\nconst reducer = (state, action) => {\n  switch (action.type) {\n    case 'increment': return { count: state.count + 1 };\n    default: return state;\n  }\n};\nconst [state, dispatch] = useReducer(reducer, { count: 0 });\n// dispatch({ type: 'increment' })\n```"
+  },
+  {
+    "id": "th_57",
+    "question": "Explain the `useEffect` hook",
+    "answer": "The `useEffect` hook lets you perform side effects in functional components. It takes a callback function and a dependency array:\n- **No dependencies**: Runs after every single render.\n- **Empty dependency array `[]`**: Runs once after mounting (like `componentDidMount`).\n- **State/prop dependencies `[val]`**: Runs on mount and whenever the specified dependencies change.\n\nReturn cleanups from `useEffect` to clear intervals or listeners:\n```js\nuseEffect(() => {\n  console.log(\"Mounted\");\n  return () => console.log(\"Cleanup\");\n}, []);\n```"
+  },
+  {
+    "id": "th_58",
+    "question": "Difference between `useMemo` and `useCallback`",
+    "answer": "Both are React optimization hooks used to prevent unnecessary computations and re-renders:\n\n- **`useMemo`**: Memorizes the **result of a calculation**. Runs only when dependencies change.\n- **`useCallback`**: Memorizes the **function definition itself**. Prevates children receiving new function references on every re-render (which breaks `React.memo`).\n\nExample:\n```jsx\n// Memoizes the calculated array\nconst sortedItems = useMemo(() => items.sort(), [items]);\n\n// Memoizes the callback handler reference\nconst handleClick = useCallback(() => console.log(\"clicked\"), []);\n```"
+  },
+  {
+    "id": "th_59",
+    "question": "What is a custom hook?",
+    "answer": "A custom hook is a JavaScript function whose name starts with `use` and that can call other React hooks. It allows you to extract component stateful logic into reusable functions.\n\nExample:\n```js\nfunction useWindowWidth() {\n  const [width, setWidth] = useState(window.innerWidth);\n  useEffect(() => {\n    const handleResize = () => setWidth(window.innerWidth);\n    window.addEventListener('resize', handleResize);\n    return () => window.removeEventListener('resize', handleResize);\n  }, []);\n  return width;\n}\n```"
+  },
+  {
+    "id": "th_60",
+    "question": "What is reconciliation in React?",
+    "answer": "Reconciliation in React is the process React uses to compare the previous Virtual DOM with the updated Virtual DOM whenever state or props change. React identifies the differences between them and updates only the necessary parts of the real DOM, making UI updates efficient and improving performance.\n\n1. **State or props change**\n2. **React creates a new Virtual DOM**\n3. **React compares it with the previous Virtual DOM** (Diffing Algorithm)\n4. **React finds what changed**\n5. **Only the changed parts are updated in the real DOM**"
+  },
+  {
+    "id": "th_61",
+    "question": "Difference between controlled and uncontrolled components",
+    "answer": "Refers to how form input values are managed:\n\n- **Controlled Component**: Input value is driven by React state. React is the \"single source of truth\". Any changes update the state, which triggers a re-render to update the input's visual value.\n- **Uncontrolled Component**: Input value is managed by the DOM. You query the DOM directly using a React `ref` when you need to read the value (e.g., on submit).\n\nExample:\n```jsx\n// Controlled\nconst [val, setVal] = useState(\"\");\n<input value={val} onChange={e => setVal(e.target.value)} />\n\n// Uncontrolled\nconst inputRef = useRef(null);\n<input ref={inputRef} /> // read value via inputRef.current.value\n```"
+  },
+  {
+    "id": "th_62",
+    "question": "What is batching in React updates?",
+    "answer": "Batching is a React performance optimization where React groups multiple state updates into a single re-render. In React 18, automatic batching applies to all updates inside promises, timeouts, and native event handlers."
+  },
+  {
+    "id": "th_63",
     "question": "What is lazy loading?",
     "answer": "Lazy loading is a design pattern that defers the loading of non-critical resources (like components, images, or assets) until they are needed (e.g., when they enter the viewport or on router changes)."
   },
   {
-    "id": "th_74",
+    "id": "th_64",
     "question": "What is Suspense?",
     "answer": "`Suspense` is a React component that lets you declaratively specify a loading fallback UI while children are waiting for asynchronous data loading or code loading (like dynamic import modules).\n\nExample:\n```jsx\n<Suspense fallback={<div>Loading...</div>}>\n  <LazyComponent />\n</Suspense>\n```"
   },
   {
-    "id": "th_78",
-    "question": "What is reconciliation?",
-    "answer": "Reconciliation is React's algorithm for diffing the virtual DOM tree against the actual DOM tree. React checks differences in node types, keys, and properties to determine the absolute minimum number of DOM updates required."
-  },
-  {
-    "id": "th_81",
-    "question": "What is ISR?",
-    "answer": "Incremental Static Regeneration (ISR) is a Next.js feature that allows you to create or update static pages **after the site is built**, without rebuilding the entire application. Pages are regenerated in the background at specified intervals."
-  },
-  {
-    "id": "th_82",
-    "question": "What is code splitting in Next.js?",
-    "answer": "Code splitting is a technique that splits the application bundle into smaller chunks that are loaded on demand. In Next.js, this is done automatically out-of-the-box:\n\n1. **Page-Based Splitting**: Every page inside the router is split into its own bundle. Navigating to a page only loads the JavaScript needed for that specific page.\n2. **Component-Based Splitting**: You can lazily load components dynamically using `next/dynamic` to split large components or libraries from the main bundle.\n\nExample:\n```jsx\nimport dynamic from 'next/dynamic';\n\n// Heavy component loaded only on demand\nconst HeavyChart = dynamic(() => import('../components/HeavyChart'), {\n  loading: () => <p>Loading Chart...</p>,\n  ssr: false // Optional: disable SSR for client-only libraries\n});\n\nexport default function Dashboard() {\n  return (\n    <div>\n      <h1>Dashboard</h1>\n      <HeavyChart />\n    </div>\n  );\n}\n```"
-  },
-  {
-    "id": "th_88",
-    "question": "What is Redux Thunk?",
-    "answer": "Redux Thunk is a middleware that allows you to write action creators that return a **function** instead of an action object. This function can execute asynchronous operations (like API calls) and dispatch normal synchronous actions once completed.\n\nExample:\n```js\nconst fetchUser = (id) => async (dispatch) => {\n  const user = await API.get(id);\n  dispatch({ type: 'SET_USER', payload: user });\n};\n```"
-  },
-  {
-    "id": "th_89",
-    "question": "What is Redux Saga?",
-    "answer": "Redux Saga is a middleware designed to handle side effects in Redux. It uses ES6 **Generators** (`function*`) to write asynchronous code that reads like synchronous code. It listens to dispatched actions and triggers side effects using declarative \"effects\" (like `call`, `put`, `takeEvery`)."
-  },
-  {
-    "id": "th_90",
-    "question": "What is Zustand?",
-    "answer": "Zustand is a lightweight state management library for React. Unlike Redux, it has minimal boilerplate, doesn't wrap your app in Providers, uses hooks as primary consumers, and is built on simple closures.\n\nExample:\n```js\nimport create from 'zustand';\nconst useStore = create(set => ({\n  count: 0,\n  inc: () => set(state => ({ count: state.count + 1 }))\n}));\n```"
-  },
-  {
-    "id": "th_91",
-    "question": "What is Recoil?",
-    "answer": "Recoil is a state management library developed by Facebook for React. It introduces the concept of **Atoms** (units of state) and **Selectors** (pure functions representing derived state). It offers granular re-rendering optimizations."
-  },
-  {
-    "id": "th_20",
+    "id": "th_65",
     "question": "Difference between SSG, SSR, and CSR in Next.js",
     "answer": "Next.js supports multiple rendering paradigms depending on page requirements:\n\n1. **Static Site Generation (SSG)**: HTML is built **once at build time** (via `getStaticProps` or default in App Router). Best for static content (e.g., blogs, documentation). Extremely fast and CDN-cacheable.\n2. **Server-Side Rendering (SSR)**: HTML is generated **on each request** (via `getServerSideProps` or dynamic rendering in App Router). Best for dynamic, personalized, or real-time data.\n3. **Client-Side Rendering (CSR)**: Standard React rendering in the browser. Data is fetched in `useEffect` or via client-side libraries like SWR/React Query.\n\nExample (App Router configuration):\n```jsx\n// SSG (Static page by default in Next.js App Router)\nexport default async function Page() {\n  const res = await fetch('https://api.example.com/data'); // cached by default\n  const data = await res.json();\n  return <div>{data.title}</div>;\n}\n\n// SSR (Dynamic page)\nexport default async function DynamicPage() {\n  const res = await fetch('https://api.example.com/data', { cache: 'no-store' }); // bypass cache\n  const data = await res.json();\n  return <div>{data.title}</div>;\n}\n```"
   },
   {
-    "id": "th_27",
-    "question": "Difference between debounce and throttle",
-    "answer": "Both rate-limit execution, but serve different scenarios:\n\n- **Debounce**: Delays execution of a function until after a specific amount of time has elapsed since the **last time** the function was triggered. Best for search inputs, where you only run the API request after the user stops typing.\n- **Throttle**: Ensures a function is called **at most once** within a specified time window. Best for scroll listeners, resize handlers, or mouse movement tracking.\n\nExample:\n```js\n// Debounce search\nconst handleSearch = debounce((query) => searchAPI(query), 300);\n```"
+    "id": "th_66",
+    "question": "What is ISR?",
+    "answer": "Incremental Static Regeneration (ISR) is a Next.js feature that allows you to create or update static pages **after the site is built**, without rebuilding the entire application. Pages are regenerated in the background at specified intervals."
   },
   {
-    "id": "th_80",
-    "question": "Difference between SSG, SSR, and CSR",
-    "answer": "Next.js supports multiple rendering paradigms depending on page requirements:\n\n1. **Static Site Generation (SSG)**: HTML is built **once at build time** (via `getStaticProps`). Best for content that does not change on a per-user basis (e.g., blogs, documentation). Extremely fast (served from CDN).\n2. **Server-Side Rendering (SSR)**: HTML is generated **on each request** (via `getServerSideProps`). Best for dynamic pages containing personalized or real-time data.\n3. **Client-Side Rendering (CSR)**: Standard React rendering inside the browser. Data is fetched in `useEffect` or via SWR/React Query.\n\nExample:\n```js\n// Next.js Page (SSG example)\nexport async function getStaticProps() {\n  const data = await fetchData();\n  return { props: { data } };\n}\n```"
+    "id": "th_67",
+    "question": "What is dynamic routing in Next.js?",
+    "answer": "Dynamic routing in Next.js allows you to define routes that match variable URL parameters (e.g., product IDs, usernames) rather than static paths.\n\n- **App Router**: Created by naming folder with square brackets: `app/blog/[slug]/page.js`.\n- **Pages Router**: Created by naming file with square brackets: `pages/blog/[slug].js`.\n\nExample (App Router `app/blog/[slug]/page.jsx`):\n```jsx\nexport default async function BlogPost({ params }) {\n  // Access the dynamic slug parameter\n  const { slug } = await params;\n  \n  return (\n    <article>\n      <h1>Blog Post: {slug}</h1>\n      <p>Content for {slug} will be loaded here.</p>\n    </article>\n  );\n}\n```"
   },
   {
-    "id": "th_92",
-    "question": "Explain memoization in React",
-    "answer": "Memoization in React optimizes rendering using `useMemo` (caches calculated values), `useCallback` (caches function references), and `React.memo` (caches component output on identical props)."
+    "id": "th_68",
+    "question": "What is code splitting in Next.js?",
+    "answer": "Code splitting is a technique that splits the application bundle into smaller chunks that are loaded on demand. In Next.js, this is done automatically out-of-the-box:\n\n1. **Page-Based Splitting**: Every page inside the router is split into its own bundle. Navigating to a page only loads the JavaScript needed for that specific page.\n2. **Component-Based Splitting**: You can lazily load components dynamically using `next/dynamic` to split large components or libraries from the main bundle.\n\nExample:\n```jsx\nimport dynamic from 'next/dynamic';\n\n// Heavy component loaded only on demand\nconst HeavyChart = dynamic(() => import('../components/HeavyChart'), {\n  loading: () => <p>Loading Chart...</p>,\n  ssr: false // Optional: disable SSR for client-only libraries\n});\n\nexport default function Dashboard() {\n  return (\n    <div>\n      <h1>Dashboard</h1>\n      <HeavyChart />\n    </div>\n  );\n}\n```"
   },
   {
-    "id": "th_93",
+    "id": "th_69",
     "question": "Explain code splitting",
     "answer": "Code splitting is a technique that splits your single bundle file into multiple chunks that can be loaded dynamically on-demand, reducing initial bundle load sizes."
   },
   {
-    "id": "th_94",
-    "question": "Explain debounce and throttle practically",
+    "id": "th_70",
+    "question": "Explain Redux",
+    "answer": "Redux is a pattern and library for managing global application state using a centralized store. It follows three principles:\n1. **Single Source of Truth**: State is stored in a single object tree.\n2. **State is Read-Only**: State changes only by dispatching an action.\n3. **Changes are Made with Pure Functions**: Reducers capture actions and return new state trees."
+  },
+  {
+    "id": "th_71",
+    "question": "Explain Redux data flow",
+    "answer": "Redux state operates in a strict unidirectional flow:\n1. **Action**: An event containing a type (e.g. `INCREMENT`) is dispatched.\n2. **Reducer**: A pure function intercepting the action and returning the next state.\n3. **Store**: Houses the state. Emits state updates.\n4. **View**: React components subscribe to the store and re-render."
+  },
+  {
+    "id": "th_72",
+    "question": "What is Redux Toolkit?",
+    "answer": "Redux Toolkit (RTK) is the official, recommended template for writing Redux logic. It resolves Redux configuration boilerplates, default dependencies, and mutable state pitfalls:\n- Provides `configureStore()` to bundle DevTools, middleware.\n- Provides `createSlice()` which uses **Immer** internally, letting you write mutating state update code that is converted to pure immutable updates.\n\nExample:\n```js\nconst counterSlice = createSlice({\n  name: 'counter',\n  initialState: { value: 0 },\n  reducers: {\n    increment: state => { state.value += 1; } // safe to write \"mutations\" here\n  }\n});\n```"
+  },
+  {
+    "id": "th_73",
+    "question": "What is Redux Thunk?",
+    "answer": "Redux Thunk is a middleware that allows you to write action creators that return a **function** instead of an action object. This function can execute asynchronous operations (like API calls) and dispatch normal synchronous actions once completed.\n\nExample:\n```js\nconst fetchUser = (id) => async (dispatch) => {\n  const user = await API.get(id);\n  dispatch({ type: 'SET_USER', payload: user });\n};\n```"
+  },
+  {
+    "id": "th_74",
+    "question": "What is Redux Saga?",
+    "answer": "Redux Saga is a middleware designed to handle side effects in Redux. It uses ES6 **Generators** (`function*`) to write asynchronous code that reads like synchronous code. It listens to dispatched actions and triggers side effects using declarative \"effects\" (like `call`, `put`, `takeEvery`)."
+  },
+  {
+    "id": "th_75",
+    "question": "What is Zustand?",
+    "answer": "Zustand is a lightweight state management library for React. Unlike Redux, it has minimal boilerplate, doesn't wrap your app in Providers, uses hooks as primary consumers, and is built on simple closures.\n\nExample:\n```js\nimport create from 'zustand';\nconst useStore = create(set => ({\n  count: 0,\n  inc: () => set(state => ({ count: state.count + 1 }))\n}));\n```"
+  },
+  {
+    "id": "th_76",
+    "question": "What is Recoil?",
+    "answer": "Recoil is a state management library developed by Facebook for React. It introduces the concept of **Atoms** (units of state) and **Selectors** (pure functions representing derived state). It offers granular re-rendering optimizations."
+  },
+  {
+    "id": "th_77",
+    "question": "Difference between debounce and throttle",
     "answer": "Both rate-limit execution, but serve different scenarios:\n\n- **Debounce**: Delays execution of a function until after a specific amount of time has elapsed since the **last time** the function was triggered. Best for search inputs, where you only run the API request after the user stops typing.\n- **Throttle**: Ensures a function is called **at most once** within a specified time window. Best for scroll listeners, resize handlers, or mouse movement tracking.\n\nExample:\n```js\n// Debounce search\nconst handleSearch = debounce((query) => searchAPI(query), 300);\n```"
+  },
+  {
+    "id": "th_78",
+    "question": "What is debounce?",
+    "answer": "Debouncing is a programming practice used to limit the rate at which a function gets invoked. It delays the execution of a function until a certain amount of idle time has passed since the last time the function was triggered.\n\n**Use Case**: Search inputs, window resizing, or typing indicators where you only want to process the final input after the user has stopped action.\n\nExample:\n```js\nfunction debounce(func, delay) {\n  let timerId;\n  return function (...args) {\n    clearTimeout(timerId);\n    timerId = setTimeout(() => {\n      func.apply(this, args);\n    }, delay);\n  };\n}\n\n// Usage\nconst handleSearch = debounce((query) => {\n  console.log(\"Searching database for:\", query);\n}, 300);\n```"
+  },
+  {
+    "id": "th_79",
+    "question": "What is throttle?",
+    "answer": "Throttling is a technique used to limit the execution rate of a function. It ensures that a function is called at most once during a specified time interval, regardless of how many times the event is fired.\n\n**Use Case**: Scroll listeners, mouse movement tracking, resizing, or rate-limiting button clicks to prevent spam.\n\nExample:\n```js\nfunction throttle(func, limit) {\n  let inThrottle = false;\n  return function (...args) {\n    if (!inThrottle) {\n      func.apply(this, args);\n      inThrottle = true;\n      setTimeout(() => inThrottle = false, limit);\n    }\n  };\n}\n\n// Usage\nconst handleScroll = throttle(() => {\n  console.log(\"Scroll event processed\");\n}, 200);\nwindow.addEventListener(\"scroll\", handleScroll);\n```"
+  },
+  {
+    "id": "th_80",
+    "question": "What is memoization?",
+    "answer": "Memoization is an optimization technique used to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again."
+  },
+  {
+    "id": "th_81",
+    "question": "Explain memoization in React",
+    "answer": "Memoization in React optimizes rendering using `useMemo` (caches calculated values), `useCallback` (caches function references), and `React.memo` (caches component output on identical props)."
+  },
+  {
+    "id": "th_82",
+    "question": "Difference between absolute and relative positioning",
+    "answer": "These are CSS position properties:\n\n- **`position: relative`**: Element is positioned relative to its **normal flow position**. It reserves its original space in the layout, and offsets do not disrupt other elements.\n- **`position: absolute`**: Element is removed from the normal document flow. It is positioned relative to its **nearest positioned ancestor** (an ancestor with a position other than `static`). If none exists, it positions relative to the initial containing block (viewport/html).\n\nExample:\n```css\n.parent {\n  position: relative; /* Anchor for absolute children */\n}\n.child {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}\n```"
+  },
+  {
+    "id": "th_83",
+    "question": "What is GraphQL?",
+    "answer": "GraphQL is a query language and runtime for APIs. Unlike REST APIs, which return rigid data structures from specific endpoints, GraphQL allows client applications to request **exactly the fields they need**, combining multiple resources in a single HTTP request.\n\nExample query:\n```graphql\nquery {\n  user(id: \"1\") {\n    name\n    email\n  }\n}\n```"
+  },
+  {
+    "id": "th_84",
+    "question": "Difference between `for...in` and `for...of`",
+    "answer": "Both iterate over structures but target different values:\n\n- **`for...in`**: Iterates over the enumerable **keys (properties)** of an object (including prototype keys).\n- **`for...of`**: Iterates over the iterable **values** of an iterable object (like Arrays, Strings, Sets, Maps).\n\nExample:\n```js\nconst arr = [\"a\", \"b\"];\n\nfor (let key in arr) {\n  console.log(key); // \"0\", \"1\" (indexes)\n}\n\nfor (let val of arr) {\n  console.log(val); // \"a\", \"b\" (elements)\n}\n```"
+  },
+  {
+    "id": "th_85",
+    "question": "Difference between client-side rendering and server-side rendering",
+    "answer": "- **Client-Side Rendering (CSR)**: The server sends a barebones HTML file and a bundle of JavaScript. The browser downloads the JS and builds the entire page client-side.\n  - *Pros*: Fast transitions after initial load, rich interactions.\n  - *Cons*: Slow initial load (FCP), poorer SEO since crawlers see empty HTML initially.\n- **Server-Side Rendering (SSR)**: The server renders the HTML for the requested page on the fly for each request and sends the fully populated HTML to the browser.\n  - *Pros*: Excellent SEO, fast First Contentful Paint.\n  - *Cons*: Server load is higher, page transitions require a roundtrip to the server unless optimized."
+  },
+  {
+    "id": "th_86",
+    "question": "Difference between class components and functional components",
+    "answer": "- **Class Components**: Legacy React components using ES6 classes. State is managed via `this.state` and updates via `this.setState()`. Lifecycle methods like `componentDidMount` and `componentWillUnmount` are used to handle side effects.\n- **Functional Components**: Modern standard React components using simple functions. Hooks (`useState`, `useEffect`) are used to manage state and lifecycles. They are easier to read, write, and test, and enable better tree-shaking optimizations.\n\nExample:\n```jsx\n// Functional Component\nfunction Greet({ name }) {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c => c + 1)}>Clicked {count}</button>;\n}\n```"
+  },
+  {
+    "id": "th_87",
+    "question": "What is Next.js?",
+    "answer": "Next.js is a React framework for building production-ready applications. It provides built-in configurations like server-side rendering (SSR), static site generation (SSG), automatic code splitting, API routing, dynamic routing, and SEO optimization."
   }
 ];
 
@@ -1964,12 +1929,12 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "5"
     ],
     "options": [
+      "6",
+      "3",
       "4",
       "1",
       "2",
-      "3",
-      "5",
-      "6"
+      "5"
     ]
   },
   {
@@ -1981,8 +1946,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Timeout",
-      "Immediate"
+      "Immediate",
+      "Timeout"
     ]
   },
   {
@@ -1996,10 +1961,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "After Emit"
     ],
     "options": [
-      "Listener 2",
-      "After Emit",
       "Before Emit",
-      "Listener 1"
+      "Listener 2",
+      "Listener 1",
+      "After Emit"
     ]
   },
   {
@@ -2025,9 +1990,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "On: 3"
     ],
     "options": [
-      "On: 2",
+      "Once: 1",
       "On: 3",
-      "Once: 1"
+      "On: 2"
     ]
   },
   {
@@ -2057,10 +2022,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "Timeout",
-      "Tick 2",
-      "Start",
+      "Tick 3",
       "Tick 1",
-      "Tick 3"
+      "Start",
+      "Tick 2"
     ]
   },
   {
@@ -2074,9 +2039,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
+      "A",
       "---",
-      "B",
-      "A"
+      "B"
     ]
   },
   {
@@ -2103,10 +2068,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Immediate"
     ],
     "options": [
+      "Timeout",
       "NextTick",
-      "Immediate",
       "Promise",
-      "Timeout"
+      "Immediate"
     ]
   },
   {
@@ -2132,9 +2097,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "C"
     ],
     "options": [
-      "B",
+      "A",
       "C",
-      "A"
+      "B"
     ]
   },
   {
@@ -2146,8 +2111,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Handled: Rejected!"
     ],
     "options": [
-      "Script end",
-      "Handled: Rejected!"
+      "Handled: Rejected!",
+      "Script end"
     ]
   },
   {
@@ -2175,10 +2140,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "immediate 1"
     ],
     "options": [
-      "nextTick 1",
       "immediate 2",
+      "nextTick 2",
       "immediate 1",
-      "nextTick 2"
+      "nextTick 1"
     ]
   }
 ];

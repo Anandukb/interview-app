@@ -129,34 +129,219 @@ for (let i = 1; i < blocks.length; i++) {
 // 3. Extract Theory Questions (React JS)
 const theoryRegex = /\d+\.\s+(What is.*?\?|Explain.*|Difference between.*)/gi;
 let match;
-let theoryId = 1;
-const extractedTheory = new Set();
+const extractedTheoryNormalized = new Set();
+const seenAnswers = new Set();
+
+// Map to filter out conceptual duplicate questions
+const duplicateMappings = {
+  "differencebetweenssgssrandcsr": "differencebetweenssgssrandcsrinnextjs",
+  "whatisreconciliation": "whatisreconciliationinreact",
+  "whatissynchronousandasynchronousexecution": "differencebetweensynchronousandasynchronousexecution",
+  "explaindeepcopyandshallowcopy": "differencebetweenshallowcopyanddeepcopy",
+};
 
 while ((match = theoryRegex.exec(markdownContent)) !== null) {
   const q = match[1].trim();
-  if (!extractedTheory.has(q)) {
-    extractedTheory.add(q);
-    parsedData.theory.push({
-      id: `th_${theoryId++}`,
-      question: q,
-      answer: getAnswerForQuestion(q)
-    });
+  let normQ = q.toLowerCase().replace(/[`'\s\-\?\!\.\,\(\)]/g, '');
+  
+  if (duplicateMappings[normQ]) {
+    normQ = duplicateMappings[normQ];
+  }
+  
+  if (!extractedTheoryNormalized.has(normQ)) {
+    const ans = getAnswerForQuestion(q);
+    const isFallback = ans.includes('This is a comprehensive answer to');
+    if (isFallback || !seenAnswers.has(ans)) {
+      extractedTheoryNormalized.add(normQ);
+      if (!isFallback) {
+        seenAnswers.add(ans);
+      }
+      parsedData.theory.push({
+        id: '', // Will assign IDs after sorting
+        question: q,
+        answer: ans
+      });
+    }
   }
 }
 
-// Sort theory questions from basic to advanced
-const basicKeywords = ['what is', 'difference between let', '== and ===', 'jsx', 'props', 'state', 'hoisting', 'callback', 'arrow function', 'template literal'];
-const advancedKeywords = ['usememo', 'usecallback', 'generator', 'reconciliation', 'fiber', 'suspense', 'ssr', 'ssg', 'saga', 'thunk', 'currying', 'memoization', 'throttle', 'debounce', 'deep clone', 'custom hook', 'portals', 'error boundaries', 'lazy loading', 'code splitting', 'graphql', 'zustand', 'recoil', 'isr', 'middleware'];
+// Grouping categories, keywords, and sub-topics to bring related questions together
+const categories = [
+  {
+    name: "JavaScript Basics & Scoping",
+    keywords: ["let", "const", "var", "hoisting", "temporal dead zone", "tdz", "lexical scope", "closure", "this", "prototype", "garbage collection", "==", "===", "null", "undefined", "nan", "bind", "apply", "for...in", "for...of", "loops"],
+    subTopics: [
+      { name: "variables", keywords: ["let", "const", "var"] },
+      { name: "hoisting_tdz", keywords: ["hoisting", "temporal dead zone", "tdz"] },
+      { name: "scope_closure", keywords: ["lexical scope", "closure"] },
+      { name: "this_context", keywords: ["this", "bind", "apply"] },
+      { name: "prototype", keywords: ["prototype"] },
+      { name: "garbage_collection", keywords: ["garbage collection"] },
+      { name: "equality_types", keywords: ["==", "===", "null", "undefined", "nan"] },
+      { name: "loops", keywords: ["for...in", "for...of", "loops"] }
+    ]
+  },
+  {
+    name: "JavaScript Functions & Language Features",
+    keywords: ["function declaration", "function expression", "callback", "arrow function", "destructuring", "spread", "rest", "currying", "higher-order", "iife", "generator", "template literal", "modules", "polyfill"],
+    subTopics: [
+      { name: "functions", keywords: ["function declaration", "function expression", "callback", "arrow function", "currying", "higher-order", "iife"] },
+      { name: "syntax_features", keywords: ["destructuring", "spread", "rest", "template literal", "modules", "polyfill"] }
+    ]
+  },
+  {
+    name: "Arrays, Objects & Data Mutability",
+    keywords: ["every", "some", "map", "foreach", "slice", "splice", "substring", "filter", "reduce", "shallow copy", "deep copy", "mutable", "immutable", "string methods", "comparison"],
+    subTopics: [
+      { name: "array_methods", keywords: ["every", "some", "map", "foreach", "slice", "splice", "filter", "reduce"] },
+      { name: "mutability_copying", keywords: ["shallow copy", "deep copy", "mutable", "immutable", "comparison"] },
+      { name: "string_methods", keywords: ["string methods"] }
+    ]
+  },
+  {
+    name: "Asynchronous JavaScript & Event Loop",
+    keywords: ["promise", "async", "await", "event loop", "call stack", "settimeout", "setinterval", "synchronous", "asynchronous"],
+    subTopics: [
+      { name: "basics", keywords: ["synchronous", "asynchronous"] },
+      { name: "event_loop", keywords: ["event loop", "call stack"] },
+      { name: "timers", keywords: ["settimeout", "setinterval"] },
+      { name: "promises", keywords: ["promise"] },
+      { name: "async_await", keywords: ["async", "await"] }
+    ]
+  },
+  {
+    name: "DOM & Web APIs",
+    keywords: ["event bubbling", "event capturing", "event delegation", "localstorage", "sessionstorage", "fetch", "axios"],
+    subTopics: [
+      { name: "event_propagation", keywords: ["event bubbling", "event capturing", "event delegation"] },
+      { name: "web_storage", keywords: ["localstorage", "sessionstorage"] },
+      { name: "http_requests", keywords: ["fetch", "axios"] }
+    ]
+  },
+  {
+    name: "React Core Concepts",
+    keywords: ["what is react", "react and why", "jsx", "keys in react", "pure component", "react fragment", "lifting state up", "context api", "portals", "event handling", "state and props", "state vs props", "state", "props", "prop drilling", "lifecycle", "class component", "functional component"],
+    subTopics: [
+      { name: "basics", keywords: ["what is react", "react and why", "jsx", "react fragment", "keys in react"] },
+      { name: "vdom", keywords: ["virtual dom"] },
+      { name: "components", keywords: ["pure component", "class component", "functional component"] },
+      { name: "state_props", keywords: ["state and props", "state vs props", "state", "props", "lifting state up", "prop drilling"] },
+      { name: "context", keywords: ["context api"] },
+      { name: "advanced", keywords: ["portals", "event handling", "lifecycle"] }
+    ]
+  },
+  {
+    name: "React Hooks",
+    keywords: ["react hooks", "commonly used hooks", "hooks", "usestate", "usereducer", "usememo", "usecallback", "useeffect", "custom hook"],
+    subTopics: [
+      { name: "basic_hooks", keywords: ["react hooks", "commonly used hooks", "hooks"] },
+      { name: "state_reducer", keywords: ["usestate", "usereducer"] },
+      { name: "effect", keywords: ["useeffect"] },
+      { name: "memo_callback", keywords: ["usememo", "usecallback"] },
+      { name: "custom_hooks", keywords: ["custom hook"] }
+    ]
+  },
+  {
+    name: "React Advanced & Performance",
+    keywords: ["reconciliation", "react fiber", "batching", "react.memo", "controlled and uncontrolled", "controlled vs uncontrolled", "error boundaries", "lazy loading", "suspense", "forms in react", "side effects in react"],
+    subTopics: [
+      { name: "reconciliation", keywords: ["reconciliation", "react fiber"] },
+      { name: "memoization", keywords: ["react.memo"] },
+      { name: "rendering_behavior", keywords: ["batching", "controlled and uncontrolled", "controlled vs uncontrolled", "forms in react", "side effects in react"] },
+      { name: "errors_loading", keywords: ["error boundaries", "lazy loading", "suspense"] }
+    ]
+  },
+  {
+    name: "Next.js & Server Rendering",
+    keywords: ["next.js", "nextjs", "ssg", "ssr", "csr", "isr", "routing", "dynamic routing", "code splitting", "middleware", "client-side rendering", "server-side rendering"],
+    subTopics: [
+      { name: "basics", keywords: ["next.js", "nextjs"] },
+      { name: "rendering_modes", keywords: ["ssg", "ssr", "csr", "isr", "client-side rendering", "server-side rendering"] },
+      { name: "routing_features", keywords: ["routing", "dynamic routing", "middleware"] },
+      { name: "code_splitting", keywords: ["code splitting"] }
+    ]
+  },
+  {
+    name: "State Management",
+    keywords: ["redux", "redux toolkit", "redux data flow", "redux thunk", "redux saga", "zustand", "recoil", "local state", "global state"],
+    subTopics: [
+      { name: "redux", keywords: ["redux", "redux toolkit", "redux data flow", "redux thunk", "redux saga"] },
+      { name: "zustand_recoil", keywords: ["zustand", "recoil"] },
+      { name: "concepts", keywords: ["local state", "global state"] }
+    ]
+  },
+  {
+    name: "Performance & Optimization",
+    keywords: ["debounce", "throttle", "memoization"],
+    subTopics: [
+      { name: "rate_limiting", keywords: ["debounce", "throttle"] },
+      { name: "memoization", keywords: ["memoization"] }
+    ]
+  },
+  {
+    name: "CSS & Web APIs",
+    keywords: ["positioning", "relative position", "absolute position", "semantic tag", "graphql"],
+    subTopics: [
+      { name: "layout", keywords: ["positioning", "relative position", "absolute position", "semantic tag"] },
+      { name: "apis", keywords: ["graphql"] }
+    ]
+  }
+];
 
-const getScore = (q) => {
-  const lowerQ = q.toLowerCase();
-  let score = 50; // default medium
-  if (basicKeywords.some(k => lowerQ.includes(k))) score -= 20;
-  if (advancedKeywords.some(k => lowerQ.includes(k))) score += 40;
-  return score;
+const getCategoryAndSubTopicIndex = (question) => {
+  const q = question.toLowerCase();
+
+  const matchesKeyword = (keyword) => {
+    if (/^[^a-z0-9]+$/i.test(keyword)) {
+      return q.includes(keyword);
+    }
+    const escapedKeyword = keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const cleanQ = q.replace(/[`'\-\?\!\.\,\(\)]/g, ' ');
+    const regex = new RegExp(`\\b${escapedKeyword}\\b`, 'i');
+    return regex.test(cleanQ);
+  };
+
+  for (let i = 0; i < categories.length; i++) {
+    const category = categories[i];
+    for (let j = 0; j < category.subTopics.length; j++) {
+      if (category.subTopics[j].keywords.some(matchesKeyword)) {
+        return { categoryIndex: i, subTopicIndex: j };
+      }
+    }
+    if (category.keywords.some(matchesKeyword)) {
+      return { categoryIndex: i, subTopicIndex: category.subTopics.length };
+    }
+  }
+
+  return { categoryIndex: categories.length, subTopicIndex: 0 }; // Miscellaneous
 };
 
-parsedData.theory.sort((a, b) => getScore(a.question) - getScore(b.question));
+// Assign category and sub-topic indices for sorting
+parsedData.theory.forEach((item, index) => {
+  const { categoryIndex, subTopicIndex } = getCategoryAndSubTopicIndex(item.question);
+  item.categoryIndex = categoryIndex;
+  item.subTopicIndex = subTopicIndex;
+  item.originalIndex = index;
+});
+
+// Sort by categoryIndex, then subTopicIndex, then originalIndex (stable sort)
+parsedData.theory.sort((a, b) => {
+  if (a.categoryIndex !== b.categoryIndex) {
+    return a.categoryIndex - b.categoryIndex;
+  }
+  if (a.subTopicIndex !== b.subTopicIndex) {
+    return a.subTopicIndex - b.subTopicIndex;
+  }
+  return a.originalIndex - b.originalIndex;
+});
+
+// Assign sequential IDs
+parsedData.theory.forEach((q, idx) => {
+  q.id = `th_${idx + 1}`;
+  delete q.categoryIndex;
+  delete q.subTopicIndex;
+  delete q.originalIndex;
+});
 
 // 4. Extract Node JS Theory Questions from node_theory.md
 const nodeTheoryBlocks = nodeTheoryContent.split(/\n## /);
