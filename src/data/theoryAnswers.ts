@@ -656,7 +656,7 @@ const handleClick = useCallback(() => console.log("clicked"), []);
 
   // Hoisting
   "whatishoisting": `
-Hoisting is a JavaScript mechanism where variable and function declarations are moved to the top of their containing scope before code execution begins.
+Hoisting in Javascript is the behaviour where variables and functions are moved to the top of their scope during the compilation phase, before the code is executed
 
 - **Function Declarations**: Completely hoisted (both declaration and implementation are moved).
 - **\`var\` variables**: Hoisted but initialized to \`undefined\`.
