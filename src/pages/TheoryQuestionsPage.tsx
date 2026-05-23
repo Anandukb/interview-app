@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { theoryQuestions, nodeTheoryQuestions } from '../data/parsedQuestions';
+import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions } from '../data/parsedQuestions';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import './TheoryQuestionsPage.css';
 
@@ -135,9 +135,16 @@ const TheoryQuestionsPage = () => {
   const { track } = useParams<{ track: string }>();
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
 
-  const isNode = track === 'node';
-  const questions = isNode ? nodeTheoryQuestions : theoryQuestions;
-  const trackTitle = isNode ? 'Node JS' : 'Theory';
+  let questions = jsTheoryQuestions;
+  let trackTitle = 'JavaScript';
+
+  if (track === 'node') {
+    questions = nodeTheoryQuestions;
+    trackTitle = 'Node JS';
+  } else if (track === 'react') {
+    questions = reactTheoryQuestions;
+    trackTitle = 'React';
+  }
 
   const toggleQuestion = (id: string) => {
     const newOpenIds = new Set(openIds);

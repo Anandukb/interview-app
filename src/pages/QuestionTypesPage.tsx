@@ -6,33 +6,40 @@ const QuestionTypesPage = () => {
   const navigate = useNavigate();
   const { track } = useParams<{ track: string }>();
 
-  const isNode = track === 'node';
-  const trackName = isNode ? 'Node JS' : 'React JS';
+  let trackName = 'JavaScript';
+  if (track === 'node') trackName = 'Node JS';
+  else if (track === 'react') trackName = 'React';
 
   const types = [
     {
       id: 'theory',
       name: 'Theory Questions',
       icon: <HelpCircle size={40} className="type-icon" />,
-      desc: isNode 
+      desc: track === 'node'
         ? 'Theory and core concept interview questions on Node.js.'
-        : 'Theory and concept-based interview questions on JS & React.'
+        : track === 'react'
+        ? 'Theory and concept-based interview questions on React.'
+        : 'Theory and concept-based interview questions on JavaScript.'
     },
     {
       id: 'output-prediction',
       name: 'Output Prediction',
       icon: <CheckSquare size={40} className="type-icon" />,
-      desc: isNode 
+      desc: track === 'node'
         ? 'Predict the exact output of tricky Node.js snippets.'
-        : 'Predict the exact output of tricky React/JS snippets.'
+        : track === 'react'
+        ? 'Predict the exact output of tricky React JSX snippets.'
+        : 'Predict the exact output of tricky JavaScript snippets.'
     },
     {
       id: 'practical',
       name: 'Practical Coding',
       icon: <Laptop size={40} className="type-icon" />,
-      desc: isNode 
+      desc: track === 'node'
         ? 'Hands-on backend coding challenges in Node.js.'
-        : 'Hands-on coding challenges in an interactive environment.'
+        : track === 'react'
+        ? 'Hands-on React coding challenges in an interactive environment.'
+        : 'Hands-on JavaScript coding challenges in an interactive environment.'
     }
   ];
 

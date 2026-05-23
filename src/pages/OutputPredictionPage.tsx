@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { outputPredictionQuestions, nodeOutputPredictionQuestions } from '../data/parsedQuestions';
+import { jsOutputPredictionQuestions, reactOutputPredictionQuestions, nodeOutputPredictionQuestions } from '../data/parsedQuestions';
 import type { OutputPredictionQuestion } from '../data/parsedQuestions';
 import Editor from '@monaco-editor/react';
 import { CheckCircle, XCircle, RotateCcw } from 'lucide-react';
@@ -16,8 +16,12 @@ const OutputPredictionPage = () => {
   const [isAnswerShown, setIsAnswerShown] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  const isNode = track === 'node';
-  const questions = isNode ? nodeOutputPredictionQuestions : outputPredictionQuestions;
+  let questions = jsOutputPredictionQuestions;
+  if (track === 'node') {
+    questions = nodeOutputPredictionQuestions;
+  } else if (track === 'react') {
+    questions = reactOutputPredictionQuestions;
+  }
   const isMultiSelect = selectedQuestion ? selectedQuestion.expectedOutput.length > 1 : false;
 
   useEffect(() => {

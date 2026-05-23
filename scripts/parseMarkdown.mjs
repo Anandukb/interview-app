@@ -34,10 +34,30 @@ const cleanCode = (code) => {
 };
 
 const parsedData = {
-  theory: [],
-  outputPrediction: [],
+  jsTheory: [],
+  reactTheory: [],
+  jsOutputPrediction: [],
+  reactOutputPrediction: [],
   nodeTheory: [],
   nodeOutputPrediction: []
+};
+
+const isReactOutputPrediction = (title, code) => {
+  const lowerTitle = title.toLowerCase();
+  const lowerCode = code.toLowerCase();
+  
+  const reactKeywords = [
+    'react', 'usestate', 'useeffect', 'usecallback', 'usememo', 
+    'useref', 'usecontext', 'usereducer', 'setstate', 'setcount',
+    'component', 'jsx', 'props', 'render', 'mounting', 'unmount'
+  ];
+  
+  const hasReactKeyword = reactKeywords.some(kw => lowerTitle.includes(kw) || lowerCode.includes(kw));
+  
+  // Also check for JSX tags in code: e.g. <div, <button, />
+  const hasJsx = /<[a-zA-Z]+|\/>/.test(code);
+  
+  return hasReactKeyword || hasJsx;
 };
 
 // Helper to add and shuffle output prediction question
@@ -84,7 +104,10 @@ if (outputPredictionSectionIndex !== -1) {
     const title = match[1].trim();
     const code = match[2].trim();
     const expectedOutput = match[3].trim().split('\n').map(line => line.trim());
-    addPredictionQuestion(title, code, expectedOutput, parsedData.outputPrediction, jsCodeMap, 'op');
+    const isReact = isReactOutputPrediction(title, code);
+    const targetList = isReact ? parsedData.reactOutputPrediction : parsedData.jsOutputPrediction;
+    const prefix = isReact ? 'react_op' : 'js_op';
+    addPredictionQuestion(title, code, expectedOutput, targetList, jsCodeMap, prefix);
   }
 }
 
@@ -123,7 +146,10 @@ for (let i = 1; i < blocks.length; i++) {
   }
   
   if (expectedOutput.length === 0) continue;
-  addPredictionQuestion(title, code, expectedOutput, parsedData.outputPrediction, jsCodeMap, 'op');
+  const isReact = isReactOutputPrediction(title, code);
+  const targetList = isReact ? parsedData.reactOutputPrediction : parsedData.jsOutputPrediction;
+  const prefix = isReact ? 'react_op' : 'js_op';
+  addPredictionQuestion(title, code, expectedOutput, targetList, jsCodeMap, prefix);
 }
 
 // 3. Extract Theory Questions (React JS)
@@ -139,6 +165,8 @@ const duplicateMappings = {
   "whatissynchronousandasynchronousexecution": "differencebetweensynchronousandasynchronousexecution",
   "explaindeepcopyandshallowcopy": "differencebetweenshallowcopyanddeepcopy",
 };
+
+const reactQuestionsIndex = markdownContent.indexOf('# React Questions');
 
 while ((match = theoryRegex.exec(markdownContent)) !== null) {
   const q = match[1].trim();
@@ -156,7 +184,24 @@ while ((match = theoryRegex.exec(markdownContent)) !== null) {
       if (!isFallback) {
         seenAnswers.add(ans);
       }
-      parsedData.theory.push({
+      
+      const isReactQuestion = (questionText, index, reactIndex) => {
+        if (index >= reactIndex) return true;
+        const lowerQ = questionText.toLowerCase();
+        const reactKeywords = [
+          'react', 'usestate', 'useeffect', 'usecallback', 'usememo', 
+          'useref', 'usecontext', 'usereducer', 'component', 'jsx', 
+          'props', 'next.js', 'nextjs', 'reconciliation', 'reconcile',
+          'suspense', 'redux', 'zustand', 'recoil', 'client-side rendering',
+          'server-side rendering', 'ssg', 'ssr', 'csr', 'isr'
+        ];
+        return reactKeywords.some(kw => lowerQ.includes(kw));
+      };
+
+      const isReact = isReactQuestion(q, match.index, reactQuestionsIndex);
+      const targetList = isReact ? parsedData.reactTheory : parsedData.jsTheory;
+      
+      targetList.push({
         id: '', // Will assign IDs after sorting
         question: q,
         answer: ans
@@ -317,32 +362,37 @@ const getCategoryAndSubTopicIndex = (question) => {
   return { categoryIndex: categories.length, subTopicIndex: 0 }; // Miscellaneous
 };
 
-// Assign category and sub-topic indices for sorting
-parsedData.theory.forEach((item, index) => {
-  const { categoryIndex, subTopicIndex } = getCategoryAndSubTopicIndex(item.question);
-  item.categoryIndex = categoryIndex;
-  item.subTopicIndex = subTopicIndex;
-  item.originalIndex = index;
-});
+const sortAndAssignIds = (list, idPrefix) => {
+  // Assign category and sub-topic indices for sorting
+  list.forEach((item, index) => {
+    const { categoryIndex, subTopicIndex } = getCategoryAndSubTopicIndex(item.question);
+    item.categoryIndex = categoryIndex;
+    item.subTopicIndex = subTopicIndex;
+    item.originalIndex = index;
+  });
 
-// Sort by categoryIndex, then subTopicIndex, then originalIndex (stable sort)
-parsedData.theory.sort((a, b) => {
-  if (a.categoryIndex !== b.categoryIndex) {
-    return a.categoryIndex - b.categoryIndex;
-  }
-  if (a.subTopicIndex !== b.subTopicIndex) {
-    return a.subTopicIndex - b.subTopicIndex;
-  }
-  return a.originalIndex - b.originalIndex;
-});
+  // Sort by categoryIndex, then subTopicIndex, then originalIndex (stable sort)
+  list.sort((a, b) => {
+    if (a.categoryIndex !== b.categoryIndex) {
+      return a.categoryIndex - b.categoryIndex;
+    }
+    if (a.subTopicIndex !== b.subTopicIndex) {
+      return a.subTopicIndex - b.subTopicIndex;
+    }
+    return a.originalIndex - b.originalIndex;
+  });
 
-// Assign sequential IDs
-parsedData.theory.forEach((q, idx) => {
-  q.id = `th_${idx + 1}`;
-  delete q.categoryIndex;
-  delete q.subTopicIndex;
-  delete q.originalIndex;
-});
+  // Assign sequential IDs
+  list.forEach((q, idx) => {
+    q.id = `${idPrefix}_${idx + 1}`;
+    delete q.categoryIndex;
+    delete q.subTopicIndex;
+    delete q.originalIndex;
+  });
+};
+
+sortAndAssignIds(parsedData.jsTheory, 'js_th');
+sortAndAssignIds(parsedData.reactTheory, 'react_th');
 
 // 4. Extract Node JS Theory Questions from node_theory.md
 const nodeTheoryBlocks = nodeTheoryContent.split(/\n## /);
@@ -423,18 +473,24 @@ export interface TheoryQuestion {
   answer: string;
 }
 
-export const outputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.outputPrediction, null, 2)};
+export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.jsOutputPrediction, null, 2)};
 
-export const theoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.theory, null, 2)};
+export const reactOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.reactOutputPrediction, null, 2)};
 
 export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.nodeOutputPrediction, null, 2)};
+
+export const jsTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.jsTheory, null, 2)};
+
+export const reactTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.reactTheory, null, 2)};
 
 export const nodeTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.nodeTheory, null, 2)};
 `;
 
 fs.writeFileSync(outputPath, tsContent, 'utf-8');
 console.log('Successfully parsed questions to src/data/parsedQuestions.ts');
-console.log(`Extracted ${parsedData.outputPrediction.length} JS Output Prediction questions.`);
-console.log(`Extracted ${parsedData.theory.length} JS Theory questions.`);
+console.log(`Extracted ${parsedData.jsOutputPrediction.length} JS Output Prediction questions.`);
+console.log(`Extracted ${parsedData.reactOutputPrediction.length} React Output Prediction questions.`);
 console.log(`Extracted ${parsedData.nodeOutputPrediction.length} Node JS Output Prediction questions.`);
+console.log(`Extracted ${parsedData.jsTheory.length} JS Theory questions.`);
+console.log(`Extracted ${parsedData.reactTheory.length} React Theory questions.`);
 console.log(`Extracted ${parsedData.nodeTheory.length} Node JS Theory questions.`);

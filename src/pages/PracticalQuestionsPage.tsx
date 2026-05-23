@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { practicalQuestions } from '../data/mockQuestions';
+import { jsPracticalQuestions, reactPracticalQuestions } from '../data/mockQuestions';
 import { nodePracticalQuestions } from '../data/nodeMockQuestions';
 import type { Question } from '../data/mockQuestions';
 import QuestionCard from '../components/QuestionCard';
@@ -13,8 +13,12 @@ const PracticalQuestionsPage = () => {
   const { track } = useParams<{ track: string }>();
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 
-  const isNode = track === 'node';
-  const questions = isNode ? nodePracticalQuestions : practicalQuestions;
+  let questions = jsPracticalQuestions;
+  if (track === 'node') {
+    questions = nodePracticalQuestions;
+  } else if (track === 'react') {
+    questions = reactPracticalQuestions;
+  }
 
   const handleBack = () => {
     if (selectedQuestion) {

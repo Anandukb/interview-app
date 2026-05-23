@@ -1,32 +1,24 @@
 import { useNavigate } from 'react-router-dom';
-// import { Code2, Atom, LayoutTemplate, Server } from 'lucide-react';
-import { Atom, Server } from 'lucide-react';
+import { Atom, Server, Code2 } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
   const languages = [
-    // {
-    //   id: 'html',
-    //   name: 'HTML',
-    //   icon: <LayoutTemplate size={48} className="lang-icon html" />,
-    //   color: '#e34f26',
-    //   desc: 'Master the skeleton of the web.'
-    // },
-    // {
-    //   id: 'css',
-    //   name: 'CSS',
-    //   icon: <Code2 size={48} className="lang-icon css" />,
-    //   color: '#264de4',
-    //   desc: 'Style and animate your components.'
-    // },
     {
       id: 'js',
-      name: 'React JS',
+      name: 'JavaScript',
+      icon: <Code2 size={48} className="lang-icon js" />,
+      color: '#f7df1e',
+      desc: 'Master scoping, closures, promises, event loop, and DOM.'
+    },
+    {
+      id: 'react',
+      name: 'React',
       icon: <Atom size={48} className="lang-icon react" />,
       color: '#61dafb',
-      desc: 'Master components, state, hooks, and rendering.'
+      desc: 'Master components, state, hooks, reconciliation, and rendering.'
     },
     {
       id: 'node',
@@ -55,7 +47,7 @@ const LandingPage = () => {
             key={lang.id}
             className="lang-card glass-card"
             onClick={() => {
-              if (lang.id === 'js' || lang.id === 'node') {
+              if (lang.id === 'js' || lang.id === 'react' || lang.id === 'node') {
                 navigate(`/${lang.id}`);
               } else {
                 alert('Coming soon!');

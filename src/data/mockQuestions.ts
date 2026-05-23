@@ -190,3 +190,6 @@ export const practicalQuestions: Question[] = [
     answerCode: `function parseQueryParams(url) {\n  return url\n    .replace("?", "")\n    .split("&")\n    .reduce((acc, item) => {\n      const [key, value] = item.split("=");\n      acc[key] = value;\n      return acc;\n    }, {});\n}\n\nconsole.log(parseQueryParams("?name=john&role=admin"));`
   }
 ];
+
+export const jsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id !== 'q11' && q.id !== 'q12');
+export const reactPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id === 'q11' || q.id === 'q12');
