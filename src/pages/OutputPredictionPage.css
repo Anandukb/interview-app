@@ -351,10 +351,47 @@
   flex: 2;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .output-prediction-container.locked {
     height: auto !important;
     overflow: visible !important;
     padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .prediction-layout-panel {
+    gap: 20px !important;
+    padding-right: 0 !important;
+  }
+
+  .user-prediction {
+    min-height: 200px !important;
+    padding: 16px !important;
+  }
+  
+  .prediction-placeholder {
+    min-height: 200px !important;
+    padding: 16px !important;
+  }
+
+  .interaction-area {
+    padding: 16px !important;
+  }
+
+  .question-header {
+    padding: 16px 20px !important;
+  }
+
+  .answer-validation {
+    padding: 16px !important;
+  }
+  
+  .selected-line, .expected-line {
+    padding: 10px 12px !important;
+  }
+  
+  .line-content {
+    word-break: break-word;
   }
 }

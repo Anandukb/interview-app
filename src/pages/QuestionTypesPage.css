@@ -5,20 +5,6 @@
   min-height: 100vh;
 }
 
-.back-btn {
-  align-self: flex-start;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  margin-bottom: 25px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: var(--bg-tertiary);
-}
-
-.back-btn:hover {
-  color: var(--text-primary);
-  background: var(--border-highlight);
-}
 
 .header-content {
   margin-bottom: 60px;
