@@ -112,10 +112,18 @@
 }
 
 @media (max-width: 768px) {
+  .practical-container.locked {
+    height: auto !important;
+    overflow: visible !important;
+    padding-bottom: 40px;
+  }
+
   .layout-wrapper.has-selection {
     grid-template-columns: 1fr;
     display: flex;
     flex-direction: column;
+    height: auto !important;
+    overflow: visible !important;
   }
 
   .layout-wrapper.has-selection .questions-list-area {
@@ -125,5 +133,12 @@
 
   .layout-wrapper.has-selection .active-question-area {
     order: 1;
+    overflow: visible !important;
+    height: auto !important;
+    padding-right: 0 !important;
+  }
+
+  .active-question-area {
+    height: auto !important;
   }
 }

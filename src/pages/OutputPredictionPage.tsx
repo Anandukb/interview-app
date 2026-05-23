@@ -141,6 +141,7 @@ const OutputPredictionPage = () => {
                         fontFamily: 'ui-monospace, SFMono-Regular, Consolas, "Courier New", monospace',
                         padding: { top: 16 },
                         scrollBeyondLastLine: false,
+                        automaticLayout: true,
                       }}
                     />
                   </div>

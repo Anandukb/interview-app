@@ -350,3 +350,11 @@
 .validation-actions .next-btn {
   flex: 2;
 }
+
+@media (max-width: 768px) {
+  .output-prediction-container.locked {
+    height: auto !important;
+    overflow: visible !important;
+    padding-bottom: 40px;
+  }
+}

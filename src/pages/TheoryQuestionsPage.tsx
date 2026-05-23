@@ -134,6 +134,7 @@ const TheoryQuestionsPage = () => {
   const navigate = useNavigate();
   const { track } = useParams<{ track: string }>();
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
 
   let questions = jsTheoryQuestions;
   let trackTitle = 'JavaScript';
@@ -156,39 +157,59 @@ const TheoryQuestionsPage = () => {
     setOpenIds(newOpenIds);
   };
 
+  const filteredQuestions = questions.filter(q => 
+    q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    q.answer.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="theory-container container">
       <div className="page-header">
-        <button className="back-btn" onClick={() => navigate(`/${track}`)}>
-          &larr; Back to Formats
-        </button>
-        <h1 className="title">{trackTitle} <span className="gradient-text">Questions</span></h1>
+        <div className="header-left">
+          <button className="back-btn" onClick={() => navigate(`/${track}`)}>
+            &larr; Back to Formats
+          </button>
+          <h1 className="title">{trackTitle} <span className="gradient-text">Questions</span></h1>
+        </div>
+        <input
+          type="text"
+          placeholder="Search questions..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
       </div>
 
       <div className="theory-list">
-        {questions.map((q, index) => {
-          const isOpen = openIds.has(q.id);
-          return (
-            <div key={q.id} className={`theory-card glass-card ${isOpen ? 'open' : ''}`}>
-              <div className="theory-header" onClick={() => toggleQuestion(q.id)}>
-                <div className="question-title">
-                  <span className="q-number">{index + 1}.</span> {q.question}
-                </div>
-                <button className="toggle-btn">
-                  {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                </button>
-              </div>
-              
-              {isOpen && (
-                <div className="theory-answer">
-                  <div className="answer-content">
-                    {renderFormattedAnswer(q.answer)}
+        {filteredQuestions.length === 0 ? (
+          <div className="no-results glass-card">
+            No questions found matching your search.
+          </div>
+        ) : (
+          filteredQuestions.map((q, index) => {
+            const isOpen = openIds.has(q.id);
+            return (
+              <div key={q.id} className={`theory-card glass-card ${isOpen ? 'open' : ''}`}>
+                <div className="theory-header" onClick={() => toggleQuestion(q.id)}>
+                  <div className="question-title">
+                    <span className="q-number">{index + 1}.</span> {q.question}
                   </div>
+                  <button className="toggle-btn">
+                    {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  </button>
                 </div>
-              )}
-            </div>
-          );
-        })}
+                
+                {isOpen && (
+                  <div className="theory-answer">
+                    <div className="answer-content">
+                      {renderFormattedAnswer(q.answer)}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

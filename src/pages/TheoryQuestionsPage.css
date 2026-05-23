@@ -138,3 +138,11 @@
   font-size: 1.1rem;
 }
 
+.no-results {
+  text-align: center;
+  padding: 48px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  width: 100%;
+}
+
