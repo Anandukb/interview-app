@@ -9,6 +9,7 @@ const QuestionTypesPage = () => {
   let trackName = 'JavaScript';
   if (track === 'node') trackName = 'Node JS';
   else if (track === 'react') trackName = 'React';
+  else if (track === 'ts') trackName = 'TypeScript';
 
   const types = [
     {
@@ -19,6 +20,8 @@ const QuestionTypesPage = () => {
         ? 'Theory and core concept interview questions on Node.js.'
         : track === 'react'
         ? 'Theory and concept-based interview questions on React.'
+        : track === 'ts'
+        ? 'Theory and type-system concept interview questions on TypeScript.'
         : 'Theory and concept-based interview questions on JavaScript.'
     },
     {
@@ -29,6 +32,8 @@ const QuestionTypesPage = () => {
         ? 'Predict the exact output of tricky Node.js snippets.'
         : track === 'react'
         ? 'Predict the exact output of tricky React JSX snippets.'
+        : track === 'ts'
+        ? 'Predict compile-time errors and outputs of tricky TypeScript snippets.'
         : 'Predict the exact output of tricky JavaScript snippets.'
     },
     {
@@ -39,6 +44,8 @@ const QuestionTypesPage = () => {
         ? 'Hands-on backend coding challenges in Node.js.'
         : track === 'react'
         ? 'Hands-on React coding challenges in an interactive environment.'
+        : track === 'ts'
+        ? 'Hands-on TypeScript coding and type-safety challenges.'
         : 'Hands-on JavaScript coding challenges in an interactive environment.'
     }
   ];

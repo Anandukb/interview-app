@@ -28,10 +28,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Start",
+      "Timeout",
       "Promise",
-      "End",
-      "Timeout"
+      "Start",
+      "End"
     ]
   },
   {
@@ -60,9 +60,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
+      "2",
       "0",
-      "1",
-      "2"
+      "1"
     ]
   },
   {
@@ -75,9 +75,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
+      "Timeout",
       "Promise",
-      "Sync",
-      "Timeout"
+      "Sync"
     ]
   },
   {
@@ -118,9 +118,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "3",
+      "2",
       "1",
-      "2"
+      "3"
     ]
   },
   {
@@ -290,12 +290,12 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside Promise"
     ],
     "options": [
-      "Start",
+      "Timeout 1",
       "Promise 1",
-      "End",
       "Promise inside Timeout",
       "Timeout inside Promise",
-      "Timeout 1"
+      "Start",
+      "End"
     ]
   },
   {
@@ -443,8 +443,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -510,8 +510,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "false",
-      "true"
+      "true",
+      "false"
     ]
   },
   {
@@ -553,10 +553,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "3",
-      "1",
       "2",
-      "4"
+      "3",
+      "4",
+      "1"
     ]
   },
   {
@@ -614,8 +614,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -627,8 +627,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Recovered"
     ],
     "options": [
-      "Recovered",
-      "Error"
+      "Error",
+      "Recovered"
     ]
   },
   {
@@ -671,10 +671,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "2",
       "3",
-      "4",
-      "1"
+      "1",
+      "2",
+      "4"
     ]
   },
   {
@@ -983,9 +983,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "2",
-      "4",
+      "3",
       "1",
-      "3"
+      "4"
     ]
   },
   {
@@ -1086,11 +1086,11 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "A",
-      "B",
-      "D",
-      "F",
       "E",
-      "C"
+      "B",
+      "F",
+      "C",
+      "D"
     ]
   },
   {
@@ -1108,14 +1108,14 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "setTimeout"
     ],
     "options": [
-      "promise2",
-      "promise1",
-      "script end",
+      "async1 end",
       "setTimeout",
+      "promise1",
+      "promise2",
+      "async1 start",
       "async2",
       "script start",
-      "async1 end",
-      "async1 start"
+      "script end"
     ]
   },
   {
@@ -1131,12 +1131,12 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside then"
     ],
     "options": [
-      "Promise Resolved",
-      "Inside Promise Constructor",
-      "Timeout outside",
+      "End",
       "Start",
       "Timeout inside then",
-      "End"
+      "Promise Resolved",
+      "Inside Promise Constructor",
+      "Timeout outside"
     ]
   }
 ];
@@ -1494,11 +1494,11 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "5"
     ],
     "options": [
-      "6",
-      "5",
-      "1",
       "4",
+      "6",
+      "1",
       "2",
+      "5",
       "3"
     ]
   },
@@ -1526,10 +1526,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "After Emit"
     ],
     "options": [
+      "Listener 2",
       "Before Emit",
       "After Emit",
-      "Listener 1",
-      "Listener 2"
+      "Listener 1"
     ]
   },
   {
@@ -1586,11 +1586,11 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Tick 3",
       "Timeout",
-      "Start",
+      "Tick 2",
       "Tick 1",
-      "Tick 2"
+      "Tick 3",
+      "Start"
     ]
   },
   {
@@ -1604,9 +1604,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
+      "B",
       "A",
-      "---",
-      "B"
+      "---"
     ]
   },
   {
@@ -1618,8 +1618,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "ol"
     ],
     "options": [
-      "hollo",
-      "ol"
+      "ol",
+      "hollo"
     ]
   },
   {
@@ -1633,10 +1633,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Immediate"
     ],
     "options": [
+      "Immediate",
       "Promise",
       "NextTick",
-      "Timeout",
-      "Immediate"
+      "Timeout"
     ]
   },
   {
@@ -1662,8 +1662,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "C"
     ],
     "options": [
-      "C",
       "A",
+      "C",
       "B"
     ]
   },
@@ -1705,10 +1705,145 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "immediate 1"
     ],
     "options": [
-      "immediate 1",
-      "immediate 2",
+      "nextTick 1",
       "nextTick 2",
-      "nextTick 1"
+      "immediate 1",
+      "immediate 2"
+    ]
+  }
+];
+
+export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = [
+  {
+    "id": "ts_op_1",
+    "title": "Class Parameter Properties",
+    "code": "class User {\n  constructor(public username: string, private role: string) {\n    // No explicit assignments needed\n  }\n  \n  getDetails() {\n    return `${this.username} (${this.role})`;\n  }\n}\n\nconst user = new User(\"alice\", \"admin\");\nconsole.log(user.username);\nconsole.log(user.getDetails());",
+    "expectedOutput": [
+      "alice",
+      "alice (admin)"
+    ],
+    "options": [
+      "alice (admin)",
+      "alice"
+    ]
+  },
+  {
+    "id": "ts_op_2",
+    "title": "Const Enum Compilation",
+    "code": "const enum Status {\n  Active = 1,\n  Inactive = 0\n}\n\nconst current = Status.Active;\nconsole.log(current);\nconsole.log(typeof Status);",
+    "expectedOutput": [
+      "1",
+      "undefined"
+    ],
+    "options": [
+      "1",
+      "undefined"
+    ]
+  },
+  {
+    "id": "ts_op_3",
+    "title": "Type Guard Typeof Evaluation",
+    "code": "function processValue(val) {\n  if (typeof val === \"object\" && val !== null) {\n    console.log(\"object\");\n  } else {\n    console.log(typeof val);\n  }\n}\n\nprocessValue(null);\nprocessValue([1, 2]);",
+    "expectedOutput": [
+      "null",
+      "object"
+    ],
+    "options": [
+      "object",
+      "null"
+    ]
+  },
+  {
+    "id": "ts_op_4",
+    "title": "In Operator Evaluation",
+    "code": "const admin = {\n  name: \"Bob\",\n  privileges: [\"delete\"]\n};\n\nconst user = {\n  name: \"Alice\"\n};\n\nfunction check(person) {\n  if (\"privileges\" in person) {\n    console.log(person.privileges[0]);\n  } else {\n    console.log(\"no privileges\");\n  }\n}\n\ncheck(admin);\ncheck(user);",
+    "expectedOutput": [
+      "delete",
+      "no privileges"
+    ],
+    "options": [
+      "no privileges",
+      "delete"
+    ]
+  },
+  {
+    "id": "ts_op_5",
+    "title": "Private keyword vs Private Hash",
+    "code": "class Secret {\n  private key = \"TS-Secret\";\n  #nativeKey = \"JS-Secret\";\n}\n\nconst s = new Secret();\nconsole.log(s[\"key\"]);\nconsole.log(s[\"#nativeKey\"]);",
+    "expectedOutput": [
+      "TS-Secret",
+      "undefined"
+    ],
+    "options": [
+      "undefined",
+      "TS-Secret"
+    ]
+  },
+  {
+    "id": "ts_op_6",
+    "title": "Function Overloads Implementation",
+    "code": "function combine(a, b) {\n  return a + b;\n}\n\nconsole.log(combine(1, 2));\nconsole.log(combine(\"hello \", \"world\"));",
+    "expectedOutput": [
+      "3",
+      "hello world"
+    ],
+    "options": [
+      "hello world",
+      "3"
+    ]
+  },
+  {
+    "id": "ts_op_7",
+    "title": "Mapped Types Readonly Mutation",
+    "code": "const config = {\n  port: 8080\n};\n\nObject.freeze(config);\n\ntry {\n  config.port = 9090;\n} catch (e) {\n  console.log(\"Error\");\n}\nconsole.log(config.port);",
+    "expectedOutput": [
+      "8080"
+    ],
+    "options": [
+      "8080",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "ts_op_8",
+    "title": "Interface Merging Duplicate Keys",
+    "code": "const obj = {\n  id: \"1\",\n  name: \"Alice\",\n  age: 30\n};\n\nconsole.log(obj.id);\nconsole.log(obj.name);",
+    "expectedOutput": [
+      "1",
+      "Alice"
+    ],
+    "options": [
+      "1",
+      "Alice"
+    ]
+  },
+  {
+    "id": "ts_op_9",
+    "title": "Discriminated Union Switch Log",
+    "code": "const shape = {\n  kind: \"circle\",\n  radius: 10\n};\n\nswitch (shape.kind) {\n  case \"circle\":\n    console.log(Math.round(Math.PI * shape.radius));\n    break;\n  case \"square\":\n    console.log(shape.sideLength);\n    break;\n}",
+    "expectedOutput": [
+      "31"
+    ],
+    "options": [
+      "31",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "ts_op_10",
+    "title": "Readonly Tuple Mutation",
+    "code": "const tuple = [\"a\", \"b\"];\ntuple.push(\"c\");\n\nconsole.log(tuple.length);\nconsole.log(tuple[2]);",
+    "expectedOutput": [
+      "3",
+      "c"
+    ],
+    "options": [
+      "c",
+      "3"
     ]
   }
 ];
@@ -2259,5 +2394,108 @@ export const nodeTheoryQuestions: TheoryQuestion[] = [
     "id": "node_th_20",
     "question": "What is the difference between `process.exit(0)` and `process.exit(1)`?",
     "answer": "- **`process.exit(0)`**: Instructs Node.js to terminate the current process with an exit code of `0`. In Unix/Windows environments, `0` indicates a **successful exit** (no errors).\n- **`process.exit(1)`**: Instructs Node.js to terminate the process with an exit code of `1` (or any non-zero integer). This indicates that the process terminated due to an **unhandled error, failure, or crash**. Process managers like PM2 or Kubernetes use this exit code to decide whether they should automatically restart the crashed container."
+  }
+];
+
+export const tsTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "ts_th_1",
+    "question": "What is TypeScript and how does it differ from JavaScript?",
+    "answer": "TypeScript is a strongly typed, object-oriented, compiled programming language developed and maintained by Microsoft. It is a strict syntactical superset of JavaScript, meaning that any valid JavaScript code is also valid TypeScript code. \n\n### Key Differences:\n- **Static Typing**: JavaScript is dynamically typed (types are resolved at runtime), whereas TypeScript is statically typed (types are checked at compile time).\n- **Compilation**: JavaScript runs directly in browsers or Node.js. TypeScript must be compiled (transpiled) into standard JavaScript using the TypeScript Compiler (`tsc`) before it can run.\n- **Error Detection**: TypeScript helps identify syntax and type-related bugs during development, whereas JavaScript errors are only discovered during execution.\n- **Tooling Support**: TypeScript provides superior IDE support with autocompletion, type info, and robust refactoring capabilities.\n\n---"
+  },
+  {
+    "id": "ts_th_2",
+    "question": "Explain the difference between an `interface` and a `type` alias in TypeScript",
+    "answer": "Both `interface` and `type` alias are used to define the shape of an object, but they have distinct differences:\n\n### 1. Extensibility (Declaration Merging)\nInterfaces support declaration merging. If you define two interfaces with the same name, TypeScript automatically merges their properties. Type aliases do not support merging and will throw a duplicate identifier error.\n```ts\ninterface User { name: string; }\ninterface User { age: number; } // Merged! User now has name and age.\n\ntype Person = { name: string; };\n// type Person = { age: number; }; // Error: Duplicate identifier 'Person'.\n```\n\n### 2. Capabilities\nType aliases are more versatile. They can define primitive types, union types, intersection types, tuples, and mapped types. Interfaces are strictly limited to describing object shapes.\n```ts\ntype ID = string | number; // Union type\ntype Point = [number, number]; // Tuple\n```\n\n### 3. Inheritance\nInterfaces extend other interfaces using the `extends` keyword. Type aliases achieve inheritance using intersection types (`&`).\n```ts\ninterface Admin extends User { privileges: string[]; }\ntype Manager = Person & { department: string; };\n```\n\n---"
+  },
+  {
+    "id": "ts_th_3",
+    "question": "What is the `any` type, and why is `unknown` preferred for safer code?",
+    "answer": "- **`any`**: Opts out of all type checking. It allows a variable to hold any value and lets you access any property, call any method, or pass it to any function without compiler checks. It essentially makes TypeScript behave like plain JavaScript.\n- **`unknown`**: Represents a value of any type, but is type-safe. It is the type-safe counterpart of `any`. You cannot perform operations on a variable of type `unknown` (like calling methods or accessing properties) without first narrowing its type using type guards or type assertions.\n\n### Example:\n```ts\nlet valueAny: any = \"Hello\";\nvalueAny.trim(); // Allowed\n\nlet valueUnknown: unknown = \"Hello\";\n// valueUnknown.trim(); // Compile Error!\n\nif (typeof valueUnknown === \"string\") {\n  valueUnknown.trim(); // Allowed because the type is narrowed to string!\n}\n```\n\n---"
+  },
+  {
+    "id": "ts_th_4",
+    "question": "What is Type Narrowing in TypeScript and how do you perform it?",
+    "answer": "Type Narrowing is the process of moving a variable from a broader type (like a union type) to a more specific type. It allows you to safely execute type-specific code blocks.\n\n### Common Ways to Perform Type Narrowing:\n1. **`typeof` guards**: For checking primitives.\n```ts\nfunction printId(id: string | number) {\n  if (typeof id === \"string\") {\n    console.log(id.toUpperCase());\n  } else {\n    console.log(id.toFixed(2));\n  }\n}\n```\n2. **`instanceof` guards**: For checking class instances.\n```ts\nif (error instanceof Error) {\n  console.log(error.message);\n}\n```\n3. **`in` operator**: For checking if a property exists on an object.\n```ts\nif (\"privileges\" in user) {\n  console.log(user.privileges);\n}\n```\n4. **User-defined Type Guards**: Functions returning a type predicate `parameterName is Type`.\n```ts\nfunction isFish(pet: Fish | Bird): pet is Fish {\n  return (pet as Fish).swim !== undefined;\n}\n```\n\n---"
+  },
+  {
+    "id": "ts_th_5",
+    "question": "Explain Generics in TypeScript and provide a practical use-case",
+    "answer": "Generics allow you to create reusable code components (like functions, classes, or interfaces) that work with a variety of types rather than a single one. They allow a type to be passed as a parameter, preserving type information between arguments and return values.\n\n### Practical Use-Case:\nSuppose we need a function to wrap any data in an API response envelope.\n```ts\ninterface ApiResponse<T> {\n  data: T;\n  status: \"success\" | \"error\";\n  timestamp: number;\n}\n\nfunction createResponse<T>(data: T): ApiResponse<T> {\n  return {\n    data,\n    status: \"success\",\n    timestamp: Date.now()\n  };\n}\n\nconst userResponse = createResponse({ name: \"John\", age: 30 });\n// Type of userResponse is resolved as ApiResponse<{ name: string; age: number; }>\n```\n\n---"
+  },
+  {
+    "id": "ts_th_6",
+    "question": "What is the difference between `never` and `void` in TypeScript?",
+    "answer": "- **`void`**: Indicates the absence of a return value. A function that completes execution but doesn't return anything returns `void` (which translates to `undefined` at runtime).\n- **`never`**: Represents a value that can *never* occur. It is used as the return type for functions that do not return at all—such as functions that throw errors or enter infinite loops. It is also used to represent impossible states in type narrowing.\n\n### Example:\n```ts\nfunction logMessage(msg: string): void {\n  console.log(msg); // Execution finishes, returns undefined\n}\n\nfunction throwError(msg: string): never {\n  throw new Error(msg); // Execution never finishes (throws error)\n}\n```\n\n---"
+  },
+  {
+    "id": "ts_th_7",
+    "question": "Explain Utility Types: `Pick`, `Omit`, `Partial`, and `Required`",
+    "answer": "TypeScript provides several built-in global utility types to facilitate common type transformations:\n\n1. **`Partial<T>`**: Constructs a type with all properties of `T` set to optional.\n```ts\ninterface User { id: number; name: string; }\ntype UpdateUser = Partial<User>; // { id?: number; name?: string; }\n```\n2. **`Required<T>`**: Constructs a type with all properties of `T` set to required.\n```ts\ninterface Config { host?: string; port?: number; }\ntype ActiveConfig = Required<Config>; // { host: string; port: number; }\n```\n3. **`Pick<T, K>`**: Constructs a type by picking a set of properties `K` from `T`.\n```ts\ntype UserSummary = Pick<User, \"name\">; // { name: string; }\n```\n4. **`Omit<T, K>`**: Constructs a type by removing a set of properties `K` from `T`.\n```ts\ntype UserNoId = Omit<User, \"id\">; // { name: string; }\n```\n\n---"
+  },
+  {
+    "id": "ts_th_8",
+    "question": "What is the difference between `readonly` modifier and `const` declaration?",
+    "answer": "- **`const`**: Applies to variable declarations. It prevents re-assignment of the variable. However, if the variable holds an object or an array, the internal properties or elements can still be mutated.\n- **`readonly`**: Applies to object properties inside class or interface definitions. It prevents reassignment of that specific property after initialization. It does not prevent re-assigning the outer object container.\n\n### Example:\n```ts\nconst user = { name: \"Alice\" };\nuser.name = \"Bob\"; // Allowed! (Internal mutation)\n\ninterface Person {\n  readonly name: string;\n}\nlet person: Person = { name: \"Alice\" };\n// person.name = \"Bob\"; // Compile Error! (Property is readonly)\n```\n\n---"
+  },
+  {
+    "id": "ts_th_9",
+    "question": "Explain how Mapped Types work in TypeScript",
+    "answer": "Mapped Types allow you to create new types based on the properties of an existing type. They map over the keys of an existing type to transform their values or flags (like making them optional or readonly).\n\n### Syntax:\nIt uses the `in keyof` syntax to loop over keys.\n```ts\ntype ReadonlyType<T> = {\n  readonly [P in keyof T]: T[P];\n};\n\ninterface User {\n  id: number;\n  name: string;\n}\n\ntype ReadonlyUser = ReadonlyType<User>;\n// Results in: { readonly id: number; readonly name: string; }\n```\n\n---"
+  },
+  {
+    "id": "ts_th_10",
+    "question": "What are Type Assertions (`as`) and when should you avoid them?",
+    "answer": "Type Assertions tell the TypeScript compiler to treat a value as a specific type, overriding the compiler's inference. They are written using the `as` keyword or the `<Type>` angle-bracket syntax.\n\n### When to Avoid:\nYou should avoid type assertions because they bypass compile-time type safety. If you assert a type incorrectly, the compiler will not warn you, but your code will crash or misbehave at runtime. Use type narrowing/guards instead.\n\n### Example:\n```ts\nconst jsonStr = '{\"name\": \"Alice\"}';\nconst data = JSON.parse(jsonStr) as { name: string; age: number; }; // Asserted\n// Compiler thinks data.age is a number, but data.age is undefined at runtime!\nconsole.log(data.age.toFixed()); // Crashes: Cannot read properties of undefined\n```\n\n---"
+  },
+  {
+    "id": "ts_th_11",
+    "question": "What is the difference between `null` and `undefined` in TypeScript, and what is `strictNullChecks`?",
+    "answer": "In JavaScript, `null` represents the intentional absence of a value, while `undefined` represents an uninitialized or missing value.\n\n- In TypeScript, when `strictNullChecks` is `false` (default in older versions), `null` and `undefined` can be assigned to variables of any type (e.g. you can assign `null` to a `string`).\n- When `strictNullChecks` is `true` in `tsconfig.json`, `null` and `undefined` get their own distinct types. They cannot be assigned to variables of other types without using union types.\n\n### Example under `strictNullChecks: true`:\n```ts\nlet name: string;\n// name = null; // Compile Error!\n\nlet nickname: string | null = null; // Allowed (Union type)\n```\n\n---"
+  },
+  {
+    "id": "ts_th_12",
+    "question": "What are Discriminated Unions and how are they useful?",
+    "answer": "A Discriminated Union (also called Tagged Union) is a pattern where multiple types in a union share a common literal property (the \"discriminant\" or \"tag\"). TypeScript uses this tag to narrow down the union type in conditional blocks.\n\n### Example:\n```ts\ninterface Circle {\n  kind: \"circle\"; // Discriminant\n  radius: number;\n}\n\ninterface Square {\n  kind: \"square\"; // Discriminant\n  sideLength: number;\n}\n\ntype Shape = Circle | Square;\n\nfunction getArea(shape: Shape) {\n  switch (shape.kind) {\n    case \"circle\":\n      return Math.PI * shape.radius ** 2; // shape is narrowed to Circle\n    case \"square\":\n      return shape.sideLength ** 2; // shape is narrowed to Square\n  }\n}\n```\n\n---"
+  },
+  {
+    "id": "ts_th_13",
+    "question": "Explain index signatures and how to define dynamic keys in interfaces",
+    "answer": "Index signatures are used to describe the type of keys and values when the names of the properties are not known beforehand.\n\n### Example:\n```ts\ninterface UserCache {\n  [userId: string]: { name: string; role: string };\n}\n\nconst cache: UserCache = {\n  \"u1\": { name: \"Alice\", role: \"admin\" },\n  \"u2\": { name: \"Bob\", role: \"user\" }\n};\n```\nNote: Keys in index signatures must be of type `string`, `number`, `symbol`, or template literal types.\n\n---"
+  },
+  {
+    "id": "ts_th_14",
+    "question": "What is the `keyof` operator and how is it used?",
+    "answer": "The `keyof` operator takes an object type and returns a union type of its keys (properties).\n\n### Example:\n```ts\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\ntype UserKeys = keyof User; // \"id\" | \"name\" | \"email\"\n```\nIt is frequently used with generics to constrain arguments to represent properties of an object.\n```ts\nfunction getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {\n  return obj[key];\n}\n```\n\n---"
+  },
+  {
+    "id": "ts_th_15",
+    "question": "What are Conditional Types in TypeScript?",
+    "answer": "Conditional Types allow you to choose types dynamically based on a relationship check, similar to a ternary operator in JavaScript.\n\n### Syntax:\n`T extends U ? X : Y`\n\n### Example:\n```ts\ntype IsString<T> = T extends string ? true : false;\n\ntype A = IsString<string>; // true\ntype B = IsString<number>; // false\n```\nConditional types are often combined with the `infer` keyword to extract types from arrays, functions, or promises.\n\n---"
+  },
+  {
+    "id": "ts_th_16",
+    "question": "What is the `infer` keyword and how is it used in conditional types?",
+    "answer": "The `infer` keyword is used within conditional type declarations to introduce a type variable that can be inferred dynamically inside the true branch.\n\n### Example (Extracting Return Type of Function):\n```ts\ntype GetReturnType<T> = T extends (...args: any[]) => infer R ? R : never;\n\nconst add = (a: number) => a.toString();\ntype AddResult = GetReturnType<typeof add>; // string\n```\n\n---"
+  },
+  {
+    "id": "ts_th_17",
+    "question": "What is declaration merging in TypeScript?",
+    "answer": "Declaration Merging is a process where the compiler merges two separate declarations defined with the same name into a single definition.\nIt primarily occurs with:\n1. **Interfaces**: Merging properties together.\n2. **Namespaces**: Merging functions, classes, or interfaces.\n3. **Namespace with Class/Function**: Adding static properties/methods to a class or function.\n\n### Example:\n```ts\ninterface Document {\n  customField: string;\n}\n// Merges with the built-in DOM Document interface, allowing document.customField without error!\n```\n\n---"
+  },
+  {
+    "id": "ts_th_18",
+    "question": "Explain TypeScript Decorators and how they work",
+    "answer": "Decorators are a special kind of declaration that can be attached to a class declaration, method, accessor, property, or parameter. Decorators use the `@expression` syntax, where `expression` must evaluate to a function that will be called at runtime with information about the decorated declaration.\n\nNote: They are an experimental feature requiring `experimentalDecorators: true` in `tsconfig.json`, though they are now standard in EcmaScript.\n\n### Example:\n```ts\nfunction Log(target: any, key: string) {\n  console.log(`Method ${key} was decorated.`);\n}\n\nclass User {\n  @Log\n  greet() {\n    return \"Hello\";\n  }\n}\n```\n\n---"
+  },
+  {
+    "id": "ts_th_19",
+    "question": "What is `as const` (const assertions) in TypeScript and what does it do?",
+    "answer": "Const assertions (`as const`) tell the compiler to:\n1. Prevent widening of literal types (e.g. keeping `\"admin\"` instead of widening to `string`).\n2. Make all object properties readonly.\n3. Treat array literals as readonly tuples.\n\n### Example:\n```ts\nconst colors = [\"red\", \"blue\"] as const;\n// Type is inferred as readonly [\"red\", \"blue\"] (tuple), not string[]\n// colors[0] = \"green\"; // Compile Error!\n```\n\n---"
+  },
+  {
+    "id": "ts_th_20",
+    "question": "What is `tsconfig.json` and what do `target`, `module`, and `lib` options represent?",
+    "answer": "`tsconfig.json` is a configuration file located at the root of a TypeScript project. It specifies the compiler options and root files required to compile the project.\n\n### Key Compiler Options:\n- **`target`**: The JavaScript version TypeScript compiles down to (e.g., `ES5`, `ES6/ES2015`, `ESNext`).\n- **`module`**: The module resolution strategy to use for compiled files (e.g., `CommonJS`, `ESNext`, `NodeNext`).\n- **`lib`**: Array of library files to include in compilation. It tells the compiler about existing runtime environments (like the browser DOM `[\"DOM\"]`, or standard ES classes `[\"ESNext\"]`)."
   }
 ];

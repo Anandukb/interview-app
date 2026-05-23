@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions } from '../data/parsedQuestions';
+import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions } from '../data/parsedQuestions';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import './TheoryQuestionsPage.css';
 
@@ -145,6 +145,9 @@ const TheoryQuestionsPage = () => {
   } else if (track === 'react') {
     questions = reactTheoryQuestions;
     trackTitle = 'React';
+  } else if (track === 'ts') {
+    questions = tsTheoryQuestions;
+    trackTitle = 'TypeScript';
   }
 
   const toggleQuestion = (id: string) => {

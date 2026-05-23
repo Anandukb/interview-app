@@ -102,6 +102,7 @@
 .lang-icon.js { color: #f7df1e; }
 .lang-icon.react { color: #61dafb; }
 .lang-icon.node { color: #339933; }
+.lang-icon.ts { color: #3178c6; }
 
 .lang-card h2 {
   font-size: 1.8rem;

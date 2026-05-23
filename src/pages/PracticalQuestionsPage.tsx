@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { jsPracticalQuestions, reactPracticalQuestions } from '../data/mockQuestions';
+import { jsPracticalQuestions, reactPracticalQuestions, tsPracticalQuestions } from '../data/mockQuestions';
 import { nodePracticalQuestions } from '../data/nodeMockQuestions';
 import type { Question } from '../data/mockQuestions';
 import QuestionCard from '../components/QuestionCard';
@@ -18,6 +18,8 @@ const PracticalQuestionsPage = () => {
     questions = nodePracticalQuestions;
   } else if (track === 'react') {
     questions = reactPracticalQuestions;
+  } else if (track === 'ts') {
+    questions = tsPracticalQuestions;
   }
 
   const handleBack = () => {
@@ -85,6 +87,7 @@ const PracticalQuestionsPage = () => {
                   initialCode={selectedQuestion.startingCode}
                   answerCode={selectedQuestion.answerCode}
                   hint={selectedQuestion.hint}
+                  language={track === 'ts' ? 'typescript' : 'javascript'}
                 />
               </div>
             </motion.div>

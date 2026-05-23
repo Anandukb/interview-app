@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { jsOutputPredictionQuestions, reactOutputPredictionQuestions, nodeOutputPredictionQuestions } from '../data/parsedQuestions';
+import { jsOutputPredictionQuestions, reactOutputPredictionQuestions, nodeOutputPredictionQuestions, tsOutputPredictionQuestions } from '../data/parsedQuestions';
 import type { OutputPredictionQuestion } from '../data/parsedQuestions';
 import Editor from '@monaco-editor/react';
 import { CheckCircle, XCircle, RotateCcw } from 'lucide-react';
@@ -21,6 +21,8 @@ const OutputPredictionPage = () => {
     questions = nodeOutputPredictionQuestions;
   } else if (track === 'react') {
     questions = reactOutputPredictionQuestions;
+  } else if (track === 'ts') {
+    questions = tsOutputPredictionQuestions;
   }
   const isMultiSelect = selectedQuestion ? selectedQuestion.expectedOutput.length > 1 : false;
 
@@ -131,7 +133,7 @@ const OutputPredictionPage = () => {
                   <div className="code-viewer glass">
                     <Editor
                       height="300px"
-                      defaultLanguage="javascript"
+                      defaultLanguage={track === 'ts' ? 'typescript' : 'javascript'}
                       theme="vs-dark"
                       value={selectedQuestion.code}
                       options={{

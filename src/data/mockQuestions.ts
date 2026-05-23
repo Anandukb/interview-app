@@ -188,8 +188,36 @@ export const practicalQuestions: Question[] = [
     hint: 'Remove the "?" prefix, split the string by "&" to get key-value pairs, and use reduce to build the object.',
     startingCode: `function parseQueryParams(url) {\n  // Your code here\n}\n\nconsole.log(parseQueryParams("?name=john&role=admin"));`,
     answerCode: `function parseQueryParams(url) {\n  return url\n    .replace("?", "")\n    .split("&")\n    .reduce((acc, item) => {\n      const [key, value] = item.split("=");\n      acc[key] = value;\n      return acc;\n    }, {});\n}\n\nconsole.log(parseQueryParams("?name=john&role=admin"));`
+  },
+  {
+    id: 'ts1',
+    title: 'Type-Safe Pick Utility',
+    difficulty: 'Easy',
+    description: 'Write a type-safe pick function that takes an object and an array of keys, and returns a new object containing only those keys. The function must be generic and reject invalid keys at compile time.',
+    hint: 'Use a generic parameter T for the object, and K extends keyof T for the keys. Declare the return type as Pick<T, K>.',
+    startingCode: `function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {\n  // Your code here\n}\n\nconst user = { id: 1, name: "Alice", email: "alice@example.com" };\nconsole.log(pick(user, ["name", "email"]));`,
+    answerCode: `function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {\n  const result = {} as Pick<T, K>;\n  keys.forEach(key => {\n    if (key in obj) {\n      result[key] = obj[key];\n    }\n  });\n  return result;\n}\n\nconst user = { id: 1, name: "Alice", email: "alice@example.com" };\nconsole.log(pick(user, ["name", "email"]));`
+  },
+  {
+    id: 'ts2',
+    title: 'Type-Safe GroupBy Utility',
+    difficulty: 'Medium',
+    description: 'Write a generic groupBy function in TypeScript that groups an array of items by a key. The key must be a valid key of the item type, and the return type must be properly mapped as Record<string, T[]>.',
+    hint: 'Use keyof T to restrict the key parameter, and cast the accumulator keys to string when accessing it.',
+    startingCode: `function groupBy<T, K extends keyof T>(arr: T[], key: K): Record<string, T[]> {\n  // Your code here\n}\n\nconst posts = [\n  { id: 1, category: "tech", title: "TS" },\n  { id: 2, category: "news", title: "Vite" },\n  { id: 3, category: "tech", title: "React" }\n];\nconsole.log(groupBy(posts, "category"));`,
+    answerCode: `function groupBy<T, K extends keyof T>(arr: T[], key: K): Record<string, T[]> {\n  return arr.reduce((acc, item) => {\n    const groupKey = String(item[key]);\n    if (!acc[groupKey]) {\n      acc[groupKey] = [];\n    }\n    acc[groupKey].push(item);\n    return acc;\n  }, {} as Record<string, T[]>);\n}\n\nconst posts = [\n  { id: 1, category: "tech", title: "TS" },\n  { id: 2, category: "news", title: "Vite" },\n  { id: 3, category: "tech", title: "React" }\n];\nconsole.log(groupBy(posts, "category"));`
+  },
+  {
+    id: 'ts3',
+    title: 'Implement a User Type Guard',
+    difficulty: 'Easy',
+    description: 'Write a type guard function isUser that checks if an arbitrary object is of type User (having string name and number age). Use it to safely log the details of elements in a mixed array.',
+    hint: 'A type guard returns a type predicate "obj is User". Inside, check typeof obj === "object", and then verify properties.',
+    startingCode: `interface User {\n  name: string;\n  age: number;\n}\n\nfunction isUser(obj: any): obj is User {\n  // Your code here\n}\n\nconst data: any[] = [\n  { name: "John", age: 30 },\n  "not a user",\n  { name: "Jane" },\n  { name: "Bob", age: 25 }\n];\n\ndata.forEach(item => {\n  if (isUser(item)) {\n    console.log(\`\${item.name} is \${item.age} years old\`);\n  }\n});`,
+    answerCode: `interface User {\n  name: string;\n  age: number;\n}\n\nfunction isUser(obj: any): obj is User {\n  return (\n    obj !== null &&\n    typeof obj === "object" &&\n    typeof obj.name === "string" &&\n    typeof obj.age === "number"\n  );\n}\n\nconst data: any[] = [\n  { name: "John", age: 30 },\n  "not a user",\n  { name: "Jane" },\n  { name: "Bob", age: 25 }\n];\n\ndata.forEach(item => {\n  if (isUser(item)) {\n    console.log(\`\${item.name} is \${item.age} years old\`);\n  }\n});`
   }
 ];
 
-export const jsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id !== 'q11' && q.id !== 'q12');
+export const jsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id !== 'q11' && q.id !== 'q12' && !q.id.startsWith('ts'));
 export const reactPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id === 'q11' || q.id === 'q12');
+export const tsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id.startsWith('ts'));

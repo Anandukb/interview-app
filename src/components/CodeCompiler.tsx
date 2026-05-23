@@ -7,9 +7,10 @@ interface CodeCompilerProps {
   initialCode: string;
   answerCode: string;
   hint: string;
+  language?: string;
 }
 
-const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hint }) => {
+const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hint, language }) => {
   const [userCode, setUserCode] = useState(initialCode);
   const [activeTab, setActiveTab] = useState<'index.js' | 'solution.js'>('index.js');
   const [showSolutionTab, setShowSolutionTab] = useState(false);
@@ -58,6 +59,16 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
     setIsDragging(true);
   };
 
+  // Load Babel Standalone for TS type stripping and JSX transpilation dynamically if needed
+  useEffect(() => {
+    if (!(window as any).Babel) {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@babel/standalone/babel.min.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   // Reset state when a new question is selected
   useEffect(() => {
     setUserCode(initialCode);
@@ -75,21 +86,50 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
 
   const handleRunCode = () => {
     try {
-      const codeToRun = activeTab === 'index.js' ? userCode : answerCode;
+      const originalCode = activeTab === 'index.js' ? userCode : answerCode;
+      let codeToRun = originalCode;
+
+      // Transpile using Babel if available (for TS type stripping and React JSX compiling)
+      if ((window as any).Babel) {
+        try {
+          const presets = ['react'];
+          if (language === 'typescript' || originalCode.includes('<T') || originalCode.includes(': ') || originalCode.includes('interface ')) {
+            presets.push('typescript');
+          }
+          codeToRun = (window as any).Babel.transform(originalCode, {
+            presets: presets,
+            filename: language === 'typescript' ? 'file.ts' : 'file.js'
+          }).code || originalCode;
+        } catch (transpilationErr: any) {
+          setOutput(`Transpilation Error: ${transpilationErr.message}`);
+          return;
+        }
+      } else if (language === 'typescript' || originalCode.includes('<T') || originalCode.includes('interface ')) {
+        setOutput("Error: Compiler engine is initializing. Please wait a moment and try again.");
+        return;
+      }
       
       // Override console.log to capture output
       let consoleOutput = '';
       const originalLog = console.log;
-      console.log = (...args) => {
-        consoleOutput += args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') + '\n';
-      };
-
-      // Wrap code to execute
-      const execute = new Function(codeToRun);
-      execute();
       
-      // Restore console.log
-      console.log = originalLog;
+      try {
+        console.log = (...args) => {
+          consoleOutput += args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') + '\n';
+        };
+
+        const customRequire = (moduleName: string) => {
+          if (moduleName === 'react') return React;
+          throw new Error(`Module "${moduleName}" is not available in the interactive compiler.`);
+        };
+
+        // Wrap code to execute, passing React and require in case of React/CommonJS code
+        const execute = new Function('React', 'require', codeToRun);
+        execute(React, customRequire);
+      } finally {
+        // Restore console.log
+        console.log = originalLog;
+      }
       
       setOutput(consoleOutput || 'Code executed successfully with no output.');
     } catch (err: any) {
@@ -168,7 +208,7 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
           <Editor
             key={activeTab}
             height="100%"
-            defaultLanguage="javascript"
+            defaultLanguage={language || "javascript"}
             theme="vs-dark"
             value={activeTab === 'index.js' ? userCode : answerCode}
             onChange={handleCodeChange}
