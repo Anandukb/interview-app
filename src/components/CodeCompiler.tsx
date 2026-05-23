@@ -89,16 +89,16 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
       const originalCode = activeTab === 'index.js' ? userCode : answerCode;
       let codeToRun = originalCode;
 
-      // Transpile using Babel if available (for TS type stripping and React JSX compiling)
+      // Transpile using Babel if available (for TS type stripping, JSX compiling, and ES module resolution)
       if ((window as any).Babel) {
         try {
-          const presets = ['react'];
+          const presets = ['env', 'react'];
           if (language === 'typescript' || originalCode.includes('<T') || originalCode.includes(': ') || originalCode.includes('interface ')) {
             presets.push('typescript');
           }
           codeToRun = (window as any).Babel.transform(originalCode, {
             presets: presets,
-            filename: language === 'typescript' ? 'file.ts' : 'file.js'
+            filename: language === 'typescript' ? 'file.ts' : 'file.jsx'
           }).code || originalCode;
         } catch (transpilationErr: any) {
           setOutput(`Transpilation Error: ${transpilationErr.message}`);
@@ -123,9 +123,11 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
           throw new Error(`Module "${moduleName}" is not available in the interactive compiler.`);
         };
 
-        // Wrap code to execute, passing React and require in case of React/CommonJS code
-        const execute = new Function('React', 'require', codeToRun);
-        execute(React, customRequire);
+        const exportsObj = {};
+
+        // Wrap code to execute, passing React, require, and exports
+        const execute = new Function('React', 'require', 'exports', codeToRun);
+        execute(React, customRequire, exportsObj);
       } finally {
         // Restore console.log
         console.log = originalLog;
