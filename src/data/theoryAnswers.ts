@@ -1246,6 +1246,29 @@ Example:
 \`\`\`
 `,
 
+  // Data Attributes
+  "whatisadataattributeinhtml": `
+A data attribute in HTML is used to store custom information directly inside an element using the \`data-*\` syntax. It helps pass extra data between HTML and JavaScript without affecting the UI or standard HTML behavior.
+
+Example:
+\`\`\`html
+<button data-user-id="101">Click</button>
+\`\`\`
+
+In JavaScript, we can access it using the \`dataset\` property:
+\`\`\`js
+const btn = document.querySelector("button");
+console.log(btn.dataset.userId); // "101" (camelCase conversion)
+\`\`\`
+
+Common use cases include:
+- Storing IDs or status values
+- Passing data to event handlers
+- UI interactions like modals, tabs, and dropdowns
+
+It is commonly used in JavaScript and React applications for handling dynamic behavior.
+`,
+
   // Default Fallback
   "default": `
 In an actual interview, you should structure your response around three core areas:

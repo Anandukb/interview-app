@@ -280,9 +280,10 @@ const categories = [
   },
   {
     name: "CSS & Web APIs",
-    keywords: ["positioning", "relative position", "absolute position", "semantic tag", "graphql"],
+    keywords: ["positioning", "relative position", "absolute position", "semantic tag", "graphql", "data attribute", "data attributes"],
     subTopics: [
       { name: "layout", keywords: ["positioning", "relative position", "absolute position", "semantic tag"] },
+      { name: "html", keywords: ["data attribute", "data attributes"] },
       { name: "apis", keywords: ["graphql"] }
     ]
   }

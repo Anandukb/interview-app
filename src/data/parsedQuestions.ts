@@ -28,10 +28,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
+      "End",
       "Timeout",
-      "Start",
       "Promise",
-      "End"
+      "Start"
     ]
   },
   {
@@ -60,9 +60,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
+      "0",
       "2",
-      "0"
+      "1"
     ]
   },
   {
@@ -75,8 +75,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Promise",
       "Timeout",
+      "Promise",
       "Sync"
     ]
   },
@@ -119,8 +119,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "1",
-      "2",
-      "3"
+      "3",
+      "2"
     ]
   },
   {
@@ -148,10 +148,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "3",
+      "2",
       "4",
-      "2"
+      "1",
+      "3"
     ]
   },
   {
@@ -163,8 +163,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -260,8 +260,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "30"
     ],
     "options": [
-      "30",
-      "John"
+      "John",
+      "30"
     ]
   },
   {
@@ -273,8 +273,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "undefined"
     ],
     "options": [
-      "undefined",
-      "John"
+      "John",
+      "undefined"
     ]
   },
   {
@@ -290,12 +290,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside Promise"
     ],
     "options": [
-      "Timeout inside Promise",
       "Promise inside Timeout",
-      "End",
       "Start",
+      "Promise 1",
       "Timeout 1",
-      "Promise 1"
+      "Timeout inside Promise",
+      "End"
     ]
   },
   {
@@ -430,8 +430,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "1"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -443,8 +443,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
-      "2"
+      "2",
+      "1"
     ]
   },
   {
@@ -525,8 +525,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "false",
-      "true"
+      "true",
+      "false"
     ]
   },
   {
@@ -538,8 +538,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "false",
-      "true"
+      "true",
+      "false"
     ]
   },
   {
@@ -581,10 +581,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
+      "3",
       "2",
-      "1",
       "4",
-      "3"
+      "1"
     ]
   },
   {
@@ -597,9 +597,9 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
+      "3",
       "1",
-      "3"
+      "2"
     ]
   },
   {
@@ -655,8 +655,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Recovered"
     ],
     "options": [
-      "Recovered",
-      "Error"
+      "Error",
+      "Recovered"
     ]
   },
   {
@@ -684,8 +684,8 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "micro",
-      "timeout",
-      "sync"
+      "sync",
+      "timeout"
     ]
   },
   {
@@ -1304,10 +1304,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "3",
+      "1",
       "2",
       "4",
-      "1"
+      "3"
     ]
   },
   {
@@ -1421,10 +1421,10 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
-      "D",
-      "F",
       "A",
+      "D",
       "C",
+      "F",
       "E",
       "B"
     ]
@@ -1444,14 +1444,14 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "setTimeout"
     ],
     "options": [
-      "setTimeout",
       "promise2",
-      "async2",
       "script start",
-      "promise1",
+      "setTimeout",
+      "async2",
+      "script end",
       "async1 end",
-      "async1 start",
-      "script end"
+      "promise1",
+      "async1 start"
     ]
   },
   {
@@ -1467,12 +1467,12 @@ export const outputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside then"
     ],
     "options": [
-      "Promise Resolved",
-      "End",
       "Timeout inside then",
-      "Inside Promise Constructor",
       "Start",
-      "Timeout outside"
+      "Inside Promise Constructor",
+      "End",
+      "Timeout outside",
+      "Promise Resolved"
     ]
   }
 ];
@@ -1486,7 +1486,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_2",
     "question": "What is hoisting?",
-    "answer": "Hoisting in Javascript is the behaviour where variables and functions are moved to the top of their scope during the compilation phase, before the code is executed\n\n- **Function Declarations**: Completely hoisted (both declaration and implementation are moved).ie, it can be called even before it is defined in the code.\n- **Function Expression**: Not fully hoisted. Its defined using const or let, accessing it before its definition throws a `ReferenceError`.\n- **`var` variables**: Hoisted but initialized to `undefined`.ie, it can be called even before it is defined in the code, but it will return `undefined`.\n- **`let` and `const` variables**: Hoisted but stay in the Temporal Dead Zone (TDZ). Calling them before they are declared yields a `ReferenceError`.\n\nExample:\n```js\nconsole.log(x); // undefined (var is hoisted and initialized to undefined)\nvar x = 5;\n\nsayHello(); // \"Hello!\" (Function declaration is fully hoisted)\nfunction sayHello() { console.log(\"Hello!\"); }\n```"
+    "answer": "Hoisting in Javascript is the behaviour where variables and functions are moved to the top of their scope during the compilation phase, before the code is executed\n\n- **Function Declarations**: Completely hoisted (both declaration and implementation are moved).\n- **`var` variables**: Hoisted but initialized to `undefined`.\n- **`let` and `const` variables**: Hoisted but stay in the Temporal Dead Zone (TDZ). Calling them before they are declared yields a `ReferenceError`.\n\nExample:\n```js\nconsole.log(x); // undefined (var is hoisted and initialized to undefined)\nvar x = 5;\n\nsayHello(); // \"Hello!\" (Function declaration is fully hoisted)\nfunction sayHello() { console.log(\"Hello!\"); }\n```"
   },
   {
     "id": "th_3",
@@ -1631,7 +1631,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_31",
     "question": "Difference between `Promise.all()` and `Promise.race()`",
-    "answer": "These methods handle concurrent promises differently:\n\n- **`Promise.all()`**: Runs multiple promises in parallel and resolves when all succeed. It rejects if any on fails.\nPromise.all fails fast on the first rejection. \n- **`Promise.allsettled()`**: waits for all promises and returns their results regardless of success or failure.\n- **`Promise.race()`**: Resolves or rejects as soon as **any one** of the input promises settles (either resolves or rejects).\n- **`Promise.any()`**: Resolves with the first successfull promise and ignores failures unless all. \n\nExample:\n```js\nconst p1 = new Promise(resolve => setTimeout(() => resolve('P1 Fast'), 100));\nconst p2 = new Promise(resolve => setTimeout(() => resolve('P2 Slow'), 500));\n\nPromise.all([p1, p2]).then(console.log);  // ['P1 Fast', 'P2 Slow'] (takes 500ms)\nPromise.race([p1, p2]).then(console.log); // 'P1 Fast' (takes 100ms)\n```"
+    "answer": "These methods handle concurrent promises differently:\n\n- **`Promise.all()`**: Takes an array of promises and returns a single Promise that resolves when **all** input promises resolve, or rejects immediately when **any** promise rejects (fail-fast).\n- **`Promise.race()`**: Resolves or rejects as soon as **any one** of the input promises settles (either resolves or rejects).\n\nExample:\n```js\nconst p1 = new Promise(resolve => setTimeout(() => resolve('P1 Fast'), 100));\nconst p2 = new Promise(resolve => setTimeout(() => resolve('P2 Slow'), 500));\n\nPromise.all([p1, p2]).then(console.log);  // ['P1 Fast', 'P2 Slow'] (takes 500ms)\nPromise.race([p1, p2]).then(console.log); // 'P1 Fast' (takes 100ms)\n```"
   },
   {
     "id": "th_32",
@@ -1776,7 +1776,7 @@ export const theoryQuestions: TheoryQuestion[] = [
   {
     "id": "th_60",
     "question": "What is reconciliation in React?",
-    "answer": "Reconciliation in React is the process React uses to compare the previous Virtual DOM with the updated Virtual DOM whenever state or props change. React identifies the differences between them and updates only the necessary parts of the real DOM, making UI updates efficient and improving performance.\n\n1. **State or props change**\n2. **React creates a new Virtual DOM**\n3. **React compares it with the previous Virtual DOM** (Diffing Algorithm)\n4. **React finds what changed**\n5. **Only the changed parts are updated in the real DOM**"
+    "answer": "Reconciliation in React is the process React uses to compare the previous Virtual DOM with the updated Virtual DOM whenever state or props change. React identifies the differences between them and updates only the necessary parts of the real DOM, making UI updates efficient and improving performance.\n\nYou can also explain it step by step in an interview:\n1. **State or props change**\n2. **React creates a new Virtual DOM**\n3. **React compares it with the previous Virtual DOM** (Diffing Algorithm)\n4. **React finds what changed**\n5. **Only the changed parts are updated in the real DOM**"
   },
   {
     "id": "th_61",
@@ -1890,26 +1890,31 @@ export const theoryQuestions: TheoryQuestion[] = [
   },
   {
     "id": "th_83",
+    "question": "What is a data attribute in HTML?",
+    "answer": "This is a comprehensive answer to \"What is a data attribute in HTML?\".\n\nIn an actual interview, you should structure your response around three core areas:\n1. **Core Concept**: Explain the fundamental principles clearly and concisely.\n2. **Code Example**: Write down a clean, representative code snippet showing the feature in practice.\n3. **Trade-offs / Best Practices**: Discuss performance implications, clean code boundaries, and common pitfalls."
+  },
+  {
+    "id": "th_84",
     "question": "What is GraphQL?",
     "answer": "GraphQL is a query language and runtime for APIs. Unlike REST APIs, which return rigid data structures from specific endpoints, GraphQL allows client applications to request **exactly the fields they need**, combining multiple resources in a single HTTP request.\n\nExample query:\n```graphql\nquery {\n  user(id: \"1\") {\n    name\n    email\n  }\n}\n```"
   },
   {
-    "id": "th_84",
+    "id": "th_85",
     "question": "Difference between `for...in` and `for...of`",
     "answer": "Both iterate over structures but target different values:\n\n- **`for...in`**: Iterates over the enumerable **keys (properties)** of an object (including prototype keys).\n- **`for...of`**: Iterates over the iterable **values** of an iterable object (like Arrays, Strings, Sets, Maps).\n\nExample:\n```js\nconst arr = [\"a\", \"b\"];\n\nfor (let key in arr) {\n  console.log(key); // \"0\", \"1\" (indexes)\n}\n\nfor (let val of arr) {\n  console.log(val); // \"a\", \"b\" (elements)\n}\n```"
   },
   {
-    "id": "th_85",
+    "id": "th_86",
     "question": "Difference between client-side rendering and server-side rendering",
     "answer": "- **Client-Side Rendering (CSR)**: The server sends a barebones HTML file and a bundle of JavaScript. The browser downloads the JS and builds the entire page client-side.\n  - *Pros*: Fast transitions after initial load, rich interactions.\n  - *Cons*: Slow initial load (FCP), poorer SEO since crawlers see empty HTML initially.\n- **Server-Side Rendering (SSR)**: The server renders the HTML for the requested page on the fly for each request and sends the fully populated HTML to the browser.\n  - *Pros*: Excellent SEO, fast First Contentful Paint.\n  - *Cons*: Server load is higher, page transitions require a roundtrip to the server unless optimized."
   },
   {
-    "id": "th_86",
+    "id": "th_87",
     "question": "Difference between class components and functional components",
     "answer": "- **Class Components**: Legacy React components using ES6 classes. State is managed via `this.state` and updates via `this.setState()`. Lifecycle methods like `componentDidMount` and `componentWillUnmount` are used to handle side effects.\n- **Functional Components**: Modern standard React components using simple functions. Hooks (`useState`, `useEffect`) are used to manage state and lifecycles. They are easier to read, write, and test, and enable better tree-shaking optimizations.\n\nExample:\n```jsx\n// Functional Component\nfunction Greet({ name }) {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c => c + 1)}>Clicked {count}</button>;\n}\n```"
   },
   {
-    "id": "th_87",
+    "id": "th_88",
     "question": "What is Next.js?",
     "answer": "Next.js is a React framework for building production-ready applications. It provides built-in configurations like server-side rendering (SSR), static site generation (SSG), automatic code splitting, API routing, dynamic routing, and SEO optimization."
   }
@@ -1929,12 +1934,12 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "5"
     ],
     "options": [
-      "6",
-      "3",
-      "4",
       "1",
+      "3",
+      "5",
+      "6",
       "2",
-      "5"
+      "4"
     ]
   },
   {
@@ -1946,8 +1951,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Immediate",
-      "Timeout"
+      "Timeout",
+      "Immediate"
     ]
   },
   {
@@ -1961,10 +1966,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "After Emit"
     ],
     "options": [
-      "Before Emit",
-      "Listener 2",
       "Listener 1",
-      "After Emit"
+      "After Emit",
+      "Listener 2",
+      "Before Emit"
     ]
   },
   {
@@ -1976,8 +1981,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "10"
     ],
     "options": [
-      "10",
-      "1"
+      "1",
+      "10"
     ]
   },
   {
@@ -2022,10 +2027,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "Timeout",
-      "Tick 3",
       "Tick 1",
-      "Start",
-      "Tick 2"
+      "Tick 3",
+      "Tick 2",
+      "Start"
     ]
   },
   {
@@ -2039,9 +2044,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
-      "A",
       "---",
-      "B"
+      "B",
+      "A"
     ]
   },
   {
@@ -2053,8 +2058,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "ol"
     ],
     "options": [
-      "ol",
-      "hollo"
+      "hollo",
+      "ol"
     ]
   },
   {
@@ -2068,10 +2073,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Immediate"
     ],
     "options": [
-      "Timeout",
       "NextTick",
+      "Immediate",
       "Promise",
-      "Immediate"
+      "Timeout"
     ]
   },
   {
@@ -2083,8 +2088,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "function"
     ],
     "options": [
-      "undefined",
-      "function"
+      "function",
+      "undefined"
     ]
   },
   {
@@ -2097,8 +2102,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "C"
     ],
     "options": [
-      "A",
       "C",
+      "A",
       "B"
     ]
   },
@@ -2111,8 +2116,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Handled: Rejected!"
     ],
     "options": [
-      "Handled: Rejected!",
-      "Script end"
+      "Script end",
+      "Handled: Rejected!"
     ]
   },
   {
@@ -2142,8 +2147,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
     "options": [
       "immediate 2",
       "nextTick 2",
-      "immediate 1",
-      "nextTick 1"
+      "nextTick 1",
+      "immediate 1"
     ]
   }
 ];

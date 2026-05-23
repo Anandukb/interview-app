@@ -105,6 +105,7 @@ A complete collection of JavaScript, React, Next.js, Redux, HTML/CSS, and practi
 35. What is throttle?
 36. What are semantic tags in HTML?
 37. What is GraphQL?
+38. What is a data attribute in HTML?
 
 ---
 
