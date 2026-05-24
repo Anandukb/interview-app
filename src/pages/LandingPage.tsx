@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Atom, Server, Code2, ShieldCheck } from 'lucide-react';
+import { Atom, Server, Code2, ShieldCheck, FileCode, Palette } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
@@ -33,6 +33,20 @@ const LandingPage = () => {
       icon: <ShieldCheck size={48} className="lang-icon ts" />,
       color: '#3178c6',
       desc: 'Master types, interfaces, generics, type narrowing, and utility types.'
+    },
+    {
+      id: 'html',
+      name: 'HTML',
+      icon: <FileCode size={48} className="lang-icon html" />,
+      color: '#e34f26',
+      desc: 'Master semantic layout, script loading, Critical Rendering Path, and accessibility.'
+    },
+    {
+      id: 'css',
+      name: 'CSS',
+      icon: <Palette size={48} className="lang-icon css" />,
+      color: '#264de4',
+      desc: 'Master grid, flexbox, box model, specificity, animations, and container queries.'
     }
   ];
 
@@ -54,7 +68,7 @@ const LandingPage = () => {
             key={lang.id}
             className="lang-card glass-card"
             onClick={() => {
-              if (lang.id === 'js' || lang.id === 'react' || lang.id === 'node' || lang.id === 'ts') {
+              if (lang.id === 'js' || lang.id === 'react' || lang.id === 'node' || lang.id === 'ts' || lang.id === 'html' || lang.id === 'css') {
                 navigate(`/${lang.id}`);
               } else {
                 alert('Coming soon!');

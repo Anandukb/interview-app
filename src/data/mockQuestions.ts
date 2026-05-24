@@ -215,9 +215,47 @@ export const practicalQuestions: Question[] = [
     hint: 'A type guard returns a type predicate "obj is User". Inside, check typeof obj === "object", and then verify properties.',
     startingCode: `interface User {\n  name: string;\n  age: number;\n}\n\nfunction isUser(obj: any): obj is User {\n  // Your code here\n}\n\nconst data: any[] = [\n  { name: "John", age: 30 },\n  "not a user",\n  { name: "Jane" },\n  { name: "Bob", age: 25 }\n];\n\ndata.forEach(item => {\n  if (isUser(item)) {\n    console.log(\`\${item.name} is \${item.age} years old\`);\n  }\n});`,
     answerCode: `interface User {\n  name: string;\n  age: number;\n}\n\nfunction isUser(obj: any): obj is User {\n  return (\n    obj !== null &&\n    typeof obj === "object" &&\n    typeof obj.name === "string" &&\n    typeof obj.age === "number"\n  );\n}\n\nconst data: any[] = [\n  { name: "John", age: 30 },\n  "not a user",\n  { name: "Jane" },\n  { name: "Bob", age: 25 }\n];\n\ndata.forEach(item => {\n  if (isUser(item)) {\n    console.log(\`\${item.name} is \${item.age} years old\`);\n  }\n});`
+  },
+  {
+    id: 'html1',
+    title: 'DOM Depth-First Search (DFS) Traversal',
+    difficulty: 'Medium',
+    description: 'Write a function findNodeById(root, id) that performs a Depth-First Search (DFS) on a custom tree structure representing DOM nodes, returning the node object with the matching id, or null if not found.',
+    hint: 'First check if root.id matches the target id. If not, iterate over its children and recursively call findNodeById on each child.',
+    startingCode: `const documentTree = {\n  id: "html",\n  children: [\n    {\n      id: "head",\n      children: [{ id: "title", children: [] }]\n    },\n    {\n      id: "body",\n      children: [\n        { id: "header", children: [] },\n        { id: "main", children: [{ id: "section", children: [{ id: "p", children: [] }] }] },\n        { id: "footer", children: [] }\n      ]\n    }\n  ]\n};\n\nfunction findNodeById(root, id) {\n  // Your code here\n}\n\nconsole.log(findNodeById(documentTree, "p"));\nconsole.log(findNodeById(documentTree, "aside"));`,
+    answerCode: `const documentTree = {\n  id: "html",\n  children: [\n    {\n      id: "head",\n      children: [{ id: "title", children: [] }]\n    },\n    {\n      id: "body",\n      children: [\n        { id: "header", children: [] },\n        { id: "main", children: [{ id: "section", children: [{ id: "p", children: [] }] }] },\n        { id: "footer", children: [] }\n      ]\n    }\n  ]\n};\n\nfunction findNodeById(root, id) {\n  if (root.id === id) return root;\n  for (const child of root.children) {\n    const found = findNodeById(child, id);\n    if (found) return found;\n  }\n  return null;\n}\n\nconsole.log(findNodeById(documentTree, "p"));\nconsole.log(findNodeById(documentTree, "aside"));`
+  },
+  {
+    id: 'html2',
+    title: 'Parse HTML Class Attribute list',
+    difficulty: 'Easy',
+    description: 'Write a function getClassList(htmlTag) that parses a string representation of an HTML opening tag and extracts all of its class names into an array. If no classes are present, return an empty array.',
+    hint: 'Use a regular expression to match the content inside class="..." and split that matched content by spaces.',
+    startingCode: `function getClassList(htmlTag) {\n  // Your code here\n}\n\nconsole.log(getClassList("<div class=\\"btn btn-primary active\\">"));\nconsole.log(getClassList("<span class=\\"text-muted\\">"));\nconsole.log(getClassList("<p>"));`,
+    answerCode: `function getClassList(htmlTag) {\n  const match = htmlTag.match(/class=\\"([^\\"]+)\\"/);\n  if (!match) return [];\n  return match[1].split(/\\s+/).filter(Boolean);\n}\n\nconsole.log(getClassList("<div class=\\"btn btn-primary active\\">"));\nconsole.log(getClassList("<span class=\\"text-muted\\">"));\nconsole.log(getClassList("<p>"));`
+  },
+  {
+    id: 'css1',
+    title: 'Calculate CSS Specificity Score',
+    difficulty: 'Medium',
+    description: 'Write a function calculateSpecificity(selector) that computes the CSS specificity score [A, B, C] for a basic selector containing IDs (A), classes/attributes/pseudo-classes (B), and element types (C). E.g. "#header .btn" returns [1, 1, 0].',
+    hint: 'Split the selector by space. Use regex like /#[a-zA-Z0-9_-]+/g to match IDs, /\\.[a-zA-Z0-9_-]+/g for classes, and /:[a-zA-Z0-9_-]+/g for pseudo-classes.',
+    startingCode: `function calculateSpecificity(selector) {\n  // Your code here\n}\n\nconsole.log(calculateSpecificity("#main-nav .menu-item a"));\nconsole.log(calculateSpecificity("div.container p:hover"));\nconsole.log(calculateSpecificity("#header"));`,
+    answerCode: `function calculateSpecificity(selector) {\n  const parts = selector.split(/\\s+/);\n  let a = 0, b = 0, c = 0;\n  for (const part of parts) {\n    if (!part) continue;\n    const ids = part.match(/#[a-zA-Z0-9_-]+/g) || [];\n    const classes = part.match(/\\.[a-zA-Z0-9_-]+/g) || [];\n    const pseudoClasses = part.match(/:[a-zA-Z0-9_-]+/g) || [];\n    a += ids.length;\n    b += classes.length + pseudoClasses.length;\n    const cleanPart = part.replace(/#[a-zA-Z0-9_-]+/g, "").replace(/\\.[a-zA-Z0-9_-]+/g, "").replace(/:[a-zA-Z0-9_-]+/g, "");\n    if (cleanPart && /^[a-zA-Z0-9]+$/.test(cleanPart)) {\n      c++;\n    }\n  }\n  return [a, b, c];\n}\n\nconsole.log(calculateSpecificity("#main-nav .menu-item a"));\nconsole.log(calculateSpecificity("div.container p:hover"));\nconsole.log(calculateSpecificity("#header"));`
+  },
+  {
+    id: 'css2',
+    title: 'Hex to RGB and RGBA Color Converter',
+    difficulty: 'Easy',
+    description: 'Write a function hexToRgba(hex, alpha) that takes a hexadecimal color code (supporting 3-digit shorthand or 6-digit formats) and an optional alpha transparency value, and returns the CSS rgba(...) string.',
+    hint: 'Remove "#" first. If length is 3, expand it to 6 digits by duplicating each character. Parse slices of 2 characters using parseInt(slice, 16).',
+    startingCode: `function hexToRgba(hex, alpha = 1) {\n  // Your code here\n}\n\nconsole.log(hexToRgba("#ff0033", 0.5));\nconsole.log(hexToRgba("#f03"));\nconsole.log(hexToRgba("#000000", 0.8));`,
+    answerCode: `function hexToRgba(hex, alpha = 1) {\n  let cleanHex = hex.replace("#", "");\n  if (cleanHex.length === 3) {\n    cleanHex = cleanHex.split("").map(c => c + c).join("");\n  }\n  const r = parseInt(cleanHex.slice(0, 2), 16);\n  const g = parseInt(cleanHex.slice(2, 4), 16);\n  const b = parseInt(cleanHex.slice(4, 6), 16);\n  return \`rgba(\${r}, \${g}, \${b}, \${alpha})\`;\n}\n\nconsole.log(hexToRgba("#ff0033", 0.5));\nconsole.log(hexToRgba("#f03"));\nconsole.log(hexToRgba("#000000", 0.8));`
   }
 ];
 
-export const jsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id !== 'q11' && q.id !== 'q12' && !q.id.startsWith('ts'));
+export const jsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id !== 'q11' && q.id !== 'q12' && !q.id.startsWith('ts') && !q.id.startsWith('html') && !q.id.startsWith('css'));
 export const reactPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id === 'q11' || q.id === 'q12');
 export const tsPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id.startsWith('ts'));
+export const htmlPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id.startsWith('html'));
+export const cssPracticalQuestions: Question[] = practicalQuestions.filter(q => q.id.startsWith('css'));

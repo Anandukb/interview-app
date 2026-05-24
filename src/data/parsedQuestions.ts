@@ -28,10 +28,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Timeout",
-      "Promise",
       "Start",
-      "End"
+      "End",
+      "Promise",
+      "Timeout"
     ]
   },
   {
@@ -61,8 +61,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "2",
-      "0",
-      "1"
+      "1",
+      "0"
     ]
   },
   {
@@ -75,9 +75,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Timeout",
+      "Sync",
       "Promise",
-      "Sync"
+      "Timeout"
     ]
   },
   {
@@ -148,9 +148,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
+      "3",
       "4",
       "1",
-      "3",
       "2"
     ]
   },
@@ -273,8 +273,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "undefined"
     ],
     "options": [
-      "undefined",
-      "John"
+      "John",
+      "undefined"
     ]
   },
   {
@@ -290,12 +290,12 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside Promise"
     ],
     "options": [
-      "Timeout 1",
       "Promise 1",
-      "Promise inside Timeout",
-      "Timeout inside Promise",
       "Start",
-      "End"
+      "Timeout 1",
+      "Promise inside Timeout",
+      "End",
+      "Timeout inside Promise"
     ]
   },
   {
@@ -348,8 +348,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "number"
     ],
     "options": [
-      "number",
-      "undefined"
+      "undefined",
+      "number"
     ]
   },
   {
@@ -430,8 +430,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "1"
     ],
     "options": [
-      "2",
-      "1"
+      "1",
+      "2"
     ]
   },
   {
@@ -443,8 +443,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
-      "1"
+      "1",
+      "2"
     ]
   },
   {
@@ -497,8 +497,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "false",
-      "true"
+      "true",
+      "false"
     ]
   },
   {
@@ -510,8 +510,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "false"
     ],
     "options": [
-      "true",
-      "false"
+      "false",
+      "true"
     ]
   },
   {
@@ -553,10 +553,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "2",
-      "3",
+      "1",
       "4",
-      "1"
+      "2",
+      "3"
     ]
   },
   {
@@ -600,9 +600,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "2"
     ],
     "options": [
-      "1",
       "2",
-      "0"
+      "0",
+      "1"
     ]
   },
   {
@@ -627,8 +627,8 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Recovered"
     ],
     "options": [
-      "Error",
-      "Recovered"
+      "Recovered",
+      "Error"
     ]
   },
   {
@@ -655,9 +655,9 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "timeout"
     ],
     "options": [
+      "sync",
       "timeout",
-      "micro",
-      "sync"
+      "micro"
     ]
   },
   {
@@ -671,10 +671,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
+      "4",
       "3",
-      "1",
       "2",
-      "4"
+      "1"
     ]
   },
   {
@@ -982,10 +982,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "3"
     ],
     "options": [
-      "2",
       "3",
       "1",
-      "4"
+      "4",
+      "2"
     ]
   },
   {
@@ -1085,10 +1085,10 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
-      "A",
-      "E",
       "B",
+      "E",
       "F",
+      "A",
       "C",
       "D"
     ]
@@ -1108,14 +1108,14 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "setTimeout"
     ],
     "options": [
-      "async1 end",
       "setTimeout",
-      "promise1",
-      "promise2",
-      "async1 start",
-      "async2",
       "script start",
-      "script end"
+      "promise2",
+      "promise1",
+      "async1 end",
+      "script end",
+      "async2",
+      "async1 start"
     ]
   },
   {
@@ -1131,12 +1131,12 @@ export const jsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout inside then"
     ],
     "options": [
-      "End",
-      "Start",
-      "Timeout inside then",
       "Promise Resolved",
+      "Timeout inside then",
+      "Start",
+      "Timeout outside",
       "Inside Promise Constructor",
-      "Timeout outside"
+      "End"
     ]
   }
 ];
@@ -1494,11 +1494,11 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "5"
     ],
     "options": [
+      "5",
       "4",
-      "6",
       "1",
       "2",
-      "5",
+      "6",
       "3"
     ]
   },
@@ -1526,10 +1526,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "After Emit"
     ],
     "options": [
-      "Listener 2",
-      "Before Emit",
       "After Emit",
-      "Listener 1"
+      "Listener 2",
+      "Listener 1",
+      "Before Emit"
     ]
   },
   {
@@ -1555,9 +1555,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "On: 3"
     ],
     "options": [
-      "On: 2",
+      "On: 3",
       "Once: 1",
-      "On: 3"
+      "On: 2"
     ]
   },
   {
@@ -1586,11 +1586,11 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Timeout"
     ],
     "options": [
-      "Timeout",
-      "Tick 2",
       "Tick 1",
+      "Tick 2",
       "Tick 3",
-      "Start"
+      "Start",
+      "Timeout"
     ]
   },
   {
@@ -1604,9 +1604,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "B"
     ],
     "options": [
+      "---",
       "B",
-      "A",
-      "---"
+      "A"
     ]
   },
   {
@@ -1633,10 +1633,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Immediate"
     ],
     "options": [
+      "Timeout",
       "Immediate",
-      "Promise",
       "NextTick",
-      "Timeout"
+      "Promise"
     ]
   },
   {
@@ -1662,9 +1662,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "C"
     ],
     "options": [
-      "A",
+      "B",
       "C",
-      "B"
+      "A"
     ]
   },
   {
@@ -1676,8 +1676,8 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "Handled: Rejected!"
     ],
     "options": [
-      "Handled: Rejected!",
-      "Script end"
+      "Script end",
+      "Handled: Rejected!"
     ]
   },
   {
@@ -1706,9 +1706,9 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = [
     ],
     "options": [
       "nextTick 1",
-      "nextTick 2",
+      "immediate 2",
       "immediate 1",
-      "immediate 2"
+      "nextTick 2"
     ]
   }
 ];
@@ -1736,8 +1736,8 @@ export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "undefined"
     ],
     "options": [
-      "1",
-      "undefined"
+      "undefined",
+      "1"
     ]
   },
   {
@@ -1749,8 +1749,8 @@ export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "object"
     ],
     "options": [
-      "object",
-      "null"
+      "null",
+      "object"
     ]
   },
   {
@@ -1775,8 +1775,8 @@ export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "undefined"
     ],
     "options": [
-      "undefined",
-      "TS-Secret"
+      "TS-Secret",
+      "undefined"
     ]
   },
   {
@@ -1788,8 +1788,8 @@ export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = [
       "hello world"
     ],
     "options": [
-      "hello world",
-      "3"
+      "3",
+      "hello world"
     ]
   },
   {
@@ -1844,6 +1844,285 @@ export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = [
     "options": [
       "c",
       "3"
+    ]
+  }
+];
+
+export const htmlOutputPredictionQuestions: OutputPredictionQuestion[] = [
+  {
+    "id": "html_op_1",
+    "title": "DOM Clone Node reference",
+    "code": "const parent = {\n  id: \"parent-container\",\n  className: \"container\"\n};\n\nconst child = {\n  id: \"child-node\",\n  className: \"btn\",\n  parent: parent\n};\n\nconst clone = Object.assign({}, child);\nclone.className = \"btn active\";\nclone.parent.className = \"wrapper\";\n\nconsole.log(child.className);\nconsole.log(parent.className);",
+    "expectedOutput": [
+      "btn",
+      "wrapper"
+    ],
+    "options": [
+      "btn",
+      "wrapper"
+    ]
+  },
+  {
+    "id": "html_op_2",
+    "title": "Event Bubbling Propagation",
+    "code": "const log = [];\n\nfunction clickButton(e) {\n  log.push(\"button clicked\");\n}\n\nfunction clickParent(e) {\n  log.push(\"parent clicked\");\n}\n\nfunction clickWindow(e) {\n  log.push(\"window clicked\");\n}\n\n// Emulating click event path: Button -> Parent -> Window\nclickButton();\nclickParent();\nclickWindow();\n\nconsole.log(log.join(\" > \"));",
+    "expectedOutput": [
+      "button clicked > parent clicked > window clicked"
+    ],
+    "options": [
+      "button clicked > parent clicked > window clicked",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "html_op_3",
+    "title": "Dataset camelCase conversion",
+    "code": "const dataAttributes = {\n  \"user-id\": \"100\",\n  \"user-role-name\": \"admin\",\n  \"userStatus\": \"active\"\n};\n\n// Emulating standard dataset camelCase conversion mapping\nconst dataset = {};\nfor (const key in dataAttributes) {\n  const camelKey = key.replace(/-([a-z])/g, (g) => g[1].toUpperCase());\n  dataset[camelKey] = dataAttributes[key];\n}\n\nconsole.log(dataset.userId);\nconsole.log(dataset.userRoleName);\nconsole.log(dataset.userStatus);",
+    "expectedOutput": [
+      "100",
+      "admin",
+      "active"
+    ],
+    "options": [
+      "100",
+      "admin",
+      "active"
+    ]
+  },
+  {
+    "id": "html_op_4",
+    "title": "Querying childNodes vs children",
+    "code": "// Mocking DOM elements: <div>Hello <span>World</span><!-- comment --></div>\nconst children = [\"span\"]; // only element nodes\nconst childNodes = [\"text\", \"span\", \"comment\"]; // elements, comments, and text nodes\n\nconsole.log(children.length);\nconsole.log(childNodes.length);",
+    "expectedOutput": [
+      "1",
+      "3"
+    ],
+    "options": [
+      "1",
+      "3"
+    ]
+  },
+  {
+    "id": "html_op_5",
+    "title": "Custom Element Lifecycle Sequence",
+    "code": "const log = [];\n\nclass MyElement {\n  constructor() {\n    log.push(\"constructor\");\n  }\n  \n  connectedCallback() {\n    log.push(\"connected\");\n  }\n}\n\nconst el = new MyElement();\nel.connectedCallback();\n\nconsole.log(log.join(\" > \"));",
+    "expectedOutput": [
+      "constructor > connected"
+    ],
+    "options": [
+      "constructor > connected",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "html_op_6",
+    "title": "Document Fragment Appending",
+    "code": "const parent = [];\nconst fragment = [];\n\n// Adding elements to document fragment\nfragment.push(\"p1\");\nfragment.push(\"p2\");\n\n// Appending fragment empties it into the parent\nparent.push(...fragment);\nfragment.length = 0;\n\nconsole.log(parent.length);\nconsole.log(fragment.length);",
+    "expectedOutput": [
+      "2",
+      "0"
+    ],
+    "options": [
+      "0",
+      "2"
+    ]
+  },
+  {
+    "id": "html_op_7",
+    "title": "Attribute Namespace Querying",
+    "code": "const element = {\n  attributes: {\n    \"class\": \"btn\",\n    \"data-id\": \"10\"\n  }\n};\n\nconsole.log(element.attributes[\"class\"]);\nconsole.log(element.attributes[\"data-id\"]);\nconsole.log(element.attributes[\"id\"]);",
+    "expectedOutput": [
+      "btn",
+      "10",
+      "undefined"
+    ],
+    "options": [
+      "btn",
+      "undefined",
+      "10"
+    ]
+  },
+  {
+    "id": "html_op_8",
+    "title": "Iframe contentDocument Access",
+    "code": "const iframe = {\n  contentWindow: {\n    document: { title: \"Iframe Title\" }\n  }\n};\n\nconsole.log(typeof iframe.contentWindow);\nconsole.log(iframe.contentWindow.document.title);",
+    "expectedOutput": [
+      "object",
+      "Iframe Title"
+    ],
+    "options": [
+      "object",
+      "Iframe Title"
+    ]
+  },
+  {
+    "id": "html_op_9",
+    "title": "Script execution order with defer vs async",
+    "code": "const executionQueue = [];\n\n// Scripts loading: Inline, Deferred, Async\n// Async finishes first, then Inline, then Deferred\nexecutionQueue.push(\"Inline script\");\nexecutionQueue.push(\"Async script\");\nexecutionQueue.push(\"Deferred script\");\n\nconsole.log(executionQueue.join(\" > \"));",
+    "expectedOutput": [
+      "Inline script > Async script > Deferred script"
+    ],
+    "options": [
+      "Inline script > Async script > Deferred script",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "html_op_10",
+    "title": "Document Write on loaded document",
+    "code": "let documentState = \"closed\"; // Mocking document write behavior\nlet body = \"original body\";\n\nfunction write(text) {\n  if (documentState === \"loaded\") {\n    body = text; // document.write after load replaces the entire document!\n  } else {\n    body += text;\n  }\n}\n\nwrite(\" append\");\ndocumentState = \"loaded\";\nwrite(\"new document content\");\n\nconsole.log(body);",
+    "expectedOutput": [
+      "new document content"
+    ],
+    "options": [
+      "new document content",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  }
+];
+
+export const cssOutputPredictionQuestions: OutputPredictionQuestion[] = [
+  {
+    "id": "css_op_1",
+    "title": "Selector Specificity calculation",
+    "code": "// Selectors targeting <div id=\"container\" class=\"panel\"><p class=\"text\">Text</p></div>\nconst selectorA = { name: \"#container .text\", specificity: [1, 1, 0] };\nconst selectorB = { name: \".panel p.text\", specificity: [0, 2, 1] };\nconst selectorC = { name: \"div p.text\", specificity: [0, 1, 2] };\n\nconst selectors = [selectorA, selectorB, selectorC];\nselectors.sort((a, b) => {\n  if (a.specificity[0] !== b.specificity[0]) return b.specificity[0] - a.specificity[0];\n  if (a.specificity[1] !== b.specificity[1]) return b.specificity[1] - a.specificity[1];\n  return b.specificity[2] - a.specificity[2];\n});\n\nconsole.log(selectors[0].name);",
+    "expectedOutput": [
+      "#container .text"
+    ],
+    "options": [
+      "#container .text",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "css_op_2",
+    "title": "CSS Custom Property fallback resolution",
+    "code": "const cssVars = {\n  // \"--primary\": undefined\n  \"--secondary\": \"blue\"\n};\n\nfunction getVar(name, fallback) {\n  return cssVars[name] || fallback;\n}\n\n// Equivalent to: var(--primary, var(--secondary, red))\nconst resolved = getVar(\"--primary\", getVar(\"--secondary\", \"red\"));\nconsole.log(resolved);",
+    "expectedOutput": [
+      "blue"
+    ],
+    "options": [
+      "blue",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "css_op_3",
+    "title": "Flexbox Grow calculation",
+    "code": "const containerWidth = 800;\nconst itemBaseWidth = 200; // flex-basis: 200px\n\nconst remainingSpace = containerWidth - (itemBaseWidth * 2); // 400px\n\n// flexItemA has flex-grow: 3\n// flexItemB has flex-grow: 1\nconst totalGrow = 3 + 1;\nconst share = remainingSpace / totalGrow;\n\nconst widthA = itemBaseWidth + (share * 3);\nconst widthB = itemBaseWidth + (share * 1);\n\nconsole.log(widthA);\nconsole.log(widthB);",
+    "expectedOutput": [
+      "500",
+      "300"
+    ],
+    "options": [
+      "300",
+      "500"
+    ]
+  },
+  {
+    "id": "css_op_4",
+    "title": "CSS Grid Implicit Track sizing",
+    "code": "// grid-template-rows: 100px;\n// grid-auto-rows: 50px;\nconst rows = [100]; // Explicit row heights\nconst autoRowHeight = 50; // Implicit row heights\n\nfunction getRowHeight(index) {\n  return rows[index] || autoRowHeight;\n}\n\nconsole.log(getRowHeight(0));\nconsole.log(getRowHeight(1)); // Second row (implicit)",
+    "expectedOutput": [
+      "100",
+      "50"
+    ],
+    "options": [
+      "50",
+      "100"
+    ]
+  },
+  {
+    "id": "css_op_5",
+    "title": "Relative font size computation",
+    "code": "const rootSize = 16; // 16px (1rem)\nconst parentRem = 1.5; // parent has font-size: 1.5rem\nconst childEm = 2; // child has font-size: 2em\n\nconst parentPx = rootSize * parentRem;\nconst childPx = parentPx * childEm; // em multiplies by parent element size!\n\nconsole.log(parentPx);\nconsole.log(childPx);",
+    "expectedOutput": [
+      "24",
+      "48"
+    ],
+    "options": [
+      "48",
+      "24"
+    ]
+  },
+  {
+    "id": "css_op_6",
+    "title": "Stacking Context resolution",
+    "code": "// Parent A has z-index: 10\n// Parent B has z-index: 5 (both create separate stacking contexts)\nconst parentA = { zIndex: 10 };\nconst parentB = { zIndex: 5 };\n\n// Child A is inside Parent A and has z-index: 1\n// Child B is inside Parent B and has z-index: 100\nconst childA = { parent: parentA, localZ: 1 };\nconst childB = { parent: parentB, localZ: 100 };\n\n// Stacking comparison: parents are compared first\nconst winningParent = parentA.zIndex > parentB.zIndex ? \"Child A\" : \"Child B\";\nconsole.log(winningParent);",
+    "expectedOutput": [
+      "Child A"
+    ],
+    "options": [
+      "Child A",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "css_op_7",
+    "title": "Transitionend listener execution",
+    "code": "const log = [];\n\nfunction transitionStart() {\n  log.push(\"started\");\n}\n\nfunction transitionEnd() {\n  log.push(\"ended\");\n}\n\ntransitionStart();\n// transitionend is asynchronous\nsetTimeout(() => {\n  transitionEnd();\n  console.log(log.join(\" > \"));\n}, 0);\n\nlog.push(\"running\");",
+    "expectedOutput": [
+      "started > running > ended"
+    ],
+    "options": [
+      "started > running > ended",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "css_op_8",
+    "title": "Box-Sizing width computation",
+    "code": "// Content box: width + padding + border\nconst itemContentBox = {\n  width: 200,\n  padding: 20,\n  border: 5,\n  boxSizing: \"content-box\"\n};\n\n// Border box: width is final total width\nconst itemBorderBox = {\n  width: 200,\n  padding: 20,\n  border: 5,\n  boxSizing: \"border-box\"\n};\n\nfunction getComputedWidth(item) {\n  if (item.boxSizing === \"border-box\") {\n    return item.width;\n  }\n  return item.width + (item.padding * 2) + (item.border * 2);\n}\n\nconsole.log(getComputedWidth(itemContentBox));\nconsole.log(getComputedWidth(itemBorderBox));",
+    "expectedOutput": [
+      "250",
+      "200"
+    ],
+    "options": [
+      "200",
+      "250"
+    ]
+  },
+  {
+    "id": "css_op_9",
+    "title": "Dynamic CSS variables styling",
+    "code": "const variables = {\n  \"--bg-color\": \"green\"\n};\n\nconst inlineStyles = {\n  \"--bg-color\": \"blue\"\n};\n\n// Inline overrides stylesheet custom property variables\nconst resolvedColor = inlineStyles[\"--bg-color\"] || variables[\"--bg-color\"] || \"red\";\nconsole.log(resolvedColor);",
+    "expectedOutput": [
+      "blue"
+    ],
+    "options": [
+      "blue",
+      "undefined",
+      "TypeError",
+      "ReferenceError"
+    ]
+  },
+  {
+    "id": "css_op_10",
+    "title": "CSS has selector condition",
+    "code": "const cardA = {\n  classes: [\"card\"],\n  children: [\"h2\", \"p\"]\n};\n\nconst cardB = {\n  classes: [\"card\"],\n  children: [\"h2\", \"p\", \"button\"]\n};\n\n// CSS Rule: .card:has(button) { border-color: highlight }\nfunction hasButton(card) {\n  return card.children.includes(\"button\");\n}\n\nconsole.log(hasButton(cardA));\nconsole.log(hasButton(cardB));",
+    "expectedOutput": [
+      "false",
+      "true"
+    ],
+    "options": [
+      "false",
+      "true"
     ]
   }
 ];
@@ -2497,5 +2776,161 @@ export const tsTheoryQuestions: TheoryQuestion[] = [
     "id": "ts_th_20",
     "question": "What is `tsconfig.json` and what do `target`, `module`, and `lib` options represent?",
     "answer": "`tsconfig.json` is a configuration file located at the root of a TypeScript project. It specifies the compiler options and root files required to compile the project.\n\n### Key Compiler Options:\n- **`target`**: The JavaScript version TypeScript compiles down to (e.g., `ES5`, `ES6/ES2015`, `ESNext`).\n- **`module`**: The module resolution strategy to use for compiled files (e.g., `CommonJS`, `ESNext`, `NodeNext`).\n- **`lib`**: Array of library files to include in compilation. It tells the compiler about existing runtime environments (like the browser DOM `[\"DOM\"]`, or standard ES classes `[\"ESNext\"]`)."
+  }
+];
+
+export const htmlTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "html_th_1",
+    "question": "What is Semantic HTML and why is it important for SEO and Accessibility (a11y)?",
+    "answer": "Semantic HTML refers to the practice of using HTML tags that describe the meaning and purpose of the content they enclose, rather than just their visual appearance. For example, using `<header>`, `<main>`, `<article>`, and `<footer>` instead of generic `<div>` tags.\n\n### Why it is important:\n1. **Accessibility (a11y)**: Assistive technologies (like screen readers) rely on semantic structure to understand the document outline and allow users to navigate the page efficiently (e.g. jumping straight to the `<nav>` or `<main>` section).\n2. **SEO (Search Engine Optimization)**: Search engine crawlers use semantic tags to identify the most important sections of a page (like headings, articles, and navigation links) and index the page content more accurately.\n3. **Code Readability**: Semantic HTML makes the source code significantly easier to read, maintain, and debug for development teams.\n\n---"
+  },
+  {
+    "id": "html_th_2",
+    "question": "Explain the difference between `defer` and `async` attributes in script tags",
+    "answer": "Both `defer` and `async` are boolean attributes used on `<script>` elements to control how external JavaScript files are fetched and executed, preventing them from blocking the HTML parser.\n\n### 1. Default (No Attributes)\nThe HTML parser stops when it encounters a script tag, downloads the script, executes it, and only then continues parsing the remaining HTML. This blocks DOM rendering.\n\n### 2. `async` (Asynchronous)\nThe script is downloaded in parallel with HTML parsing. The moment the download finishes, the HTML parser is **paused**, and the script is executed.\n- **Execution Order**: Scripts execute as soon as they download, meaning they do not guarantee execution order.\n- **Best Use**: Self-contained scripts like analytics (Google Analytics) or advertisements.\n\n### 3. `defer` (Deferred)\nThe script is downloaded in parallel with HTML parsing, but its execution is **deferred** until the HTML parsing is fully completed.\n- **Execution Order**: Scripts execute in the exact order they are defined in the HTML document.\n- **Best Use**: Scripts that depend on the complete DOM or depend on other scripts.\n\n---"
+  },
+  {
+    "id": "html_th_3",
+    "question": "What is the Critical Rendering Path (CRP) and how does HTML structure affect it?",
+    "answer": "The Critical Rendering Path (CRP) is the sequence of steps the browser takes to convert HTML, CSS, and JavaScript into actual pixels on the screen.\n\n### The 5 Steps of CRP:\n1. **Build DOM**: Parse HTML markup and construct the Document Object Model (DOM) tree.\n2. **Build CSSOM**: Parse CSS styles and construct the CSS Object Model (CSSOM) tree.\n3. **Create Render Tree**: Combine the DOM and CSSOM trees to create the Render Tree (containing only visible nodes).\n4. **Layout (Reflow)**: Calculate the exact geometry and position of each node on the screen.\n5. **Paint**: Render the actual pixels on the viewport.\n\n### HTML Impact on CRP:\n- **Parser Blocking Scripts**: Script tags placed in the `<head>` without `async` or `defer` block DOM construction.\n- **Style Position**: Stylesheets block rendering (CSSOM must be ready before creating the Render Tree). Placing stylesheets in the `<head>` ensures they load early, preventing Flash of Unstyled Content (FOUC).\n- **DOM Depth**: Excessively nested HTML tags increase the complexity and time required to build the DOM tree and run layout algorithms.\n\n---"
+  },
+  {
+    "id": "html_th_4",
+    "question": "What is the DOM (Document Object Model) and how does it differ from the BOM (Browser Object Model)?",
+    "answer": "- **DOM (Document Object Model)**: A programming interface for HTML and XML documents. It represents the document structure as a tree of nodes (objects), allowing JavaScript to read, modify, and delete HTML elements, attributes, and styles dynamically. The root object of the DOM is `window.document`.\n- **BOM (Browser Object Model)**: A collection of objects exposed by the browser representing the browser window environment outside the document content. It has no official standard, but is supported by all modern browsers. The root object of the BOM is `window`.\n\n### Common BOM Objects:\n- `window.navigator`: Information about the browser/device.\n- `window.location`: URL details and redirect controls.\n- `window.history`: Navigation history stack.\n- `window.screen`: Viewport dimensions and screen capabilities.\n\n---"
+  },
+  {
+    "id": "html_th_5",
+    "question": "Explain HTML5 Web Storage: LocalStorage, SessionStorage, and Cookies",
+    "answer": "HTML5 introduced Web Storage to allow applications to store key-value data directly in the user's browser:\n\n| Feature | LocalStorage | SessionStorage | Cookies |\n|---|---|---|---|\n| **Capacity** | ~5MB - 10MB | ~5MB | ~4KB |\n| **Expiration** | Never (must be deleted) | When tab/window is closed | Manually set (via Max-Age) |\n| **Network Send** | No (Client-side only) | No (Client-side only) | Sent with every HTTP request |\n| **Security** | Same-Origin Policy | Same-Origin Policy | Secure & HttpOnly flag controls |\n| **API** | Simple `getItem`/`setItem` | Simple `getItem`/`setItem` | Complex text strings parse |\n\n---"
+  },
+  {
+    "id": "html_th_6",
+    "question": "What is the purpose of the `shadow DOM` and how does it work?",
+    "answer": "The Shadow DOM is a web standard that allows web developers to attach a hidden, isolated DOM tree to an element. It is a key pillar of Web Components.\n\n### Key Benefits:\n1. **Scoped CSS**: CSS styles defined inside a Shadow DOM do not leak out to the main document, and styles from the main document do not affect the internal elements of the Shadow DOM.\n2. **Encapsulation**: Keeps the internal implementation details of custom elements hidden, avoiding global class name collisions.\n\n### How it Works:\nYou attach a shadow root to an element using `element.attachShadow({ mode: 'open' })`. The element then becomes a \"Shadow Host,\" and the root becomes the parent of the isolated tree.\n\n---"
+  },
+  {
+    "id": "html_th_7",
+    "question": "Explain custom data attributes (`data-*`) and how to access them in JS and CSS",
+    "answer": "Custom data attributes allow you to store custom metadata directly on standard HTML elements using the `data-` prefix.\n\n### Accessing in JavaScript:\nUsing the `dataset` property on a DOM element. CamelCase conversion is applied to keys.\n```html\n<button id=\"btn\" data-user-id=\"45\" data-user-role=\"admin\">Click</button>\n```\n```js\nconst btn = document.getElementById(\"btn\");\nconsole.log(btn.dataset.userId); // \"45\"\nconsole.log(btn.dataset.userRole); // \"admin\"\n```\n\n### Accessing in CSS:\nUsing attribute selectors:\n```css\nbutton[data-user-role=\"admin\"] {\n  border: 2px solid red;\n}\n```\n\n---"
+  },
+  {
+    "id": "html_th_8",
+    "question": "What is the difference between standard iframe and sandboxed iframe?",
+    "answer": "An `<iframe>` (Inline Frame) embeds another HTML page within the current document. Because it can load third-party scripts, it represents a security risk (XSS, clickjacking).\n\n- **Standard `<iframe>`**: Loads and executes code with high access, potentially reading cookies, accessing parent document, submitting forms, or popping up modals.\n- **Sandboxed `<iframe>`**: Applying the `sandbox` attribute restricts the content's capabilities. By default, an empty `sandbox` attribute enforces the strictest rules:\n  - Blocks script execution.\n  - Blocks form submissions.\n  - Treats the page as a unique origin (blocking cookie access).\n  - Blocks popups and target redirects.\n\nTo loosen specific restrictions, you define token values like `sandbox=\"allow-scripts allow-forms\"`.\n\n---"
+  },
+  {
+    "id": "html_th_9",
+    "question": "Explain the `template` and `slot` tags in HTML5 Web Components",
+    "answer": "- **`<template>`**: A mechanism for holding HTML content that is not rendered on page load but can be cloned and instantiated dynamically at runtime using JavaScript.\n- **`<slot>`**: A placeholder inside a web component's shadow DOM template that you can fill with your own custom markup from the light DOM.\n\n### Example:\n```html\n<!-- Component Template -->\n<template id=\"user-card-template\">\n  <div class=\"card\">\n    <h3>User Profile</h3>\n    <slot name=\"username\">Anonymous</slot>\n  </div>\n</template>\n```\nUsing the custom component:\n```html\n<user-card>\n  <span slot=\"username\">Alice Smith</span>\n</user-card>\n```\n\n---"
+  },
+  {
+    "id": "html_th_10",
+    "question": "What is the difference between `src` and `href` attributes?",
+    "answer": "- **`src` (Source)**: Used to embed external resources directly into the document (e.g. `<img>`, `<script>`, `<iframe>`). When the browser encounters a `src` attribute, it pauses parsing to download the resource because it is required to render/run the current page.\n- **`href` (Hypertext Reference)**: Used to define a link or relationship to an external resource (e.g. `<a>`, `<link>`). When the browser downloads resources linked by `href` (like stylesheets), it does not pause the parsing of the DOM, because it represents an external relationship rather than embedded content.\n\n---"
+  },
+  {
+    "id": "html_th_11",
+    "question": "What is the purpose of the `meta` viewport tag and how does it work?",
+    "answer": "```html\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n```\nThe viewport meta tag was introduced to control how mobile browsers render websites.\n\n### How it works:\n- **`width=device-width`**: Sets the width of the page's layout viewport to equal the physical screen width of the device in CSS pixels, preventing mobile browsers from rendering at standard desktop widths (e.g., 980px) and scaling down.\n- **`initial-scale=1.0`**: Sets the initial zoom level when the page is first loaded.\n\n---"
+  },
+  {
+    "id": "html_th_12",
+    "question": "Explain the Web Workers API and how to load them in HTML",
+    "answer": "Web Workers run JavaScript files in background threads separate from the browser's main execution thread. This prevents CPU-intensive computations from locking up the UI thread.\n\n### How to use:\n1. Create a worker file `worker.js`:\n```js\nself.onmessage = (e) => {\n  const result = e.data * 2; // Heavy calculation\n  self.postMessage(result);\n};\n```\n2. Instantiating the worker in the main script:\n```js\nconst myWorker = new Worker('worker.js');\nmyWorker.postMessage(10);\nmyWorker.onmessage = (e) => {\n  console.log('Result:', e.data); // 20\n};\n```\n\n---"
+  },
+  {
+    "id": "html_th_13",
+    "question": "What are Server-Sent Events (SSE) and how do they differ from WebSockets?",
+    "answer": "Server-Sent Events (SSE) is a web standard allowing servers to push real-time updates to client browsers over standard HTTP connections.\n\n### Key Differences:\n- **Direction**: SSE is **unidirectional** (server-to-client only). WebSockets is **bidirectional** (full-duplex client-server communications).\n- **Protocol**: SSE uses standard HTTP. WebSockets uses its own handshake and protocol (`ws://` / `wss://`).\n- **Reconnection**: SSE automatically handles dropped connections and retries. WebSockets requires custom reconnect logic.\n- **Content Type**: SSE is text-only. WebSockets supports binary data transfer.\n\n---"
+  },
+  {
+    "id": "html_th_14",
+    "question": "Explain responsive image tags: `<picture>`, `<img>`, and `srcset`",
+    "answer": "Modern HTML offers responsive image support to optimize image downloads based on screen resolution and size:\n\n1. **`srcset` and `sizes` (on `<img>` tag)**: Tells the browser the same image exists in different widths (`w`) and resolutions (`x`), letting the browser select the most efficient image.\n```html\n<img src=\"small.jpg\" srcset=\"medium.jpg 800w, large.jpg 1200w\" sizes=\"(max-width: 600px) 100vw, 50vw\" alt=\"Example\">\n```\n2. **`<picture>` tag**: Used for art direction or format switching. It contains one or more `<source>` elements and one final fallback `<img>`.\n```html\n<picture>\n  <!-- Serve modern AVIF format if supported -->\n  <source srcset=\"image.avif\" type=\"image/avif\">\n  <!-- Serve different crop size on mobile -->\n  <source srcset=\"mobile-crop.jpg\" media=\"(max-width: 600px)\">\n  <img src=\"fallback-desktop.jpg\" alt=\"Example\">\n</picture>\n```\n\n---"
+  },
+  {
+    "id": "html_th_15",
+    "question": "What is the `contenteditable` attribute and how does it work?",
+    "answer": "The `contenteditable` attribute is a global attribute that makes any HTML element directly editable by the user in the browser window, turning the element into a rich-text input area.\n\n### Example:\n```html\n<div contenteditable=\"true\" id=\"editor\">Type text here...</div>\n```\nIn JavaScript, you can capture changes by listening to the `input` event:\n```js\nconst editor = document.getElementById(\"editor\");\neditor.addEventListener(\"input\", () => {\n  console.log(editor.innerHTML);\n});\n```\nIt is widely used to build custom WYSIWYG text editors in modern web applications."
+  }
+];
+
+export const cssTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "css_th_1",
+    "question": "Explain the CSS Box Model and how `box-sizing: border-box` changes it",
+    "answer": "The CSS Box Model is the structural foundation of design on the web. Every element is represented as a rectangular box consisting of four nested boxes:\n\n1. **Content**: The core area where text, images, or child elements reside.\n2. **Padding**: Transparent space immediately surrounding the content.\n3. **Border**: The line surrounding the padding.\n4. **Margin**: Transparent space separating the element's border from other elements.\n\n### How `box-sizing` changes calculations:\n- **`content-box` (Default)**: The width and height properties define only the Content area. Padding and borders are added *on top* of the width/height.\n  - *Formula*: Total element width = `width` + `padding-left` + `padding-right` + `border-left` + `border-right`.\n- **`border-box`**: The width and height properties define the outer boundary of the element, including content, padding, and borders.\n  - *Formula*: Total element width = `width` property. The content area shrinks automatically to make room for padding and borders.\n\nUsing `border-box` makes layout math and grid alignments significantly easier to manage.\n\n---"
+  },
+  {
+    "id": "css_th_2",
+    "question": "What is CSS Specificity and how is it calculated?",
+    "answer": "CSS Specificity is a weight-based algorithm that browsers use to determine which CSS rules are applied to an element when multiple selectors target it.\n\n### The Specificity Hierarchy (A, B, C):\n1. **A: ID Selector** (e.g. `#my-id`): Has the highest weight. (Score: `1,0,0`)\n2. **B: Class, Attribute, and Pseudo-classes** (e.g. `.my-class`, `[type=\"text\"]`, `:hover`): Medium weight. (Score: `0,1,0`)\n3. **C: Element and Pseudo-elements** (e.g. `div`, `p`, `::before`): Lowest weight. (Score: `0,0,1`)\n\n*Note*:\n- Universal selector `*` and combinators (`+`, `>`, `~`) have **no specificity** (`0,0,0`).\n- **Inline styles** override all stylesheet rules (Score: `1,0,0,0`).\n- **`!important`** is not a selector, but it overrides all specificity scores immediately.\n\n---"
+  },
+  {
+    "id": "css_th_3",
+    "question": "Explain Flexbox vs CSS Grid and when to use each",
+    "answer": "- **Flexbox (1D - One-Dimensional)**: Designed for laying out items in a single axis (either a row OR a column) at a time. It excels at distributing space, alignment, and wrapping items dynamically based on content size.\n- **CSS Grid (2D - Two-Dimensional)**: Designed for laying out items in both columns AND rows simultaneously. It excels at complex, structured page layouts and source-order-independent designs.\n\n### When to use:\n- **Use Flexbox**: For navbar items, card media alignments, horizontal tag lists, or simple form controls.\n- **Use CSS Grid**: For main dashboard dashboards, page outlines, galleries, or grids where items must align perfectly in both axes.\n\n---"
+  },
+  {
+    "id": "css_th_4",
+    "question": "What are CSS Custom Properties (Variables) and what are their advantages?",
+    "answer": "CSS Custom Properties allow you to store values (like colors, spacing, or fonts) in a reusable variable defined directly in your stylesheets.\n\n### Advantages:\n1. **Dynamic Updating**: Unlike Sass variables (which compile down to static values at build time), CSS variables remain in the browser, allowing you to update them dynamically via JavaScript or CSS overrides.\n2. **Inheritance**: Custom properties inherit down the DOM tree, allowing you to easily override theme values globally or within specific sub-containers.\n3. **Fallback Values**: You can define safe fallbacks: `color: var(--accent-color, purple);`.\n\n### Example:\n```css\n:root {\n  --primary-color: #3178c6;\n}\n.card {\n  border-color: var(--primary-color);\n}\n```\n\n---"
+  },
+  {
+    "id": "css_th_5",
+    "question": "Explain the difference between `position: absolute`, `relative`, `fixed`, `sticky`, and `static`",
+    "answer": "The `position` property defines how an element is positioned within the document flow:\n\n- **`static` (Default)**: Normal document flow. Top/bottom/left/right properties have no effect.\n- **`relative`**: Positioned relative to its normal position. It remains in the normal document flow (does not affect other elements' positions).\n- **`absolute`**: Removed from the normal document flow. Positioned relative to its closest **positioned ancestor** (any ancestor with a position other than `static`). If none exists, it positions relative to the initial containing block.\n- **`fixed`**: Removed from the normal document flow. Positioned relative to the **viewport**, staying in the same place even when the page is scrolled.\n- **`sticky`**: Hybrid model. Acts as `relative` until the viewport scroll reaches a defined threshold (e.g. `top: 0`), at which point it acts as `fixed` within its parent container.\n\n---"
+  },
+  {
+    "id": "css_th_6",
+    "question": "What is stacking context and how does `z-index` work?",
+    "answer": "A Stacking Context is a three-dimensional conceptual grouping of HTML elements along the Z-axis (pointing towards the user).\n\n### How it works:\n- By default, elements are painted in source order.\n- To use `z-index`, an element must be a **positioned element** (have a position other than `static`).\n- A new stacking context is created by:\n  - Positioned elements with a `z-index` other than `auto`.\n  - Elements with `opacity` less than `1`.\n  - Elements with `transform`, `filter`, or `perspective` properties set.\n  - Flex or grid child elements with `z-index`.\n\nOnce a stacking context is created, all of its child elements are stacked *internally* within that context. A child cannot render above an external element if its parent stacking context has a lower priority score.\n\n---"
+  },
+  {
+    "id": "css_th_7",
+    "question": "Explain the difference between `display: none`, `visibility: hidden`, and `opacity: 0`",
+    "answer": "These properties hide elements in different ways:\n\n- **`display: none`**: Removes the element entirely from the layout flow. It occupies **0px of space**, and is completely invisible. The DOM element still exists but is not rendered.\n- **`visibility: hidden`**: The element is invisible, but it still **occupies its original space** in the layout. It remains interactive-blocked (cannot be clicked).\n- **`opacity: 0`**: The element is fully transparent, but **occupies its space** and is **still interactive** (can receive hover states, clicks, and keyboard focus).\n\n---"
+  },
+  {
+    "id": "css_th_8",
+    "question": "What are CSS pseudo-classes and pseudo-elements? Give examples",
+    "answer": "- **Pseudo-classes (`:`)**: Selectors that target elements based on their **state** or relationship within the DOM.\n  - *Examples*: `:hover`, `:focus`, `:active`, `:first-child`, `:nth-child(2)`, `:not(.active)`.\n- **Pseudo-elements (`::`)**: Selectors that allow you to target or style **specific parts** of an element, or inject cosmetic virtual elements.\n  - *Examples*: `::before`, `::after`, `::first-letter`, `::placeholder`, `::selection`.\n\n---"
+  },
+  {
+    "id": "css_th_9",
+    "question": "Explain CSS transitions vs keyframe animations",
+    "answer": "- **CSS Transitions**: Used to smoothly animate a change in property values over time. They require a **trigger** (like a hover state `:hover` or class change via JS). They only animate from state A to state B.\n- **Keyframe Animations (`@keyframes`)**: Do not require an interactive trigger to start. They can loop infinitely, run in multiple cycles, and define complex intermediate states (0% to 100% keyframes) with detailed timelines.\n\n---"
+  },
+  {
+    "id": "css_th_10",
+    "question": "What is BEM (Block Element Modifier) methodology?",
+    "answer": "BEM is a popular CSS class naming convention that makes code structure predictable, reusable, and modular.\n\n### BEM Breakdown:\n- **Block**: Standalone entity that is meaningful on its own (e.g. `.menu`, `.card`, `.button`).\n- **Element**: A part of a block that has no standalone meaning and is semantically tied to its block (denoted by `__`). E.g. `.card__title`, `.card__button`.\n- **Modifier**: A flag on a block or element used to change appearance, state, or behavior (denoted by `--`). E.g. `.card--featured`, `.card__button--disabled`.\n\nUsing BEM prevents CSS specificity issues because it encourages flat selector structures (only single class names used).\n\n---"
+  },
+  {
+    "id": "css_th_11",
+    "question": "What are CSS preprocessors (Sass/Less) and how do they differ from native CSS?",
+    "answer": "CSS preprocessors are scripting languages that extend CSS, compiling down to standard CSS files.\n\n### Key Differences:\n- **Variables**: Sass variables (`$color`) compile statically at build-time. CSS custom properties (`--color`) are dynamic and resolvable in the browser.\n- **Nesting**: Preprocessors allow nesting selectors out-of-the-box (though modern native CSS now supports nesting natively too).\n- **Mixins and Functions**: Preprocessors provide powerful programming utilities like `@mixin` and custom loop functions that native CSS cannot run.\n\n---"
+  },
+  {
+    "id": "css_th_12",
+    "question": "Explain container queries (`@container`) and how they differ from media queries (`@media`)",
+    "answer": "- **Media Queries (`@media`)**: Apply styles based on the dimensions of the **viewport** (entire screen width).\n- **Container Queries (`@container`)**: Apply styles based on the dimensions of a **parent container** element.\n\n### Why Container Queries are a game changer:\nThey allow components to be truly modular. A card component can display as a single grid-column if placed in a narrow sidebar, or shift to side-by-side flex layouts if placed in a wide main body panel, without needing to know anything about the browser viewport width.\n\n---"
+  },
+  {
+    "id": "css_th_13",
+    "question": "What is the `:has()` parent selector in CSS and how is it used?",
+    "answer": "The `:has()` pseudo-class (also known as the \"parent selector\") allows you to style an element based on the presence of specific descendant elements or selectors.\n\n### Example:\nStyle a card block only if it contains an image:\n```css\n.card:has(img) {\n  padding: 0; /* Remove padding if there's a card image */\n}\n```\nStyle a form label only if the input inside is focused or invalid:\n```css\n.form-group:has(input:invalid) {\n  border-color: red;\n}\n```\n\n---"
+  },
+  {
+    "id": "css_th_14",
+    "question": "Explain CSS containment (`content-visibility` and `contain`)",
+    "answer": "CSS containment is a performance feature that allows you to isolate parts of a page from the rest of the document.\n\n- **`contain`**: Isolates layout, style, and paint calculations for a sub-tree, telling the browser that changes inside will not affect the rest of the page layout.\n- **`content-visibility: auto`**: Instructs the browser to skip rendering (layout and paint) for off-screen elements until they come close to entering the viewport. This dramatically boosts initial page load speeds on long documents.\n\n---"
+  },
+  {
+    "id": "css_th_15",
+    "question": "What is the difference between CSS variables (`var()`) and Sass variables?",
+    "answer": "- **Sass Variables (`$color`)**: Compiled at build time. Once the website is loaded, they do not exist in the browser, making them static. They cannot be updated dynamically by JavaScript or responsive classes.\n- **CSS Variables (`var(--color)`)**: Dynamic runtime properties evaluated in the browser. They can be updated on the fly using JS (`element.style.setProperty`), change dynamically inside media queries, and inherit values naturally through the DOM cascade."
   }
 ];

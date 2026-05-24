@@ -227,3 +227,122 @@ console.log(tuple[2]);
 3
 c
 ```
+
+---
+
+## 11. Readonly Property Mutation at Runtime
+What is the console output when compiling and running this code?
+```js
+class ApiService {
+  readonly url = "http://api.com";
+}
+
+const service = new ApiService();
+// Type casting/assertion compiles away, enabling mutation in raw JS
+const unsafeService = service;
+unsafeService.url = "http://auth.com";
+console.log(service.url);
+```
+
+### Answer
+```
+http://auth.com
+```
+
+---
+
+## 12. Reverse Mapping in Numeric Enums
+What is the output of checking numeric enum keys and values?
+```js
+var Direction;
+(function (Direction) {
+  Direction[Direction["Up"] = 1] = "Up";
+  Direction[Direction["Down"] = 2] = "Down";
+})(Direction || (Direction = {}));
+
+console.log(Direction[1]);
+console.log(Direction["Up"]);
+console.log(Direction[Direction.Up]);
+```
+
+### Answer
+```
+Up
+1
+Up
+```
+
+---
+
+## 13. Dynamic Nullish Coalescing Compilation
+What is printed for the following nested object resolving?
+```js
+const data = {
+  user: {
+    profile: null
+  }
+};
+
+// Emulating optional chaining and nullish coalescing
+const bio = data.user?.profile?.bio ?? "No Bio";
+const email = data.user?.email ?? "no-email@test.com";
+
+console.log(bio);
+console.log(email);
+```
+
+### Answer
+```
+No Bio
+no-email@test.com
+```
+
+---
+
+## 14. Array Type Widening vs Const Assertions
+What does the runtime comparison print?
+```js
+const primaryColors = ["red", "blue"]; // widens to string[]
+const accentColors = ["orange", "purple"];
+
+primaryColors.push("green");
+const containsGreen = primaryColors.includes("green");
+
+console.log(containsGreen);
+console.log(primaryColors.length);
+```
+
+### Answer
+```
+true
+3
+```
+
+---
+
+## 15. TypeScript Class Method Binding at Runtime
+What is the console output when passing the method as a callback?
+```js
+class Tracker {
+  count = 0;
+  
+  increment() {
+    this.count++;
+    console.log(this.count);
+  }
+}
+
+const tracker = new Tracker();
+const callback = tracker.increment;
+
+try {
+  callback(); // Lost context 'this'
+} catch(e) {
+  console.log("TypeError");
+}
+```
+
+### Answer
+```
+TypeError
+```

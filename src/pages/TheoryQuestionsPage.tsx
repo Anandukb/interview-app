@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions } from '../data/parsedQuestions';
+import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions, htmlTheoryQuestions, cssTheoryQuestions } from '../data/parsedQuestions';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import './TheoryQuestionsPage.css';
 
@@ -148,6 +148,12 @@ const TheoryQuestionsPage = () => {
   } else if (track === 'ts') {
     questions = tsTheoryQuestions;
     trackTitle = 'TypeScript';
+  } else if (track === 'html') {
+    questions = htmlTheoryQuestions;
+    trackTitle = 'HTML';
+  } else if (track === 'css') {
+    questions = cssTheoryQuestions;
+    trackTitle = 'CSS';
   }
 
   const toggleQuestion = (id: string) => {

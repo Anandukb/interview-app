@@ -8,6 +8,10 @@ const nodeTheoryPath = path.resolve('src/data/node_theory.md');
 const nodeMcqPath = path.resolve('src/data/node_mcq.md');
 const tsTheoryPath = path.resolve('src/data/typescript_theory.md');
 const tsMcqPath = path.resolve('src/data/typescript_mcq.md');
+const htmlTheoryPath = path.resolve('src/data/html_theory.md');
+const htmlMcqPath = path.resolve('src/data/html_mcq.md');
+const cssTheoryPath = path.resolve('src/data/css_theory.md');
+const cssMcqPath = path.resolve('src/data/css_mcq.md');
 const outputPath = path.resolve('src/data/parsedQuestions.ts');
 
 const readmeContent = fs.readFileSync(markdownPath, 'utf-8');
@@ -16,6 +20,10 @@ const nodeTheoryContent = fs.readFileSync(nodeTheoryPath, 'utf-8');
 const nodeMcqContent = fs.readFileSync(nodeMcqPath, 'utf-8');
 const tsTheoryContent = fs.readFileSync(tsTheoryPath, 'utf-8');
 const tsMcqContent = fs.readFileSync(tsMcqPath, 'utf-8');
+const htmlTheoryContent = fs.readFileSync(htmlTheoryPath, 'utf-8');
+const htmlMcqContent = fs.readFileSync(htmlMcqPath, 'utf-8');
+const cssTheoryContent = fs.readFileSync(cssTheoryPath, 'utf-8');
+const cssMcqContent = fs.readFileSync(cssMcqPath, 'utf-8');
 const markdownContent = readmeContent;
 
 // Helper to look up comprehensive answers for theory questions (JS/React)
@@ -45,7 +53,11 @@ const parsedData = {
   nodeTheory: [],
   nodeOutputPrediction: [],
   tsTheory: [],
-  tsOutputPrediction: []
+  tsOutputPrediction: [],
+  htmlTheory: [],
+  htmlOutputPrediction: [],
+  cssTheory: [],
+  cssOutputPrediction: []
 };
 
 const isReactOutputPrediction = (title, code) => {
@@ -520,6 +532,126 @@ for (let i = 1; i < tsMcqBlocks.length; i++) {
   addPredictionQuestion(title, code, expectedOutput, parsedData.tsOutputPrediction, tsCodeMap, 'ts_op');
 }
 
+// 8. Extract HTML Theory Questions from html_theory.md
+const htmlTheoryBlocks = htmlTheoryContent.split(/\n## /);
+for (let i = 1; i < htmlTheoryBlocks.length; i++) {
+  const block = htmlTheoryBlocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const heading = block.slice(0, firstLineEnd).trim();
+  const answer = block.slice(firstLineEnd).trim();
+  
+  const titleMatch = heading.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const question = titleMatch[1].trim();
+  parsedData.htmlTheory.push({
+    id: `html_th_${i}`,
+    question,
+    answer
+  });
+}
+
+// 9. Extract HTML Output Prediction Questions from html_mcq.md
+const htmlCodeMap = new Map();
+const htmlMcqBlocks = htmlMcqContent.split(/\n## /);
+for (let i = 1; i < htmlMcqBlocks.length; i++) {
+  const block = htmlMcqBlocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const titleLine = block.slice(0, firstLineEnd).trim();
+  const titleMatch = titleLine.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const title = titleMatch[1].trim();
+  const content = block.slice(firstLineEnd).trim();
+  
+  const codeBlockMatch = content.match(/```(js|javascript)\n([\s\S]*?)```/);
+  if (!codeBlockMatch) continue;
+  
+  const code = codeBlockMatch[2].trim();
+  const answerIdx = content.indexOf('### Answer');
+  if (answerIdx === -1) continue;
+  
+  const answerContent = content.slice(answerIdx + '### Answer'.length).trim();
+  const answerCodeBlockMatch = answerContent.match(/```(?:js|javascript|)\n([\s\S]*?)```/);
+  
+  let expectedOutput = [];
+  if (answerCodeBlockMatch) {
+    expectedOutput = answerCodeBlockMatch[1].trim().split('\n').map(line => line.trim());
+  } else {
+    const plainText = answerContent.split('\n')[0].trim();
+    if (plainText) {
+      expectedOutput = [plainText];
+    }
+  }
+  
+  if (expectedOutput.length === 0) continue;
+  addPredictionQuestion(title, code, expectedOutput, parsedData.htmlOutputPrediction, htmlCodeMap, 'html_op');
+}
+
+// 10. Extract CSS Theory Questions from css_theory.md
+const cssTheoryBlocks = cssTheoryContent.split(/\n## /);
+for (let i = 1; i < cssTheoryBlocks.length; i++) {
+  const block = cssTheoryBlocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const heading = block.slice(0, firstLineEnd).trim();
+  const answer = block.slice(firstLineEnd).trim();
+  
+  const titleMatch = heading.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const question = titleMatch[1].trim();
+  parsedData.cssTheory.push({
+    id: `css_th_${i}`,
+    question,
+    answer
+  });
+}
+
+// 11. Extract CSS Output Prediction Questions from css_mcq.md
+const cssCodeMap = new Map();
+const cssMcqBlocks = cssMcqContent.split(/\n## /);
+for (let i = 1; i < cssMcqBlocks.length; i++) {
+  const block = cssMcqBlocks[i].trim();
+  const firstLineEnd = block.indexOf('\n');
+  if (firstLineEnd === -1) continue;
+  
+  const titleLine = block.slice(0, firstLineEnd).trim();
+  const titleMatch = titleLine.match(/^\d+\.\s+(.*)/);
+  if (!titleMatch) continue;
+  
+  const title = titleMatch[1].trim();
+  const content = block.slice(firstLineEnd).trim();
+  
+  const codeBlockMatch = content.match(/```(js|javascript)\n([\s\S]*?)```/);
+  if (!codeBlockMatch) continue;
+  
+  const code = codeBlockMatch[2].trim();
+  const answerIdx = content.indexOf('### Answer');
+  if (answerIdx === -1) continue;
+  
+  const answerContent = content.slice(answerIdx + '### Answer'.length).trim();
+  const answerCodeBlockMatch = answerContent.match(/```(?:js|javascript|)\n([\s\S]*?)```/);
+  
+  let expectedOutput = [];
+  if (answerCodeBlockMatch) {
+    expectedOutput = answerCodeBlockMatch[1].trim().split('\n').map(line => line.trim());
+  } else {
+    const plainText = answerContent.split('\n')[0].trim();
+    if (plainText) {
+      expectedOutput = [plainText];
+    }
+  }
+  
+  if (expectedOutput.length === 0) continue;
+  addPredictionQuestion(title, code, expectedOutput, parsedData.cssOutputPrediction, cssCodeMap, 'css_op');
+}
+
 // Write to file
 const tsContent = `
 // AUTOGENERATED FILE - DO NOT EDIT MANUALLY
@@ -547,6 +679,10 @@ export const nodeOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.
 
 export const tsOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.tsOutputPrediction, null, 2)};
 
+export const htmlOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.htmlOutputPrediction, null, 2)};
+
+export const cssOutputPredictionQuestions: OutputPredictionQuestion[] = ${JSON.stringify(parsedData.cssOutputPrediction, null, 2)};
+
 export const jsTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.jsTheory, null, 2)};
 
 export const reactTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.reactTheory, null, 2)};
@@ -554,6 +690,10 @@ export const reactTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedDat
 export const nodeTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.nodeTheory, null, 2)};
 
 export const tsTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.tsTheory, null, 2)};
+
+export const htmlTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.htmlTheory, null, 2)};
+
+export const cssTheoryQuestions: TheoryQuestion[] = ${JSON.stringify(parsedData.cssTheory, null, 2)};
 `;
 
 fs.writeFileSync(outputPath, tsContent, 'utf-8');
@@ -562,7 +702,11 @@ console.log(`Extracted ${parsedData.jsOutputPrediction.length} JS Output Predict
 console.log(`Extracted ${parsedData.reactOutputPrediction.length} React Output Prediction questions.`);
 console.log(`Extracted ${parsedData.nodeOutputPrediction.length} Node JS Output Prediction questions.`);
 console.log(`Extracted ${parsedData.tsOutputPrediction.length} TypeScript Output Prediction questions.`);
+console.log(`Extracted ${parsedData.htmlOutputPrediction.length} HTML Output Prediction questions.`);
+console.log(`Extracted ${parsedData.cssOutputPrediction.length} CSS Output Prediction questions.`);
 console.log(`Extracted ${parsedData.jsTheory.length} JS Theory questions.`);
 console.log(`Extracted ${parsedData.reactTheory.length} React Theory questions.`);
 console.log(`Extracted ${parsedData.nodeTheory.length} Node JS Theory questions.`);
 console.log(`Extracted ${parsedData.tsTheory.length} TypeScript Theory questions.`);
+console.log(`Extracted ${parsedData.htmlTheory.length} HTML Theory questions.`);
+console.log(`Extracted ${parsedData.cssTheory.length} CSS Theory questions.`);

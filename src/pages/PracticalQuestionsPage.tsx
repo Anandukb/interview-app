@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { jsPracticalQuestions, reactPracticalQuestions, tsPracticalQuestions } from '../data/mockQuestions';
+import { jsPracticalQuestions, reactPracticalQuestions, tsPracticalQuestions, htmlPracticalQuestions, cssPracticalQuestions } from '../data/mockQuestions';
 import { nodePracticalQuestions } from '../data/nodeMockQuestions';
 import type { Question } from '../data/mockQuestions';
 import QuestionCard from '../components/QuestionCard';
@@ -20,6 +20,10 @@ const PracticalQuestionsPage = () => {
     questions = reactPracticalQuestions;
   } else if (track === 'ts') {
     questions = tsPracticalQuestions;
+  } else if (track === 'html') {
+    questions = htmlPracticalQuestions;
+  } else if (track === 'css') {
+    questions = cssPracticalQuestions;
   }
 
   const handleBack = () => {

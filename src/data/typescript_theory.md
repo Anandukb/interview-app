@@ -411,3 +411,223 @@ const colors = ["red", "blue"] as const;
 - **`target`**: The JavaScript version TypeScript compiles down to (e.g., `ES5`, `ES6/ES2015`, `ESNext`).
 - **`module`**: The module resolution strategy to use for compiled files (e.g., `CommonJS`, `ESNext`, `NodeNext`).
 - **`lib`**: Array of library files to include in compilation. It tells the compiler about existing runtime environments (like the browser DOM `["DOM"]`, or standard ES classes `["ESNext"]`).
+
+---
+
+## 21. What is structural typing in TypeScript?
+
+TypeScript uses a structural type system (sometimes called duck typing) to compare types. Under structural typing, type compatibility and equivalence are determined solely by the shape (members and properties) of the types, rather than their explicit declarations or inheritance hierarchies.
+
+### Example:
+```ts
+interface Point {
+  x: number;
+  y: number;
+}
+
+class Vector2D {
+  constructor(public x: number, public y: number) {}
+}
+
+function logPoint(p: Point) {
+  console.log(`${p.x}, ${p.y}`);
+}
+
+const vec = new Vector2D(10, 20);
+logPoint(vec); // Allowed! Vector2D matches the shape of Point.
+```
+If a type has all the required properties of another type (and they have compatible types), it is considered compatible, even if it has extra properties.
+
+---
+
+## 22. Explain the `unknown` vs `any` type compatibility rules
+
+While both `any` and `unknown` can hold any value, their type compatibility rules differ significantly in assignments:
+
+1. **`any` (Lax/Unsafe)**:
+   - Assignable to any other type (except `never`).
+   - Any type can be assigned to `any`.
+   - Allows all properties and operations without checks.
+
+2. **`unknown` (Strict/Safe)**:
+   - Any type can be assigned to `unknown`.
+   - But `unknown` is **NOT** assignable to any other type (except `any` and `unknown` itself) without a type assertion or type guard.
+   - Operations on `unknown` values are blocked until the type is narrowed.
+
+### Assignment Matrix:
+```ts
+let valAny: any = 10;
+let valUnknown: unknown = 20;
+
+let num: number;
+num = valAny;      // Allowed (unsafe)
+// num = valUnknown; // Compile Error! (Safe check)
+
+if (typeof valUnknown === "number") {
+  num = valUnknown; // Allowed because of narrowing
+}
+```
+
+---
+
+## 23. What are Template Literal Types and how are they useful?
+
+Template Literal Types build on string literal types and allow you to construct new string union types by combining strings using template literal syntax.
+
+### Practical Use-Cases:
+1. **Generating Action/Event Unions**:
+```ts
+type Event = "click" | "hover";
+type Element = "button" | "input";
+
+type ElementEvent = `${Element}_${Event}`;
+// Resolved as: "button_click" | "button_hover" | "input_click" | "input_hover"
+```
+2. **CSS/Style properties mapping**:
+```ts
+type MarginDirection = "top" | "bottom" | "left" | "right";
+type MarginProperty = `margin-${MarginDirection}`;
+// Resolved as: "margin-top" | "margin-bottom" | "margin-left" | "margin-right"
+```
+They are highly useful when writing type-safe APIs for styles, routing patterns, or design tokens.
+
+---
+
+## 24. Explain covariance, contravariance, and invariance in TypeScript
+
+These terms describe how subtyping relationships between complex types (like arrays, functions, and objects) relate to the subtyping of their component types:
+
+1. **Covariance (Same Direction)**:
+   - If `Dog` extends `Animal`, then `Dog[]` can be assigned to `Animal[]`.
+   - Read-only structures, properties, and function return values are **covariant**.
+2. **Contravariance (Opposite Direction)**:
+   - If `Dog` extends `Animal`, then a function expecting `Animal` as an argument `(a: Animal) => void` can be assigned to one expecting `Dog` `(d: Dog) => void`.
+   - Function parameter types are **contravariant** under `--strictFunctionTypes`.
+3. **Invariance (Strict Match)**:
+   - A type is invariant if it must match exactly.
+   - Mutable structures (like read-write arrays or object properties) are conceptually invariant, although TS allows some lax checks for ease of use.
+
+---
+
+## 25. How do you implement nominal typing or type branding?
+
+Since TypeScript is structurally typed, two different types with identical structures are compatible. To enforce nominal typing (where types must have unique identities), developers use **type branding** (or tagging).
+
+### Implementation Pattern:
+A brand is a unique literal type tag attached to a property that only exists in the type space (often using `unique symbol` or a literal string property that doesn't actually exist at runtime).
+
+```ts
+type UserId = string & { readonly __brand: unique symbol };
+type OrderId = string & { readonly __brand: unique symbol };
+
+function createUserId(id: string): UserId {
+  return id as UserId;
+}
+
+function processUser(id: UserId) {
+  console.log(id);
+}
+
+const myUser = createUserId("user_123");
+const myOrder = "order_999" as OrderId;
+
+processUser(myUser); // OK!
+// processUser(myOrder); // Compile Error! OrderId cannot be assigned to UserId.
+```
+
+---
+
+## 26. What are declaration files (`.d.ts`) and when are they used?
+
+Declaration files (ending in `.d.ts`) provide type definitions for JavaScript code. They contain only type information (declarations) and no executable code. When TypeScript code compiles, it can generate declaration files so that external users of the compiled JS know the types.
+
+### When they are used:
+1. **Consuming JS Libraries**: Providing type definitions for third-party libraries written in plain JavaScript (e.g. `@types/react`, `@types/lodash`).
+2. **Library Development**: Publishing library modules so consumers get rich editor completions.
+3. **Global Declarations**: Defining global interfaces or window attributes using ambient declarations (`declare global { ... }`).
+
+---
+
+## 27. What is the difference between `interface` and `type` when extending?
+
+While both can extend other structures, they use different syntaxes and have slightly different compiler validation rules:
+
+1. **`interface extends`**:
+   - Uses the `extends` keyword.
+   - The compiler verifies that properties are statically compatible. If a property is overwritten with an incompatible type, a compile error is thrown immediately.
+   - Supports Declaration Merging.
+```ts
+interface A { x: string; }
+// interface B extends A { x: number; } // Compile Error: Interface 'B' incorrectly extends interface 'A'.
+```
+
+2. **`type` Intersection (`&`)**:
+   - Uses the `&` intersection operator.
+   - Bypasses static inheritance check during union. If incompatible properties are combined, the property type resolves to `never` rather than throwing a compile error immediately.
+```ts
+type A = { x: string; };
+type B = A & { x: number; }; // No compiler crash, but B["x"] becomes 'never' (impossible to satisfy).
+```
+
+---
+
+## 28. What is the `satisfies` operator in TypeScript?
+
+Introduced in TypeScript 4.9, the `satisfies` operator validates that an expression matches a specific type *without* changing the inferred type of that expression. This differs from type annotations, which coerce the variable type to the annotated type.
+
+### Example:
+```ts
+type Colors = "red" | "green" | "blue";
+type RGB = [number, number, number];
+
+const palette = {
+  primary: "red",
+  danger: [255, 0, 0]
+} satisfies Record<string, Colors | RGB>;
+
+// Using satisfies:
+palette.primary.toUpperCase(); // OK! The compiler knows palette.primary is string/literal.
+// If we had annotated: const palette: Record<string, Colors | RGB>, 
+// palette.primary.toUpperCase() would fail because 'primary' could be RGB (an array).
+```
+
+---
+
+## 29. Explain how mapped type modifiers (e.g. `-readonly` or `?`) work
+
+Mapped type modifiers allow you to add or remove type flags like `readonly` or `?` (optional) while iterating over keys of an existing type.
+- **`+` or omitted**: Adds the modifier (e.g., `+readonly` or `+?`).
+- **`-`**: Removes the modifier (e.g., `-readonly` or `-?`).
+
+### Example (Stripping optionality and read-only flags):
+```ts
+interface User {
+  readonly id: number;
+  name?: string;
+}
+
+// Strip both modifiers:
+type ConcreteMutable<T> = {
+  -readonly [P in keyof T]-?: T[P];
+};
+
+type Result = ConcreteMutable<User>;
+// Resolved as: { id: number; name: string; } (required and mutable)
+```
+
+---
+
+## 30. How do ambient namespaces differ from modules?
+
+- **Modules (ES Modules)**: Contain `import` and `export` statements. They represent file-scoped modules. Variables declared inside are local to the file unless explicitly exported. They conform to standard ES6 runtime modules.
+- **Ambient Namespaces (`declare namespace`)**: Used primarily in declaration files to describe global libraries, global variables, or namespaces that are loaded via script tags. They do not generate runtime modules and are ambient (exist only in the type compilation layer).
+
+### Example:
+```ts
+// global.d.ts
+declare namespace GlobalSettings {
+  let theme: "dark" | "light";
+  function initialize(): void;
+}
+// Now GlobalSettings is available globally without needing to import it.
+```
