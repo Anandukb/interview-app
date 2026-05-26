@@ -10,10 +10,10 @@ function App() {
     <div className="app-container">
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/:track" element={<QuestionTypesPage />} />
-        <Route path="/:track/practical" element={<PracticalQuestionsPage />} />
-        <Route path="/:track/theory" element={<TheoryQuestionsPage />} />
-        <Route path="/:track/output-prediction" element={<OutputPredictionPage />} />
+        <Route path="/:platform" element={<QuestionTypesPage />} />
+        <Route path="/:platform/practical" element={<PracticalQuestionsPage />} />
+        <Route path="/:platform/theory" element={<TheoryQuestionsPage />} />
+        <Route path="/:platform/output-prediction" element={<OutputPredictionPage />} />
       </Routes>
     </div>
   );

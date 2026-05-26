@@ -132,26 +132,26 @@ const renderFormattedAnswer = (text: string) => {
 
 const TheoryQuestionsPage = () => {
   const navigate = useNavigate();
-  const { track } = useParams<{ track: string }>();
+  const { platform } = useParams<{ platform: string }>();
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
 
   let questions = jsTheoryQuestions;
   let trackTitle = 'JavaScript';
 
-  if (track === 'node') {
+  if (platform === 'node') {
     questions = nodeTheoryQuestions;
     trackTitle = 'Node JS';
-  } else if (track === 'react') {
+  } else if (platform === 'react') {
     questions = reactTheoryQuestions;
     trackTitle = 'React';
-  } else if (track === 'ts') {
+  } else if (platform === 'ts') {
     questions = tsTheoryQuestions;
     trackTitle = 'TypeScript';
-  } else if (track === 'html') {
+  } else if (platform === 'html') {
     questions = htmlTheoryQuestions;
     trackTitle = 'HTML';
-  } else if (track === 'css') {
+  } else if (platform === 'css') {
     questions = cssTheoryQuestions;
     trackTitle = 'CSS';
   }
@@ -175,7 +175,7 @@ const TheoryQuestionsPage = () => {
     <div className="theory-container container">
       <div className="page-header">
         <div className="header-left">
-          <button className="back-btn" onClick={() => navigate(`/${track}`)}>
+          <button className="back-btn" onClick={() => navigate(`/${platform}`)}>
             &larr; Back to Formats
           </button>
           <h1 className="title">{trackTitle} <span className="gradient-text">Questions</span></h1>

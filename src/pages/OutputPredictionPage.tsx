@@ -10,22 +10,22 @@ import './OutputPredictionPage.css';
 
 const OutputPredictionPage = () => {
   const navigate = useNavigate();
-  const { track } = useParams<{ track: string }>();
+  const { platform } = useParams<{ platform: string }>();
   const [selectedQuestion, setSelectedQuestion] = useState<OutputPredictionQuestion | null>(null);
   const [selectedOutput, setSelectedOutput] = useState<string[]>([]);
   const [isAnswerShown, setIsAnswerShown] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   let questions = jsOutputPredictionQuestions;
-  if (track === 'node') {
+  if (platform === 'node') {
     questions = nodeOutputPredictionQuestions;
-  } else if (track === 'react') {
+  } else if (platform === 'react') {
     questions = reactOutputPredictionQuestions;
-  } else if (track === 'ts') {
+  } else if (platform === 'ts') {
     questions = tsOutputPredictionQuestions;
-  } else if (track === 'html') {
+  } else if (platform === 'html') {
     questions = htmlOutputPredictionQuestions;
-  } else if (track === 'css') {
+  } else if (platform === 'css') {
     questions = cssOutputPredictionQuestions;
   }
   const isMultiSelect = selectedQuestion ? selectedQuestion.expectedOutput.length > 1 : false;
@@ -73,7 +73,7 @@ const OutputPredictionPage = () => {
     if (selectedQuestion) {
       setSelectedQuestion(null);
     } else {
-      navigate(`/${track}`);
+      navigate(`/${platform}`);
     }
   };
 
@@ -137,7 +137,7 @@ const OutputPredictionPage = () => {
                   <div className="code-viewer glass">
                     <Editor
                       height="300px"
-                      defaultLanguage={track === 'ts' ? 'typescript' : 'javascript'}
+                      defaultLanguage={platform === 'ts' ? 'typescript' : 'javascript'}
                       theme="vs-dark"
                       value={selectedQuestion.code}
                       options={{

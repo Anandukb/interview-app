@@ -1,0 +1,609 @@
+"#","Key","Question","Answer"
+"1","differencebetweenletconstandvar","What is the Difference Between let, const and var?","In JavaScript, \`var\`, \`let\`, and \`const\` differ in scoping, hoisting, and re-assignment capabilities:
+
+1. **Scope**:
+   - \`var\` is function-scoped. It is accessible anywhere inside the function it is defined in.
+   - \`let\` and \`const\` are block-scoped (contained within \`{}\`).
+
+2. **Hoisting**:
+   - \`var\` variables are hoisted and initialized as \`undefined\`.
+   - \`let\` and \`const\` are hoisted but NOT initialized, staying in the **Temporal Dead Zone (TDZ)** until their declaration is evaluated.
+
+3. **Re-assignment**:
+   - \`var\` and \`let\` can be re-assigned.
+   - \`const\` binds a value permanently and cannot be re-assigned (though object properties inside a \`const\` object can be mutated).
+
+Example:
+\`\`\`js
+function scopeTest() {
+  if (true) {
+    var functionScoped = ""I am var"";
+    let blockScoped = ""I am let"";
+  }
+  console.log(functionScoped); // Works (var is function-scoped)
+  // console.log(blockScoped); // ReferenceError (let is block-scoped)
+}
+\`\`\`"
+"2","differencebetweenand","What is the Difference Between And?","The difference between loose equality (\`==\`) and strict equality (\`===\`) is type coercion:
+
+- **\`==\` (Loose Equality)**: Compares two values for equality after performing implicit type conversion (coercion) if their types differ.
+- **\`===\` (Strict Equality)**: Compares both the value and the type. No type coercion is performed. If the types are different, it immediately returns \`false\`.
+
+Example:
+\`\`\`js
+console.log(5 == ""5"");  // true (string ""5"" is coerced to number 5)
+console.log(5 === ""5""); // false (types differ: number vs string)
+console.log(null == undefined);  // true
+console.log(null === undefined); // false
+\`\`\`
+
+**Best Practice**: Always use \`===\` to prevent unexpected bugs caused by implicit coercion."
+"3","differencebetweeneveryandsome","What is the Difference Between every() and some()?","Both \`every()\` and \`some()\` are JavaScript array iteration methods that test elements against a callback function, but they differ in completion conditions:
+
+- **\`every()\`**: Returns \`true\` if **all** elements in the array pass the test. It short-circuits (returns \`false\`) as soon as it finds one failing element.
+- **\`some()\`**: Returns \`true\` if **at least one** element passes the test. It short-circuits (returns \`true\`) as soon as it finds one passing element.
+
+Example:
+\`\`\`js
+const nums = [1, 2, -3, 4];
+
+const allPositive = nums.every(n => n > 0); // false
+const hasNegative = nums.some(n => n < 0);  // true
+\`\`\`"
+"4","differencebetweenmapandforeach","What is the Difference Between map() and forEach()?","Both methods iterate over arrays, but they serve different purposes:
+
+- **\`map()\`**: Creates and returns a **new array** containing the results of calling the provided function on every element. It is pure and does not mutate the original array.
+- **\`forEach()\`**: Executes a provided function once for each array element. It **returns \`undefined\`** and is used to perform side effects (e.g., logging, modifying external state).
+
+Example:
+\`\`\`js
+const numbers = [1, 2, 3];
+
+// map returns a new array
+const doubled = numbers.map(num => num * 2); // [2, 4, 6]
+
+// forEach performs a side effect
+numbers.forEach(num => console.log(num)); // logs 1, 2, 3
+\`\`\`
+
+**Best Practice**: Use \`map()\` when you need to transform data, and \`forEach()\` when you need side effects. Never use \`map()\` if you aren't using the returned array."
+"5","differencebetweenpromiseallandpromiserace","What is the Difference Between Promise.all() and Promise.race()?","These methods handle concurrent promises differently:
+
+- **\`Promise.all()\`**: Takes an array of promises and returns a single Promise that resolves when **all** input promises resolve, or rejects immediately when **any** promise rejects (fail-fast).
+- **\`Promise.race()\`**: Resolves or rejects as soon as **any one** of the input promises settles (either resolves or rejects).
+
+Example:
+\`\`\`js
+const p1 = new Promise(resolve => setTimeout(() => resolve('P1 Fast'), 100));
+const p2 = new Promise(resolve => setTimeout(() => resolve('P2 Slow'), 500));
+
+Promise.all([p1, p2]).then(console.log);  // ['P1 Fast', 'P2 Slow'] (takes 500ms)
+Promise.race([p1, p2]).then(console.log); // 'P1 Fast' (takes 100ms)
+\`\`\`"
+"6","differencebetweenshallowcopyanddeepcopy","What is the Difference Between Shallow Copy and Deep Copy?","Shallow copying and deep copying determine how nested objects are copied:
+
+- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.
+- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.
+
+Example:
+\`\`\`js
+const original = { name: ""John"", details: { city: ""Doha"" } };
+
+// Shallow copy using spread
+const shallow = { ...original };
+shallow.details.city = ""London"";
+console.log(original.details.city); // ""London"" (original mutated!)
+
+// Deep copy using structuredClone
+const deep = structuredClone(original);
+deep.details.city = ""Tokyo"";
+console.log(original.details.city); // ""London"" (original untouched)
+\`\`\`"
+"7","explaindeepcopyandshallowcopy","Explain Deepcopyandshallowcopy?","Shallow copying and deep copying determine how nested objects are copied:
+
+- **Shallow Copy**: Copies the top-level properties. If a property is a reference type (like an object or array), it copies the reference address, meaning both the copy and the original share the nested object.
+- **Deep Copy**: Copies all levels of the object recursively, creating new memory addresses for all nested structures. Modifying the deep copy has no effect on the original.
+
+Example:
+\`\`\`js
+const original = { name: ""John"", details: { city: ""Doha"" } };
+
+// Shallow copy using spread
+const shallow = { ...original };
+shallow.details.city = ""London"";
+console.log(original.details.city); // ""London"" (original mutated!)
+
+// Deep copy using structuredClone
+const deep = structuredClone(original);
+deep.details.city = ""Tokyo"";
+console.log(original.details.city); // ""London"" (original untouched)
+\`\`\`"
+"8","differencebetweensynchronousandasynchronousexecution","What is the Difference Between Synchronous and Asynchronous Execution?","Execution models in JavaScript handle tasks differently:
+
+- **Synchronous Execution**: Code is executed line-by-line in sequential order. Each statement blocks the execution of subsequent code until it finishes.
+- **Asynchronous Execution**: Tasks (like API calls or timeouts) are offloaded to Web APIs, allowing the main execution thread to continue running other code. Once complete, they enter a queue and execute without blocking the main flow.
+
+Example:
+\`\`\`js
+// Synchronous
+console.log(""1"");
+console.log(""2""); // logs: 1, 2
+
+// Asynchronous
+console.log(""1"");
+setTimeout(() => console.log(""2""), 100);
+console.log(""3""); // logs: 1, 3, 2
+\`\`\`"
+"9","whatissynchronousandasynchronousexecution","What Is Synchronous and Asynchronous Execution?","Execution models in JavaScript handle tasks differently:
+
+- **Synchronous Execution**: Code is executed line-by-line in sequential order. Each statement blocks the execution of subsequent code until it finishes.
+- **Asynchronous Execution**: Tasks (like API calls or timeouts) are offloaded to Web APIs, allowing the main execution thread to continue running other code. Once complete, they enter a queue and execute without blocking the main flow.
+
+Example:
+\`\`\`js
+// Synchronous
+console.log(""1"");
+console.log(""2""); // logs: 1, 2
+
+// Asynchronous
+console.log(""1"");
+setTimeout(() => console.log(""2""), 100);
+console.log(""3""); // logs: 1, 3, 2
+\`\`\`"
+"10","differencebetweenfunctiondeclarationandfunctionexpression","What is the Difference Between Function Declaration and Function Expression?","The primary difference is **hoisting** behavior:
+
+- **Function Declaration**: Loaded into memory before execution begins. Can be called *before* they are declared in the code.
+- **Function Expression**: Created when the execution reaches that line. Since they are usually assigned to variables (\`var\`, \`let\`, \`const\`), they follow variable hoisting rules (calling them before definition triggers an error).
+
+Example:
+\`\`\`js
+// Declaration works before line
+greetDecl(); // ""Hello!""
+function greetDecl() { console.log(""Hello!""); }
+
+// Expression fails before line
+greetExpr(); // TypeError or ReferenceError
+var greetExpr = function() { console.log(""Hi!""); };
+\`\`\`"
+"11","differencebetweensettimeoutandsetinterval","What is the Difference Between setTimeout() and setInterval()?","Both are timer methods in JavaScript but have different recurring behaviors:
+
+- **\`setTimeout()\`**: Executes a callback function **exactly once** after a specified delay.
+- **\`setInterval()\`**: Repeatedly executes a callback function **at intervals** of a specified delay.
+
+Example:
+\`\`\`js
+// Runs once after 1 second
+setTimeout(() => console.log(""Hello""), 1000);
+
+// Runs every 1 second continuously
+const id = setInterval(() => console.log(""Tick""), 1000);
+// To stop it:
+clearInterval(id);
+\`\`\`"
+"12","differencebetweenlocalstorageandsessionstorage","What is the Difference Between localStorage and sessionStorage?","Both are web storage APIs storing key-value pairs in the browser as strings, but they differ in lifetime:
+
+- **\`localStorage\`**: Persists data with **no expiration date**. Data remains even if the browser tab/window is closed and reopened. Must be cleared programmatically or manually.
+- **\`sessionStorage\`**: Keeps data only for the duration of the page session. Data is **wiped out** when the browser tab/window is closed.
+
+Example:
+\`\`\`js
+// Persists indefinitely
+localStorage.setItem(""user"", ""John"");
+
+// Deleted when tab closes
+sessionStorage.setItem(""session_token"", ""xyz123"");
+\`\`\`"
+"13","differencebetweeneventbubblingandeventcapturing","What is the Difference Between Event Bubbling and Event Capturing?","These are the two phases of event propagation in the DOM:
+
+- **Event Bubbling**: The event starts at the target element that triggered it and bubbles **upward** through its parent elements in the DOM tree. (Default behavior).
+- **Event Capturing (Trickling)**: The event starts at the top of the DOM tree (Document/Window) and trickles **downward** to the target element.
+
+Example:
+\`\`\`js
+// Capture phase (third param true)
+element.addEventListener(""click"", handler, true);
+
+// Bubbling phase (default, third param false)
+element.addEventListener(""click"", handler, false);
+\`\`\`"
+"14","differencebetweenforinandforof","What is the Difference Between for...in and for...of?","Both iterate over structures but target different values:
+
+- **\`for...in\`**: Iterates over the enumerable **keys (properties)** of an object (including prototype keys).
+- **\`for...of\`**: Iterates over the iterable **values** of an iterable object (like Arrays, Strings, Sets, Maps).
+
+Example:
+\`\`\`js
+const arr = [""a"", ""b""];
+
+for (let key in arr) {
+  console.log(key); // ""0"", ""1"" (indexes)
+}
+
+for (let val of arr) {
+  console.log(val); // ""a"", ""b"" (elements)
+}
+\`\`\`"
+"15","differencebetweenslicespliceandsubstring","What is the Difference Between slice(), splice() and substring()?","These methods extract or modify parts of arrays/strings:
+
+1. **\`slice(start, end)\`**: (Array & String) Extracts a section and returns a **new** array/string without mutating the original. Supports negative indexes.
+2. **\`splice(start, count, ...items)\`**: (Array only) Adds/removes elements to/from the original array and **mutates** it.
+3. **\`substring(start, end)\`**: (String only) Similar to \`slice\`, but doesn't support negative indexes (treats them as \`0\`).
+
+Example:
+\`\`\`js
+// Array slice (no mutation)
+const arr = [1, 2, 3];
+const sliced = arr.slice(0, 2); // [1, 2]
+
+// Array splice (mutates)
+arr.splice(1, 1, 9); // arr is now [1, 9, 3]
+\`\`\`"
+"16","differencebetweenmutableandimmutableobjects","What is the Difference Between Mutable and Immutable Objects?","- **Mutable**: Objects whose state/content can be modified after creation (Objects, Arrays, Functions in JS).
+- **Immutable**: Values that cannot be changed once created (Primitives: Numbers, Strings, Booleans, Symbol, null, undefined). If you modify a string, a new string is allocated in memory.
+
+Example:
+\`\`\`js
+// Mutable
+const user = { name: ""John"" };
+user.name = ""Doe""; // Modified in-place
+
+// Immutable (making an object shallowly immutable)
+const frozenUser = Object.freeze({ name: ""John"" });
+frozenUser.name = ""Doe""; // Silent failure or error in strict mode
+\`\`\`"
+"17","differencebetweenfetchandaxios","What is the Difference Between fetch and axios?","- **\`fetch\`**: Native Web API built into modern browsers. It returns a Promise, but does not reject on HTTP errors (e.g., 404, 500) — you must manually check \`response.ok\`. It also requires a manual call to \`.json()\` to parse the response body.
+- **\`axios\`**: Third-party library. Automatically transforms JSON data, rejects the promise on HTTP error codes, supports request/response interceptors, and can cancel requests.
+
+Example:
+\`\`\`js
+// Native fetch
+fetch('/api/data')
+  .then(res => {
+    if (!res.ok) throw new Error(""HTTP error"");
+    return res.json();
+  })
+  .then(data => console.log(data));
+
+// Axios
+axios.get('/api/data')
+  .then(res => console.log(res.data));
+\`\`\`"
+"18","differencebetweenpromisesandasyncawait","What is the Difference Between Promises and async/await?","\`async/await\` is built on top of Promises, providing syntactic sugar:
+
+- **Promises**: Use chainable methods like \`.then()\` and \`.catch()\` to handle async outcomes, which can lead to nested boilerplate.
+- **\`async/await\`**: Writes asynchronous code that looks and behaves like synchronous code. Utilizes standard \`try/catch\` blocks for error handling.
+
+Example:
+\`\`\`js
+// Promise chaining
+fetchData()
+  .then(res => res.json())
+  .catch(err => console.error(err));
+
+// Async/await
+async function get() {
+  try {
+    const res = await fetchData();
+    const data = await res.json();
+  } catch (err) {
+    console.error(err);
+  }
+}
+\`\`\`"
+"19","differencebetweendebounceandthrottle","What is the Difference Between Debounce and Throttle?","Both rate-limit execution, but serve different scenarios:
+
+- **Debounce**: Delays execution of a function until after a specific amount of time has elapsed since the **last time** the function was triggered. Best for search inputs, where you only run the API request after the user stops typing.
+- **Throttle**: Ensures a function is called **at most once** within a specified time window. Best for scroll listeners, resize handlers, or mouse movement tracking.
+
+Example:
+\`\`\`js
+// Debounce search
+const handleSearch = debounce((query) => searchAPI(query), 300);
+\`\`\`"
+"20","explaindebounceandthrottlepractically","Explain Debounceandthrottlepractically?","Both rate-limit execution, but serve different scenarios:
+
+- **Debounce**: Delays execution of a function until after a specific amount of time has elapsed since the **last time** the function was triggered. Best for search inputs, where you only run the API request after the user stops typing.
+- **Throttle**: Ensures a function is called **at most once** within a specified time window. Best for scroll listeners, resize handlers, or mouse movement tracking.
+
+Example:
+\`\`\`js
+// Debounce search
+const handleSearch = debounce((query) => searchAPI(query), 300);
+\`\`\`"
+"21","differencebetweenmapfilterandreduce","What is the Difference Between map(), filter() and reduce()?","Array methods that transform data:
+
+- **\`map()\`**: Transforms each element and returns a **new array** of the same length.
+- **\`filter()\`**: Evaluates elements against a boolean check and returns a **new array** containing only matching elements.
+- **\`reduce()\`**: Processes array elements and aggregates them into a **single output value** (like a sum, object, or new list).
+
+Example:
+\`\`\`js
+const nums = [1, 2, 3, 4];
+
+const doubled = nums.map(n => n * 2); // [2, 4, 6, 8]
+const evens = nums.filter(n => n % 2 === 0); // [2, 4]
+const sum = nums.reduce((acc, curr) => acc + curr, 0); // 10
+\`\`\`"
+"22","differencebetweennullundefinedandnan","What is the Difference Between null, undefined and NaN?","- **\`undefined\`**: Variable is declared but **no value has been assigned** to it yet.
+- **\`null\`**: Representation of an **intentional absence** of value (assigned explicitly).
+- **\`NaN\`** (Not a Number): Represents an invalid numerical calculation (e.g. \`0 / 0\` or \`parseInt(""hello"")\`).
+
+Example:
+\`\`\`js
+let a;
+console.log(a); // undefined
+
+let b = null;
+console.log(b); // null
+
+console.log(""text"" * 2); // NaN
+\`\`\`"
+"23","differencebetweencallapplyandbind","What is the Difference Between call(), apply() and bind()?","Methods to control the value of \`this\` in JavaScript functions:
+
+- **\`call()\`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).
+- **\`apply()\`**: Invokes the function immediately. Arguments are passed as an **array**.
+- **\`bind()\`**: Does not execute the function. Returns a **new function** with its \`this\` keyword bound permanently to the provided object.
+
+Example:
+\`\`\`js
+function greet(city) { console.log(\`\${this.name} from \${city}\`); }
+const person = { name: ""John"" };
+
+greet.call(person, ""Doha""); // ""John from Doha""
+greet.apply(person, [""Doha""]); // ""John from Doha""
+const bound = greet.bind(person, ""Doha"");
+bound(); // ""John from Doha""
+\`\`\`"
+"24","explainbindcallandapply","Explain bind(), call() and apply()?","Methods to control the value of \`this\` in JavaScript functions:
+
+- **\`call()\`**: Invokes the function immediately. Arguments are passed **individually** (comma-separated).
+- **\`apply()\`**: Invokes the function immediately. Arguments are passed as an **array**.
+- **\`bind()\`**: Does not execute the function. Returns a **new function** with its \`this\` keyword bound permanently to the provided object.
+
+Example:
+\`\`\`js
+function greet(city) { console.log(\`\${this.name} from \${city}\`); }
+const person = { name: ""John"" };
+
+greet.call(person, ""Doha""); // ""John from Doha""
+greet.apply(person, [""Doha""]); // ""John from Doha""
+const bound = greet.bind(person, ""Doha"");
+bound(); // ""John from Doha""
+\`\`\`"
+"25","whatishoisting","What Is Hoisting?","Hoisting in Javascript is the behaviour where variables and functions are moved to the top of their scope during the compilation phase, before the code is executed
+
+- **Function Declarations**: Completely hoisted (both declaration and implementation are moved).
+- **\`var\` variables**: Hoisted but initialized to \`undefined\`.
+- **\`let\` and \`const\` variables**: Hoisted but stay in the Temporal Dead Zone (TDZ). Calling them before they are declared yields a \`ReferenceError\`.
+
+Example:
+\`\`\`js
+console.log(x); // undefined (var is hoisted and initialized to undefined)
+var x = 5;
+
+sayHello(); // ""Hello!"" (Function declaration is fully hoisted)
+function sayHello() { console.log(""Hello!""); }
+\`\`\`"
+"26","whatisthetemporaldeadzonetdz","What Is Thetemporaldeadzonetdz?","The Temporal Dead Zone (TDZ) is the period between variable hosting and the line of code where the variable is explicitly declared. It affects variables declared with \`let\` and \`const\`. 
+
+Accessing a variable in the TDZ throws a \`ReferenceError\`.
+
+Example:
+\`\`\`js
+function test() {
+  // TDZ starts here
+  // console.log(val); // ReferenceError: Cannot access 'val' before initialization
+  
+  let val = 10; // TDZ ends here
+  console.log(val); // 10
+}
+\`\`\`"
+"27","whatisacallbackfunction","What Is Acallbackfunction?","A callback function is a function passed into another function as an argument, which is then executed inside the outer function to complete some kind of routine or action.
+
+Example:
+\`\`\`js
+function greet(name, callback) {
+  console.log(""Hello "" + name);
+  callback();
+}
+
+greet(""John"", () => console.log(""Callback run!""));
+\`\`\`"
+"28","whatisaclosure","What Is Aclosure?","A closure is the combination of a function bundled together with references to its surrounding state (the lexical environment). In other words, a closure gives an inner function access to the outer function's scope even after the outer function has returned.
+
+Example:
+\`\`\`js
+function makeCounter() {
+  let count = 0;
+  return function() {
+    count++;
+    return count;
+  };
+}
+
+const counter = makeCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2 (count variable persists in memory)
+\`\`\`"
+"29","whatislexicalscope","What Is Lexical Scope?","Lexical scope (static scope) means that the accessibility of variables is determined by their position in the source code nesting. An inner scope has access to variables declared in its outer scope, but not vice versa.
+
+Example:
+\`\`\`js
+const globalVar = ""global"";
+
+function outer() {
+  const outerVar = ""outer"";
+  
+  function inner() {
+    console.log(globalVar, outerVar); // Both accessible
+  }
+  inner();
+}
+\`\`\`"
+"30","whatistheeventloop","What Is Theeventloop?","The Event Loop is JavaScript's engine coordinator. Because JavaScript is single-threaded, it can only execute one chunk of code at a time. The event loop continually monitors the **Call Stack** and the **Callback Queue**:
+
+1. Synchronous code executes first on the call stack.
+2. Async tasks (like fetch or timeouts) are handled by Web APIs and then added to task queues (Microtask Queue for Promises, Macrotask Queue for setTimeout).
+3. When the Call Stack is empty, the Event Loop pushes tasks from the queues (prioritizing the Microtask queue) onto the stack to run."
+"31","whatisthecallstack","What Is Thecallstack?","The Call Stack is a LIFO (Last In, First Out) data structure used by the JavaScript engine to keep track of function execution. When a function is called, it is pushed onto the stack. When the function returns, it is popped off the stack.
+
+Example:
+\`\`\`js
+function first() { second(); }
+function second() { console.log(""Two""); }
+first(); // stack: first -> second -> console.log
+\`\`\`"
+"32","whatisapromise","What Is Apromise?","A Promise is an object representing the eventual completion (or failure) of an asynchronous operation and its resulting value. It can be in one of three states:
+- **Pending**: Initial state, neither fulfilled nor rejected.
+- **Fulfilled**: Operation completed successfully.
+- **Rejected**: Operation failed.
+
+Example:
+\`\`\`js
+const myPromise = new Promise((resolve, reject) => {
+  const success = true;
+  if (success) resolve(""Success!"");
+  else reject(""Error!"");
+});
+\`\`\`"
+"33","whatispromisechaining","What Is Promise Chaining?","Promise chaining is a pattern where multiple asynchronous operations are executed sequentially by appending \`.then()\` blocks. Each \`.then()\` receives the result of the previous promise and returns a new promise/value.
+
+Example:
+\`\`\`js
+fetchData()
+  .then(res => res.json())
+  .then(data => processData(data))
+  .catch(err => console.error(err));
+\`\`\`"
+"34","whatiseventdelegationandwhyuseit","What Is Eventdelegationandwhyuseit?","Event delegation is a design pattern where instead of attaching an event listener to multiple child elements individually, you attach a single event listener to a common parent element. The parent uses event bubbling (specifically checking \`event.target\`) to identify which child was clicked.
+
+- **Why use it**: Saves memory (fewer listeners) and handles dynamically added children automatically.
+
+Example:
+\`\`\`js
+document.getElementById(""parent-list"").addEventListener(""click"", (e) => {
+  if (e.target && e.target.nodeName === ""LI"") {
+    console.log(""Item clicked: "", e.target.innerText);
+  }
+});
+\`\`\`"
+"35","whatisthisinjavascript","What Is this in JavaScript?","In JavaScript, \`this\` refers to the object that is currently executing the code. Its value depends on how the function containing it is invoked:
+
+1. **Global scope**: Refers to \`window\` (or \`global\` in Node).
+2. **Object method**: Refers to the object owning the method.
+3. **Arrow functions**: Do not have their own \`this\`. They inherit it lexically from their enclosing context.
+4. **Strict mode**: If function is called independently, \`this\` is \`undefined\`.
+
+Example:
+\`\`\`js
+const user = {
+  name: ""John"",
+  greet() { console.log(this.name); }
+};
+user.greet(); // logs ""John"" (this = user)
+\`\`\`"
+"36","whatisapolyfill","What Is Apolyfill?","A polyfill is a browser-compatibility helper. It is a piece of JavaScript code used to provide modern features (like \`Array.prototype.flat\` or \`Promise.all\`) on older browsers that do not natively support them.
+
+Example:
+\`\`\`js
+if (!Array.prototype.includes) {
+  Array.prototype.includes = function(searchElement) {
+    return this.indexOf(searchElement) !== -1;
+  };
+}
+\`\`\`"
+"37","whatiseventbubbling","What Is Event Bubbling?","Event bubbling is the second stage of DOM event propagation where an event triggered on a nested child element ""bubbles up"" through its parent elements (ancestors) until it reaches the root element (document/window).
+
+Example:
+\`\`\`js
+child.addEventListener(""click"", () => console.log(""Child""));
+parent.addEventListener(""click"", () => console.log(""Parent"")); // Triggers second
+\`\`\`"
+"38","whatiseventcapturing","What Is Event Capturing?","Event capturing (or trickling) is the first stage of DOM event propagation. The event travels down from the top level (Document/Window) down to the target element that was clicked.
+
+To register a listener in the capture phase, pass \`true\` as the third parameter to \`addEventListener\`.
+
+Example:
+\`\`\`js
+parent.addEventListener(""click"", () => console.log(""Captured Parent""), true);
+\`\`\`"
+"39","whatisgraphql","What Is GraphQL?","GraphQL is a query language and runtime for APIs. Unlike REST APIs, which return rigid data structures from specific endpoints, GraphQL allows client applications to request **exactly the fields they need**, combining multiple resources in a single HTTP request.
+
+Example query:
+\`\`\`graphql
+query {
+  user(id: ""1"") {
+    name
+    email
+  }
+}
+\`\`\`"
+"40","explaingarbagecollectioninjavascript","Explain Garbage Collection in JavaScript?","Garbage Collection in JavaScript is an automatic memory management process. The engine monitors memory allocation and periodically frees up memory occupied by values that are no longer accessible (unreachable) in the program.
+
+It primarily uses the **Mark-and-Sweep** algorithm:
+1. The engine defines a set of ""roots"" (like global variables, local execution stack).
+2. It traces references and marks all reachable nodes.
+3. Any unmarked memory is deemed garbage and is swept (released)."
+"41","explainprototypeandprototypalinheritance","Explain Prototype and Prototypal Inheritance?","In JavaScript, objects have a private link pointing to another object called its **prototype**. That prototype has its own prototype, forming a chain:
+
+- **Prototypal Inheritance**: When you attempt to access a property/method on an object, JavaScript first looks at the object itself. If it doesn't find it, it searches up the prototype chain until it either finds the property or reaches \`null\`.
+
+Example:
+\`\`\`js
+const animal = { eat: true };
+const dog = Object.create(animal); // animal is prototype of dog
+console.log(dog.eat); // true (inherited)
+\`\`\`"
+"42","explaindestructuring","Explain Destructuring?","Destructuring is a clean syntax that lets you unpack values from arrays or properties from objects into distinct variables.
+
+Example:
+\`\`\`js
+const person = { name: ""John"", age: 25 };
+const { name, age } = person; // destructuring object
+console.log(name); // ""John""
+
+const rgb = [255, 0, 0];
+const [r, g, b] = rgb; // destructuring array
+\`\`\`"
+"43","explainspreadoperator","Explain Spread Operator?","The spread operator (\`...\`) allows an iterable (like an array or object expression) to be expanded in places where zero or more arguments or elements are expected.
+
+Example:
+\`\`\`js
+const arr1 = [1, 2];
+const arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]
+
+const user = { name: ""John"" };
+const updatedUser = { ...user, age: 25 };
+\`\`\`"
+"44","explainrestoperator","Explain Rest Operator?","The rest operator (\`...\`) looks identical to the spread operator but does the opposite. It collects multiple elements and condenses them into a single array/object. Used in function parameters or destructuring.
+
+Example:
+\`\`\`js
+function sum(...args) { // collects arguments into args array
+  return args.reduce((acc, c) => acc + c, 0);
+}
+console.log(sum(1, 2, 3)); // 6
+\`\`\`"
+"45","explainstringmethods","Explain String Methods?","Common string methods:
+- \`split(separator)\`: Divides a string into an array of substrings.
+- \`includes(search)\`: Checks if a string contains a substring.
+- \`startsWith(search)\` / \`endsWith(search)\`: Checks boundary conditions.
+- \`trim()\` / \`trimEnd()\`: Trims whitespace from edges.
+
+Example:
+\`\`\`js
+const str = ""  hello world  "";
+console.log(str.trim().split("" "")); // [""hello"", ""world""]
+\`\`\`"
+"46","whatiscode-splitting","What Is Code-splitting?","Code splitting is a technique that splits your single bundle file into multiple chunks that can be loaded dynamically on-demand, reducing initial bundle load sizes."
+"47","explaincodesplitting","Explain Code Splitting?","Code splitting is a technique that splits your single bundle file into multiple chunks that can be loaded dynamically on-demand, reducing initial bundle load sizes."
+"48","whatisisr","What Is Isr?","Incremental Static Regeneration (ISR) is a Next.js feature that allows you to create or update static pages **after the site is built**, without rebuilding the entire application. Pages are regenerated in the background at specified intervals."
+"49","whatismemoization","What Is Memoization?","Memoization is an optimization technique used to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again."
+"50","whatiscurryinginjavascript","What Is Currying in JavaScript?","Currying is a transformation of functions that translates a function from callable as \`f(a, b, c)\` into callable as \`f(a)(b)(c)\`.
+
+Example:
+\`\`\`js
+const curriedSum = a => b => c => a + b + c;
+console.log(curriedSum(1)(2)(3)); // 6
+\`\`\`"
+"51","whatislazyloading","What Is Lazy Loading?","Lazy loading is a design pattern that defers the loading of non-critical resources (like components, images, or assets) until they are needed (e.g., when they enter the viewport or on router changes)."

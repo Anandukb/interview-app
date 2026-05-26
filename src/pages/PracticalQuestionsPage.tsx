@@ -10,19 +10,19 @@ import './PracticalQuestionsPage.css';
 
 const PracticalQuestionsPage = () => {
   const navigate = useNavigate();
-  const { track } = useParams<{ track: string }>();
+  const { platform } = useParams<{ platform: string }>();
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 
   let questions = jsPracticalQuestions;
-  if (track === 'node') {
+  if (platform === 'node') {
     questions = nodePracticalQuestions;
-  } else if (track === 'react') {
+  } else if (platform === 'react') {
     questions = reactPracticalQuestions;
-  } else if (track === 'ts') {
+  } else if (platform === 'ts') {
     questions = tsPracticalQuestions;
-  } else if (track === 'html') {
+  } else if (platform === 'html') {
     questions = htmlPracticalQuestions;
-  } else if (track === 'css') {
+  } else if (platform === 'css') {
     questions = cssPracticalQuestions;
   }
 
@@ -30,7 +30,7 @@ const PracticalQuestionsPage = () => {
     if (selectedQuestion) {
       setSelectedQuestion(null);
     } else {
-      navigate(`/${track}`);
+      navigate(`/${platform}`);
     }
   };
 
@@ -91,7 +91,7 @@ const PracticalQuestionsPage = () => {
                   initialCode={selectedQuestion.startingCode}
                   answerCode={selectedQuestion.answerCode}
                   hint={selectedQuestion.hint}
-                  language={track === 'ts' ? 'typescript' : 'javascript'}
+                  language={platform === 'ts' ? 'typescript' : 'javascript'}
                 />
               </div>
             </motion.div>
