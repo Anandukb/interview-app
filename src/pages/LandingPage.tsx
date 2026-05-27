@@ -1,10 +1,27 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Atom, Server, Code2, ShieldCheck,
-  FileCode, Palette, HelpCircle
+  Atom, Server, Code2,
+  FileCode, Palette, HelpCircle, ArrowRight, Sparkles
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+
+// Official TypeScript logo
+const TypeScriptIcon = ({ size = 28 }: { size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 256 256"
+    width={size}
+    height={size}
+    aria-hidden="true"
+  >
+    <rect width="256" height="256" rx="24" fill="#3178C6" />
+    <path
+      fill="#FFFFFF"
+      d="M150.518 200.475v27.62c4.492 2.302 9.805 4.028 15.938 5.179 6.133 1.151 12.597 1.726 19.393 1.726 6.622 0 12.914-.633 18.874-1.899 5.96-1.266 11.187-3.352 15.678-6.257 4.492-2.906 8.048-6.704 10.669-11.394 2.62-4.689 3.93-10.486 3.93-17.391 0-5.006-.749-9.394-2.246-13.163a30.748 30.748 0 0 0-6.479-10.055c-2.821-2.935-6.205-5.567-10.149-7.898-3.945-2.33-8.394-4.531-13.347-6.602-3.628-1.497-6.881-2.949-9.761-4.359-2.879-1.41-5.327-2.848-7.342-4.316-2.016-1.467-3.571-3.021-4.665-4.661-1.094-1.64-1.641-3.495-1.641-5.567 0-1.899.489-3.61 1.468-5.135.979-1.524 2.362-2.834 4.147-3.927 1.785-1.094 3.973-1.942 6.565-2.547 2.591-.604 5.471-.906 8.638-.906 2.304 0 4.737.173 7.299.518 2.563.345 5.14.877 7.732 1.597a53.669 53.669 0 0 1 7.558 2.719 41.7 41.7 0 0 1 6.781 3.797v-25.807c-4.204-1.611-8.797-2.805-13.778-3.582-4.981-.777-10.697-1.165-17.147-1.165-6.565 0-12.784.705-18.658 2.115-5.874 1.409-11.043 3.61-15.506 6.602-4.463 2.993-7.99 6.805-10.582 11.437-2.591 4.632-3.887 10.17-3.887 16.615 0 8.228 2.375 15.248 7.127 21.06 4.751 5.811 11.963 10.731 21.638 14.759a291.458 291.458 0 0 1 10.625 4.575c3.283 1.496 6.119 3.049 8.509 4.66 2.39 1.611 4.276 3.366 5.658 5.265 1.382 1.899 2.073 4.057 2.073 6.474a9.901 9.901 0 0 1-1.296 4.963c-.864 1.524-2.174 2.848-3.93 3.97-1.756 1.122-3.945 1.999-6.565 2.632-2.62.633-5.687.95-9.2.95-5.989 0-11.92-1.05-17.794-3.151-5.875-2.1-11.317-5.25-16.327-9.451Zm-46.036-68.733H140V109H41v22.742h35.345V233h28.137V131.742Z"
+    />
+  </svg>
+);
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchPlatforms } from '../store/slices/platformsSlice';
 import type { Platform } from '../store/slices/platformsSlice';
@@ -14,65 +31,70 @@ import './LandingPage.css';
 
 const PLATFORM_META: Record<string, { icon: ReactNode; color: string; desc: string }> = {
   js: {
-    icon: <Code2 size={48} className="lang-icon js" />,
+    icon: <Code2 size={28} className="lang-icon js" />,
     color: '#f7df1e',
-    desc: 'Master scoping, closures, promises, event loop, and DOM.',
+    desc: 'Closures, promises, event loop & DOM.',
   },
   javascript: {
-    icon: <Code2 size={48} className="lang-icon js" />,
+    icon: <Code2 size={28} className="lang-icon js" />,
     color: '#f7df1e',
-    desc: 'Master scoping, closures, promises, event loop, and DOM.',
+    desc: 'Closures, promises, event loop & DOM.',
   },
   reactjs: {
-    icon: <Atom size={48} className="lang-icon react" />,
+    icon: <Atom size={28} className="lang-icon react" />,
     color: '#61dafb',
-    desc: 'Master components, state, hooks, reconciliation, and rendering.',
+    desc: 'Components, state, hooks & rendering.',
   },
   react: {
-    icon: <Atom size={48} className="lang-icon react" />,
+    icon: <Atom size={28} className="lang-icon react" />,
     color: '#61dafb',
-    desc: 'Master components, state, hooks, reconciliation, and rendering.',
+    desc: 'Components, state, hooks & rendering.',
   },
   'react-native': {
-    icon: <Atom size={48} className="lang-icon react" />,
+    icon: <Atom size={28} className="lang-icon react" />,
     color: '#61dafb',
-    desc: 'Master core components, styling, architecture, and mobile-specific APIs.',
+    desc: 'Core components, styling & mobile APIs.',
   },
   nodejs: {
-    icon: <Server size={48} className="lang-icon node" />,
+    icon: <Server size={28} className="lang-icon node" />,
     color: '#339933',
-    desc: 'Master Event Loop, streams, processes, and APIs.',
+    desc: 'Event Loop, streams, processes & APIs.',
   },
   node: {
-    icon: <Server size={48} className="lang-icon node" />,
+    icon: <Server size={28} className="lang-icon node" />,
     color: '#339933',
-    desc: 'Master Event Loop, streams, processes, and APIs.',
+    desc: 'Event Loop, streams, processes & APIs.',
+  },
+  ts: {
+    icon: <TypeScriptIcon size={36} />,
+    color: '#3178c6',
+    desc: 'Types, generics & utility types.',
   },
   tsx: {
-    icon: <ShieldCheck size={48} className="lang-icon ts" />,
+    icon: <TypeScriptIcon size={36} />,
     color: '#3178c6',
-    desc: 'Master types, interfaces, generics, type narrowing, and utility types.',
+    desc: 'Types, generics & utility types.',
   },
   typescript: {
-    icon: <ShieldCheck size={48} className="lang-icon ts" />,
+    icon: <TypeScriptIcon size={36} />,
     color: '#3178c6',
-    desc: 'Master types, interfaces, generics, type narrowing, and utility types.',
+    desc: 'Types, generics & utility types.',
   },
   html: {
-    icon: <FileCode size={48} className="lang-icon html" />,
+    icon: <FileCode size={28} className="lang-icon html" />,
     color: '#e34f26',
-    desc: 'Master semantic layout, script loading, Critical Rendering Path, and accessibility.',
+    desc: 'Semantic layout, CRP & accessibility.',
   },
   css: {
-    icon: <Palette size={48} className="lang-icon css" />,
+    icon: <Palette size={28} className="lang-icon css" />,
     color: '#264de4',
-    desc: 'Master grid, flexbox, box model, specificity, animations, and container queries.',
+    desc: 'Grid, flexbox, animations & queries.',
   },
 };
 
 const DEFAULT_META = {
-  icon: <HelpCircle size={48} className="lang-icon" />,
-  color: '#888888',
+  icon: <HelpCircle size={28} className="lang-icon" />,
+  color: '#a78bfa',
   desc: 'Explore interview questions for this topic.',
 };
 
@@ -87,38 +109,50 @@ const LandingPage = () => {
   );
 
   useEffect(() => {
-    // Skip fetch if data is already loaded in the Redux store
     if (platforms.length === 0) {
       dispatch(fetchPlatforms());
     }
   }, [dispatch, platforms.length]);
 
-  const getMeta = (platform: Platform) =>
-    PLATFORM_META[platform.key?.toLowerCase()] ?? DEFAULT_META;
+  const getMeta = (platform: Platform) => {
+    const key = platform.key?.toLowerCase().trim();
+    if (key && PLATFORM_META[key]) return PLATFORM_META[key];
+
+    // Fallback: match by display name (handles cases where key differs from name)
+    const name = platform.Name?.toLowerCase().trim();
+    if (name && PLATFORM_META[name]) return PLATFORM_META[name];
+
+    return DEFAULT_META;
+  };
 
   return (
-    <div className="landing-container container">
-      <div className="hero-section">
-        <div className="badge glass">Interview Prep</div>
+    <div className="landing-page">
+      <div className="bg-glow bg-glow-1" aria-hidden />
+      <div className="bg-glow bg-glow-2" aria-hidden />
+
+      <div className="landing-container">
+      <header className="hero-section">
+        <div className="badge glass">
+          <Sparkles size={14} />
+          <span>Interview Prep</span>
+        </div>
         <h1 className="hero-title">
           Master Frontend <span className="gradient-text">Interviews</span>
         </h1>
         <p className="hero-subtitle">
-          Select a track below to start practicing real-world interview questions
-          with our interactive compiler.
+          Pick a track and start practicing real-world questions with our interactive compiler.
         </p>
         {error && <p className="stats-error">{error}</p>}
-      </div>
+      </header>
 
       {/* ── Loading skeleton ── */}
       {loading && (
         <div className="language-grid">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 7 }).map((_, i) => (
             <div key={i} className="lang-card glass-card skeleton-card">
               <div className="skeleton skeleton-icon" />
               <div className="skeleton skeleton-title" />
               <div className="skeleton skeleton-text" />
-              <div className="skeleton skeleton-btn" />
             </div>
           ))}
         </div>
@@ -127,28 +161,33 @@ const LandingPage = () => {
       {/* ── Platform cards from API ── */}
       {!loading && (
         <div className="language-grid">
-          {platforms.map(platform => {
+          {platforms.map((platform) => {
             const meta = getMeta(platform);
             return (
-              <div
+              <button
+                type="button"
                 key={platform.id}
                 className="lang-card glass-card"
                 onClick={() => navigate(`/${platform.key}`)}
                 style={{ '--hover-color': meta.color } as React.CSSProperties}
+                aria-label={`Start practicing ${platform.Name}`}
               >
-                <div className="icon-wrapper glass">
-                  {meta.icon}
+                <div className="card-top">
+                  <div className="icon-wrapper">{meta.icon}</div>
+                  <ArrowRight size={18} className="card-arrow" />
                 </div>
                 <h2>{platform.Name}</h2>
                 <p>{meta.desc}</p>
-                <div className="card-footer">
-                  <span className="btn-secondary small">Start Practice</span>
-                </div>
-              </div>
+                <span className="card-cta">
+                  Start Practice
+                  <ArrowRight size={14} />
+                </span>
+              </button>
             );
           })}
         </div>
       )}
+      </div>
     </div>
   );
 };
