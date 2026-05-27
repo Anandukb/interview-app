@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions, htmlTheoryQuestions, cssTheoryQuestions } from '../data/parsedQuestions';
+import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions, htmlTheoryQuestions, cssTheoryQuestions, reactNativeTheoryQuestions } from '../data/parsedQuestions';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import './TheoryQuestionsPage.css';
 
@@ -145,6 +145,9 @@ const TheoryQuestionsPage = () => {
   } else if (platform === 'react') {
     questions = reactTheoryQuestions;
     trackTitle = 'React';
+  } else if (platform === 'react-native') {
+    questions = reactNativeTheoryQuestions;
+    trackTitle = 'React Native';
   } else if (platform === 'ts') {
     questions = tsTheoryQuestions;
     trackTitle = 'TypeScript';

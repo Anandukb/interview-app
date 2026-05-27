@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Atom, Server, Code2, ShieldCheck,
-  FileCode, Palette, Loader2, HelpCircle
+  FileCode, Palette, HelpCircle
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -32,6 +32,11 @@ const PLATFORM_META: Record<string, { icon: ReactNode; color: string; desc: stri
     icon: <Atom size={48} className="lang-icon react" />,
     color: '#61dafb',
     desc: 'Master components, state, hooks, reconciliation, and rendering.',
+  },
+  'react-native': {
+    icon: <Atom size={48} className="lang-icon react" />,
+    color: '#61dafb',
+    desc: 'Master core components, styling, architecture, and mobile-specific APIs.',
   },
   nodejs: {
     icon: <Server size={48} className="lang-icon node" />,

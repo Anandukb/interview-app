@@ -12,6 +12,7 @@ const QuestionTypesPage = () => {
   else if (platform === 'ts') trackName = 'TypeScript';
   else if (platform === 'html') trackName = 'HTML';
   else if (platform === 'css') trackName = 'CSS';
+  else if (platform === 'react-native') trackName = 'React Native';
 
   const types = [
     {
@@ -22,6 +23,8 @@ const QuestionTypesPage = () => {
         ? 'Theory and core concept interview questions on Node.js.'
         : platform === 'react'
         ? 'Theory and concept-based interview questions on React.'
+        : platform === 'react-native'
+        ? 'Theory and concept-based interview questions on React Native.'
         : platform === 'ts'
         ? 'Theory and type-system concept interview questions on TypeScript.'
         : platform === 'html'
@@ -38,6 +41,8 @@ const QuestionTypesPage = () => {
         ? 'Predict the exact output of tricky Node.js snippets.'
         : platform === 'react'
         ? 'Predict the exact output of tricky React JSX snippets.'
+        : platform === 'react-native'
+        ? 'Predict the exact output of tricky React Native snippets.'
         : platform === 'ts'
         ? 'Predict compile-time errors and outputs of tricky TypeScript snippets.'
         : platform === 'html'
@@ -54,6 +59,8 @@ const QuestionTypesPage = () => {
         ? 'Hands-on backend coding challenges in Node.js.'
         : platform === 'react'
         ? 'Hands-on React coding challenges in an interactive environment.'
+        : platform === 'react-native'
+        ? 'Hands-on React Native coding challenges.'
         : platform === 'ts'
         ? 'Hands-on TypeScript coding and type-safety challenges.'
         : platform === 'html'
@@ -62,7 +69,12 @@ const QuestionTypesPage = () => {
         ? 'Hands-on CSS algorithm and styling layout challenges.'
         : 'Hands-on JavaScript coding challenges in an interactive environment.'
     }
-  ];
+  ].filter(type => {
+    if (platform === 'react-native') {
+      return type.id === 'theory';
+    }
+    return true;
+  });
 
   return (
     <div className="types-container container">

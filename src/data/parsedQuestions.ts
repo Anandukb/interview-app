@@ -2934,3 +2934,206 @@ export const cssTheoryQuestions: TheoryQuestion[] = [
     "answer": "- **Sass Variables (`$color`)**: Compiled at build time. Once the website is loaded, they do not exist in the browser, making them static. They cannot be updated dynamically by JavaScript or responsive classes.\n- **CSS Variables (`var(--color)`)**: Dynamic runtime properties evaluated in the browser. They can be updated on the fly using JS (`element.style.setProperty`), change dynamically inside media queries, and inherit values naturally through the DOM cascade."
   }
 ];
+
+export const reactNativeTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "rn_th_1",
+    "question": "What is React Native and how is it different from React.js?",
+    "answer": "React Native is an open-source mobile application framework created by Meta (Facebook). It is used to develop applications for Android, iOS, and other platforms by allowing developers to use React along with native platform capabilities.\n\n**Differences from React.js**:\n- **Platform**: React.js is used for building web applications (renders to DOM), whereas React Native is used for building mobile/desktop apps (renders to Native UI components).\n- **Components**: React uses web components like `<div>`, `<span>`, `<h1>`, etc. React Native uses native components like `<View>`, `<Text>`, `<Image>`.\n- **Styling**: React uses CSS or CSS-in-JS. React Native uses a subset of CSS implemented via JS objects using the `StyleSheet` API.\n- **Routing**: React uses react-router-dom, while React Native typically uses React Navigation."
+  },
+  {
+    "id": "rn_th_2",
+    "question": "Explain the architecture of React Native.",
+    "answer": "React Native's traditional architecture consists of three main threads:\n1. **UI Thread (Main Thread)**: Handles the native rendering of the UI and user interactions.\n2. **JS Thread**: Executes the JavaScript and React code.\n3. **Shadow Thread**: Calculates the layout of the UI using the Yoga layout engine (translates flexbox to native layout).\n\nThese threads communicate with each other asynchronously over the **Bridge** using serialized JSON messages. The bridge acts as a middleman, allowing JS to instruct native modules and vice versa without blocking each other."
+  },
+  {
+    "id": "rn_th_3",
+    "question": "What is the difference between native apps and React Native apps?",
+    "answer": "**Native Apps**:\n- Built using platform-specific languages (Swift/Objective-C for iOS, Kotlin/Java for Android).\n- Have direct access to all native APIs and hardware.\n- Generally offer the highest performance and smoothest animations.\n- Require separate codebases for iOS and Android.\n\n**React Native Apps**:\n- Built using JavaScript/TypeScript and React.\n- A single codebase can be deployed to both iOS and Android (cross-platform).\n- Uses a bridge or JSI to communicate with native APIs.\n- Performance is near-native but can face bottlenecks in heavy animations or complex background processing if not optimized."
+  },
+  {
+    "id": "rn_th_4",
+    "question": "What are the advantages of using React Native?",
+    "answer": "1. **Cross-Platform**: Write once, run on both iOS and Android, saving time and resources.\n2. **Code Reusability**: Share a significant portion of code between platforms.\n3. **Fast Refresh**: Allows developers to see changes instantly without rebuilding the app.\n4. **Large Community**: Huge ecosystem of libraries and community support.\n5. **Native Look and Feel**: Renders using real native UI components, unlike web-view based frameworks (e.g., Cordova/Ionic).\n6. **Familiarity**: Web developers who know React can easily transition to mobile development."
+  },
+  {
+    "id": "rn_th_5",
+    "question": "What are the limitations of React Native?",
+    "answer": "1. **Performance Bottlenecks**: Heavy animations or complex computations can overload the JS thread or Bridge.\n2. **Native Knowledge Sometimes Required**: Integrating complex native libraries or debugging platform-specific issues often requires native Android/iOS knowledge.\n3. **App Size**: React Native apps tend to have a larger footprint than fully native apps due to the bundled JS runtime.\n4. **Third-Party Dependencies**: Relies heavily on third-party libraries for native features, which may become unmaintained or break with new OS updates.\n5. **Initialization Time**: The time taken to initialize the JS environment can lead to slightly slower app start times."
+  },
+  {
+    "id": "rn_th_6",
+    "question": "What is the bridge in React Native?",
+    "answer": "In the traditional React Native architecture, the **Bridge** is the communication layer that connects the JavaScript runtime with the native platform (iOS/Android).\n\n- It operates asynchronously.\n- It serializes all communication into JSON strings, sends them across, and deserializes them on the other side.\n- **Limitation**: Serializing and deserializing large amounts of data (like animations or rapid scroll events) can create a bottleneck, leading to frame drops."
+  },
+  {
+    "id": "rn_th_7",
+    "question": "What is the React Native New Architecture?",
+    "answer": "The New Architecture is a complete rewrite of React Native's core to address the performance limitations of the old Bridge. It replaces the asynchronous JSON Bridge with synchronous, direct C++ communication.\n\nKey components:\n1. **JSI (JavaScript Interface)**: Allows JS to directly call native methods synchronously without serialization.\n2. **TurboModules**: Lazy-loads native modules only when they are needed.\n3. **Fabric**: The new concurrent rendering system (replaces the old UI manager)."
+  },
+  {
+    "id": "rn_th_8",
+    "question": "Explain JSI (JavaScript Interface) in React Native.",
+    "answer": "JSI (JavaScript Interface) is a lightweight, general-purpose C++ API that allows JavaScript to hold references to C++ host objects and call methods on them synchronously.\n\n- It removes the need for the JSON serialization bridge.\n- JS can directly invoke native functions, drastically reducing overhead.\n- It is engine agnostic (works with Hermes, V8, JavaScriptCore)."
+  },
+  {
+    "id": "rn_th_9",
+    "question": "What are TurboModules?",
+    "answer": "TurboModules are the next iteration of Native Modules in the New Architecture.\n\n- **Lazy Loading**: In the old architecture, all native modules were initialized at startup. TurboModules load modules only when they are first accessed by JavaScript.\n- **Synchronous Execution**: Powered by JSI, TurboModules allow JS to call native code synchronously, meaning you can get return values immediately without waiting for a Promise or callback."
+  },
+  {
+    "id": "rn_th_10",
+    "question": "What is Fabric in React Native?",
+    "answer": "Fabric is the new concurrent rendering system in React Native's New Architecture.\n\n- It brings React 18's concurrent features (like Suspense and concurrent rendering) to React Native.\n- It unifies the render logic in C++, avoiding the overhead of passing layout information across threads.\n- It allows the UI to be created synchronously, eliminating the \"jumpy\" UI issues common in the old architecture."
+  },
+  {
+    "id": "rn_th_11",
+    "question": "Difference between old architecture and new architecture.",
+    "answer": "**Old Architecture**:\n- Uses an asynchronous Bridge.\n- Communication is serialized into JSON (slow for large data).\n- Native modules are initialized at app launch (slower startup).\n- UI manager handles rendering asynchronously.\n\n**New Architecture**:\n- Uses JSI for synchronous, direct communication (no JSON serialization).\n- Uses TurboModules for lazy initialization (faster startup).\n- Uses Fabric for synchronous and concurrent rendering.\n- C++ is used heavily as the middle layer."
+  },
+  {
+    "id": "rn_th_12",
+    "question": "What is Hermes engine?",
+    "answer": "Hermes is an open-source JavaScript engine optimized specifically for React Native, created by Facebook.\n\nUnlike traditional engines like V8 or JavaScriptCore, Hermes uses **Ahead-of-Time (AOT) compilation**. It compiles the JavaScript code into bytecode during the build process rather than at runtime (JIT)."
+  },
+  {
+    "id": "rn_th_13",
+    "question": "Why is Hermes used in React Native?",
+    "answer": "Hermes is used to improve the overall performance of React Native apps, specifically:\n\n1. **Decreased Time To Interactive (TTI)**: Since JS is precompiled to bytecode, the engine doesn't need to parse and compile JS on startup.\n2. **Reduced App Size**: The generated bytecode and the engine itself are highly optimized for size.\n3. **Lower Memory Usage**: It uses memory more efficiently, which is critical for lower-end Android devices."
+  },
+  {
+    "id": "rn_th_14",
+    "question": "What is Metro bundler?",
+    "answer": "Metro is the official JavaScript bundler for React Native. Its primary job is to take your JavaScript code, resolve all dependencies, and bundle it into a single file that can be executed on mobile devices.\n\nKey features:\n- **Sub-second reload cycles**: It is heavily optimized for fast reloads during development.\n- **Asset serving**: Handles images, fonts, and other assets required by the app.\n- **Module resolution**: Resolves `require` and `import` statements efficiently."
+  },
+  {
+    "id": "rn_th_15",
+    "question": "Explain the role of Babel in React Native.",
+    "answer": "Babel is a JavaScript compiler used in React Native to convert modern JS (ES6+) and JSX/TSX syntax into standard, backwards-compatible JavaScript that the mobile JS engine (Hermes or JSC) can understand.\n\nReact Native comes with `metro-react-native-babel-preset`, which ensures that specific React Native features, Flow/TypeScript syntax, and experimental JS proposals are correctly transpiled."
+  },
+  {
+    "id": "rn_th_16",
+    "question": "Difference between `View`, `Text`, and `SafeAreaView`.",
+    "answer": "- **`View`**: The most fundamental component for building a UI, acting as a container. It maps to native views (`UIView` on iOS, `android.view.View` on Android). It is similar to a `<div>` in HTML.\n- **`Text`**: Used specifically for displaying text. Unlike web, you cannot put raw text directly inside a `<View>`; it must be wrapped in a `<Text>` component.\n- **`SafeAreaView`**: Specifically used on iOS to render content within the safe area boundaries of a device, avoiding the notch, dynamic island, and home indicator."
+  },
+  {
+    "id": "rn_th_17",
+    "question": "What is `ScrollView`?",
+    "answer": "`ScrollView` is a generic scrolling container that can host multiple components and views.\n\n- It renders **all** its children at once, even if they are not currently visible on the screen.\n- It is ideal for small amounts of content (like a settings screen or a form).\n- It can scroll horizontally or vertically."
+  },
+  {
+    "id": "rn_th_18",
+    "question": "Difference between `ScrollView` and `FlatList`.",
+    "answer": "- **`ScrollView`**: Renders all child components at once. Good for short, static lists. If used for large lists, it causes severe performance issues and memory crashes.\n- **`FlatList`**: Renders items lazily. It only renders items currently visible on the screen (plus a few off-screen). It recycles views, making it highly performant for long or infinite lists of data."
+  },
+  {
+    "id": "rn_th_19",
+    "question": "When should you use `SectionList`?",
+    "answer": "You should use `SectionList` when you need to render a high-performing list of categorized or grouped data, complete with section headers.\n\nFor example:\n- A contacts list grouped alphabetically (A, B, C...).\n- A settings page categorized by \"Account\", \"Preferences\", \"Notifications\".\nIt shares the same performance optimizations as `FlatList`."
+  },
+  {
+    "id": "rn_th_20",
+    "question": "What is `VirtualizedList`?",
+    "answer": "`VirtualizedList` is the base component behind both `FlatList` and `SectionList`.\n\nIt provides the core logic for lazily rendering items and windowing (unmounting items far outside the viewport to save memory). You rarely use it directly unless you need a highly custom list behavior that `FlatList` cannot accommodate."
+  },
+  {
+    "id": "rn_th_21",
+    "question": "Explain `Pressable`.",
+    "answer": "`Pressable` is a core component that detects various stages of press interactions on any of its defined children.\n\nIt replaces older Touchable components by providing a more extensive, state-driven API. It allows you to style the component dynamically based on whether it is currently being pressed (`pressed` state) or hovered."
+  },
+  {
+    "id": "rn_th_22",
+    "question": "Difference between `TouchableOpacity`, `TouchableHighlight`, and `Pressable`.",
+    "answer": "- **`TouchableOpacity`**: When pressed, the opacity of the wrapped view is decreased, providing a dimming effect.\n- **`TouchableHighlight`**: When pressed, the background color of the view darkens to show the press state.\n- **`Pressable`**: The modern, recommended component. It doesn't have a default visual effect but gives you a function with a `pressed` boolean state to fully customize the interaction visually."
+  },
+  {
+    "id": "rn_th_23",
+    "question": "What is `ImageBackground`?",
+    "answer": "`ImageBackground` is a convenience component used to display an image as a background with other UI elements layered on top of it. \n\nSince you cannot simply set a `background-image` CSS property in React Native, you wrap your content inside an `<ImageBackground source={...}>`."
+  },
+  {
+    "id": "rn_th_24",
+    "question": "How do you optimize images in React Native?",
+    "answer": "1. **Use appropriate formats**: Use WebP format for smaller file sizes while retaining quality.\n2. **Resize**: Do not load massive high-res images into small thumbnails; resize them on the server first.\n3. **Caching**: Use libraries like `react-native-fast-image` which aggressively cache images native-side.\n4. **Prefetching**: Use `Image.prefetch()` to download images before they are displayed.\n5. **Lazy Loading**: Only load images when they are about to enter the viewport (e.g., in a FlatList)."
+  },
+  {
+    "id": "rn_th_25",
+    "question": "What is `KeyboardAvoidingView`?",
+    "answer": "`KeyboardAvoidingView` is a component used to solve the common problem of the virtual keyboard covering interactive UI elements (like text inputs).\n\nIt automatically adjusts its height, position, or bottom padding based on the keyboard height to ensure the focused input remains visible to the user."
+  },
+  {
+    "id": "rn_th_26",
+    "question": "Explain `Modal` in React Native.",
+    "answer": "The `Modal` component is a basic way to present content over an enclosing view. It renders completely on top of the app's current view hierarchy, effectively acting as a separate screen overlay.\n\nIt supports properties like `animationType` (slide, fade, none) and `transparent` (allowing the background to show through)."
+  },
+  {
+    "id": "rn_th_27",
+    "question": "What is `ActivityIndicator`?",
+    "answer": "`ActivityIndicator` is the core component used to display a circular loading spinner.\n\nIt maps directly to the native platform's default loading UI (`UIActivityIndicatorView` on iOS, `ProgressBar` on Android). You can configure its size ('small' or 'large') and its color."
+  },
+  {
+    "id": "rn_th_28",
+    "question": "Explain `RefreshControl`.",
+    "answer": "`RefreshControl` is a component used inside a `ScrollView` or `FlatList` to add \"pull-to-refresh\" functionality.\n\nWhen the user pulls the list down, a loading indicator appears, and a provided `onRefresh` callback is triggered so you can fetch new data. Once the data arrives, you set its `refreshing` prop back to `false`."
+  },
+  {
+    "id": "rn_th_29",
+    "question": "What is `StatusBar`?",
+    "answer": "`StatusBar` is a component used to control the appearance of the device's status bar (the area at the top of the screen showing time, battery, Wi-Fi).\n\nYou can use it to dynamically change the text color (`barStyle=\"light-content\" | \"dark-content\"`), hide the status bar entirely, or change its background color (on Android)."
+  },
+  {
+    "id": "rn_th_30",
+    "question": "What is `Dimensions` API?",
+    "answer": "The `Dimensions` API is used to get the screen or window width and height of the device.\n\n```javascript\nconst { width, height } = Dimensions.get('window');\n```\nWhile useful, it does not automatically update on orientation changes unless you listen for events. It is often recommended to use the `useWindowDimensions()` hook instead, which updates automatically."
+  },
+  {
+    "id": "rn_th_31",
+    "question": "How does Flexbox work in React Native?",
+    "answer": "Flexbox in React Native works similarly to the web, but with a few key differences:\n1. **Default Direction**: The default `flexDirection` is `column` (vertical), whereas on the web it is `row`.\n2. **Flex Property**: The `flex` property behaves differently. `flex: 1` essentially means the component will take up all available space relative to its siblings.\n3. **Display**: Flex is enabled by default for all `View` components; `display: 'flex'` is implicit."
+  },
+  {
+    "id": "rn_th_32",
+    "question": "Difference between React Native styling and CSS.",
+    "answer": "1. **Syntax**: Styles are written in JavaScript objects using camelCase (e.g., `backgroundColor`) instead of kebab-case (`background-color`).\n2. **No Cascading**: Styles do not cascade natively. A parent View's text color will not inherit down to a child Text component.\n3. **Units**: React Native uses density-independent pixels (dp) instead of px, em, or rem.\n4. **Limited Support**: Not all CSS properties exist in React Native (e.g., no hover states, animations are handled differently)."
+  },
+  {
+    "id": "rn_th_33",
+    "question": "Explain `StyleSheet.create`.",
+    "answer": "`StyleSheet.create` is an API used to define a set of styles. \n\n```javascript\nconst styles = StyleSheet.create({\n  container: { flex: 1, backgroundColor: 'red' }\n});\n```\nIt validates the style objects and ensures they are sent across the bridge only once, referencing them by an ID. This offers a performance optimization over defining plain inline objects in the render method."
+  },
+  {
+    "id": "rn_th_34",
+    "question": "What is responsive design in React Native?",
+    "answer": "Responsive design in React Native means building UIs that adapt gracefully to different screen sizes (from small phones to large tablets) and orientations (portrait vs landscape).\n\nIt is achieved using:\n- Flexbox for relative layouts.\n- Percentages (`width: '50%'`).\n- AspectRatios.\n- The `useWindowDimensions` hook to conditionally render or size elements based on the current screen width."
+  },
+  {
+    "id": "rn_th_35",
+    "question": "How do you handle different screen sizes?",
+    "answer": "1. **Flexbox**: Rely heavily on `flex: 1` rather than fixed heights/widths.\n2. **Percentages**: Use string percentages (`width: '80%'`).\n3. **Dimensions Hook**: Read the width and apply scaling functions if necessary.\n4. **Platform & PlatformColor**: Adapt UI elements to look native on different form factors.\n5. Libraries like `react-native-size-matters` or custom scaling utility functions that map dp values based on a base design screen size."
+  },
+  {
+    "id": "rn_th_36",
+    "question": "What is PixelRatio?",
+    "answer": "`PixelRatio` is an API that gives access to the device's pixel density.\n\nIt is useful for rendering perfectly crisp lines or images. For example, `PixelRatio.roundToNearestPixel(value)` rounds a layout size to the nearest physical pixel, preventing sub-pixel rendering blurriness. `PixelRatio.get()` returns the ratio of physical pixels to logical pixels (e.g., 2 or 3 on retina screens)."
+  },
+  {
+    "id": "rn_th_37",
+    "question": "Difference between `absolute` and `relative` positioning.",
+    "answer": "- **`relative`** (default): The element is positioned according to the normal flow of the flex container. Properties like `top` or `left` will offset it from its normal position, but it still takes up its original space.\n- **`absolute`**: The element is completely removed from the flex flow. It is positioned relative to its nearest parent `View`. It does not affect the layout of its sibling elements."
+  },
+  {
+    "id": "rn_th_38",
+    "question": "How do you support dark mode?",
+    "answer": "Dark mode is supported using the `useColorScheme` hook provided by React Native.\n\n```javascript\nconst colorScheme = useColorScheme(); // returns 'light' or 'dark'\nconst isDarkMode = colorScheme === 'dark';\n\n<View style={{ backgroundColor: isDarkMode ? 'black' : 'white' }} />\n```\nFor large apps, this is usually integrated with a navigation library (like React Navigation themes) or a global state/styling library to handle theme switching efficiently."
+  },
+  {
+    "id": "rn_th_39",
+    "question": "What is `SafeAreaView` and why is it important?",
+    "answer": "`SafeAreaView` is a component used exclusively for iOS. Its purpose is to render content within the safe area boundaries of a device.\n\nIt is critical because modern iPhones have notches, dynamic islands, and home indicators. Without `SafeAreaView`, UI elements might be placed under the notch or behind the bottom home bar, making them unclickable and visually clipped."
+  },
+  {
+    "id": "rn_th_40",
+    "question": "How do you create platform-specific styles?",
+    "answer": "You use the `Platform` module to apply styles conditionally based on the operating system.\n\nUsing `Platform.select()`:\n```javascript\nconst styles = StyleSheet.create({\n  container: {\n    ...Platform.select({\n      ios: { backgroundColor: 'red' },\n      android: { backgroundColor: 'blue' },\n      default: { backgroundColor: 'green' }\n    })\n  }\n});\n```\nYou can also use `Platform.OS === 'ios'` inside your style declarations."
+  }
+];
