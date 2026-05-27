@@ -1,24 +1,41 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { HelpCircle, CheckSquare, Laptop } from 'lucide-react';
+import { HelpCircle, CheckSquare, Laptop, ArrowLeft, ArrowRight } from 'lucide-react';
 import './QuestionTypesPage.css';
+
+const PLATFORM_INFO: Record<string, { name: string; color: string }> = {
+  js:           { name: 'JavaScript',   color: '#f7df1e' },
+  javascript:   { name: 'JavaScript',   color: '#f7df1e' },
+  node:         { name: 'Node JS',      color: '#4ade80' },
+  nodejs:       { name: 'Node JS',      color: '#4ade80' },
+  react:        { name: 'React',        color: '#61dafb' },
+  reactjs:      { name: 'React',        color: '#61dafb' },
+  'react-native': { name: 'React Native', color: '#61dafb' },
+  ts:           { name: 'TypeScript',   color: '#3178c6' },
+  tsx:          { name: 'TypeScript',   color: '#3178c6' },
+  typescript:   { name: 'TypeScript',   color: '#3178c6' },
+  html:         { name: 'HTML',         color: '#e34f26' },
+  css:          { name: 'CSS',          color: '#6293f6' },
+};
+
+const TYPE_ACCENTS: Record<string, string> = {
+  theory: '#a78bfa',
+  'output-prediction': '#f59e0b',
+  practical: '#22d3ee',
+};
 
 const QuestionTypesPage = () => {
   const navigate = useNavigate();
   const { platform } = useParams<{ platform: string }>();
 
-  let trackName = 'JavaScript';
-  if (platform === 'node') trackName = 'Node JS';
-  else if (platform === 'react') trackName = 'React';
-  else if (platform === 'ts') trackName = 'TypeScript';
-  else if (platform === 'html') trackName = 'HTML';
-  else if (platform === 'css') trackName = 'CSS';
-  else if (platform === 'react-native') trackName = 'React Native';
+  const platformKey = platform?.toLowerCase() ?? '';
+  const trackInfo = PLATFORM_INFO[platformKey] ?? { name: 'JavaScript', color: '#a78bfa' };
 
   const types = [
     {
       id: 'theory',
       name: 'Theory Questions',
-      icon: <HelpCircle size={40} className="type-icon" />,
+      tag: 'Concepts',
+      icon: <HelpCircle size={26} />,
       desc: platform === 'node'
         ? 'Theory and core concept interview questions on Node.js.'
         : platform === 'react'
@@ -31,12 +48,13 @@ const QuestionTypesPage = () => {
         ? 'Theory and semantic accessibility interview questions on HTML.'
         : platform === 'css'
         ? 'Theory and styling architecture interview questions on CSS.'
-        : 'Theory and concept-based interview questions on JavaScript.'
+        : 'Theory and concept-based interview questions on JavaScript.',
     },
     {
       id: 'output-prediction',
       name: 'Output Prediction',
-      icon: <CheckSquare size={40} className="type-icon" />,
+      tag: 'Tricky',
+      icon: <CheckSquare size={26} />,
       desc: platform === 'node'
         ? 'Predict the exact output of tricky Node.js snippets.'
         : platform === 'react'
@@ -49,12 +67,13 @@ const QuestionTypesPage = () => {
         ? 'Predict DOM state and query outcomes of HTML operations.'
         : platform === 'css'
         ? 'Predict specificity, layout results, and computed styles of CSS properties.'
-        : 'Predict the exact output of tricky JavaScript snippets.'
+        : 'Predict the exact output of tricky JavaScript snippets.',
     },
     {
       id: 'practical',
       name: 'Practical Coding',
-      icon: <Laptop size={40} className="type-icon" />,
+      tag: 'Hands-on',
+      icon: <Laptop size={26} />,
       desc: platform === 'node'
         ? 'Hands-on backend coding challenges in Node.js.'
         : platform === 'react'
@@ -67,45 +86,66 @@ const QuestionTypesPage = () => {
         ? 'Hands-on HTML structure and DOM-tree coding challenges.'
         : platform === 'css'
         ? 'Hands-on CSS algorithm and styling layout challenges.'
-        : 'Hands-on JavaScript coding challenges in an interactive environment.'
-    }
-  ].filter(type => {
-    if (platform === 'react-native') {
-      return type.id === 'theory';
-    }
+        : 'Hands-on JavaScript coding challenges in an interactive environment.',
+    },
+  ].filter((type) => {
+    if (platform === 'react-native') return type.id === 'theory';
     return true;
   });
 
   return (
-    <div className="types-container container">
-      <button className="back-btn" onClick={() => navigate('/')}>
-        &larr; Back to Languages
-      </button>
+    <div
+      className="types-page"
+      style={{ '--track-color': trackInfo.color } as React.CSSProperties}
+    >
+      <div className="bg-glow bg-glow-1" aria-hidden />
+      <div className="bg-glow bg-glow-2" aria-hidden />
 
-      <div className="header-content">
-        <h1 className="title">{trackName} <span className="gradient-text">Practice</span></h1>
-        <p className="subtitle">Select the format you want to practice today.</p>
-      </div>
+      <div className="types-container">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          <ArrowLeft size={16} />
+          <span>Back to Languages</span>
+        </button>
 
-      <div className="types-grid">
-        {types.map(type => (
-          <div 
-            key={type.id} 
-            className="type-card glass-card"
-            onClick={() => {
-              navigate(`/${platform}/${type.id}`);
-            }}
-          >
-            <div className="icon-wrapper glass">
-              {type.icon}
-            </div>
-            <div className="card-content">
-              <h2>{type.name}</h2>
-              <p>{type.desc}</p>
-            </div>
-            <div className="arrow">&rarr;</div>
+        <header className="types-header">
+          <div className="track-pill">
+            <span className="track-dot" />
+            {trackInfo.name}
           </div>
-        ))}
+          <h1 className="types-title">
+            {trackInfo.name} <span className="gradient-text">Practice</span>
+          </h1>
+          <p className="types-subtitle">
+            Pick a format to start practicing. Mix and match to round out your prep.
+          </p>
+        </header>
+
+        <div className="types-grid">
+          {types.map((type) => {
+            const accent = TYPE_ACCENTS[type.id] ?? trackInfo.color;
+            return (
+              <button
+                type="button"
+                key={type.id}
+                className="type-card glass-card"
+                style={{ '--accent': accent } as React.CSSProperties}
+                onClick={() => navigate(`/${platform}/${type.id}`)}
+                aria-label={`Open ${type.name}`}
+              >
+                <div className="type-card-top">
+                  <div className="type-icon-wrapper">{type.icon}</div>
+                  <span className="type-tag">{type.tag}</span>
+                </div>
+                <h2>{type.name}</h2>
+                <p>{type.desc}</p>
+                <span className="type-cta">
+                  Start
+                  <ArrowRight size={14} />
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

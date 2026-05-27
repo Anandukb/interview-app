@@ -140,7 +140,7 @@ const LandingPage = () => {
           Master Frontend <span className="gradient-text">Interviews</span>
         </h1>
         <p className="hero-subtitle">
-          Pick a track and start practicing real-world questions with our interactive compiler.
+          Upskill. Apply. Escape
         </p>
         {error && <p className="stats-error">{error}</p>}
       </header>
