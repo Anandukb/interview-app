@@ -455,28 +455,107 @@ const AdminQuestions = () => {
               transition={{ duration: 0.15 }}
               className="flex flex-col flex-1 min-h-0"
             >
-              {/* Top compact basics row (always visible) */}
-              <div className="px-6 pt-4 pb-3 border-b border-border bg-surface-2/40 shrink-0">
-                <BasicsRow
-                  form={form}
-                  setForm={setForm}
-                  platforms={platforms}
-                  questionTypes={questionTypes}
-                  kindLabel={selectedType ? labelForKind(kind) : undefined}
-                />
-              </div>
+              {/* Scrollable area on mobile, flex container on desktop */}
+              <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col">
+                {/* Top compact basics row (always visible) */}
+                <div className="px-6 pt-4 pb-3 border-b border-border bg-surface-2/40 shrink-0">
+                  <BasicsRow
+                    form={form}
+                    setForm={setForm}
+                    platforms={platforms}
+                    questionTypes={questionTypes}
+                    kindLabel={selectedType ? labelForKind(kind) : undefined}
+                  />
+                </div>
 
-              {/* Body — split or single depending on which sections are visible */}
-              <div className={cn(
-                'flex-1 min-h-0',
-                useSplit
-                  ? 'grid grid-cols-1 lg:grid-cols-[minmax(0,_1.05fr)_minmax(0,_1fr)]'
-                  : 'flex flex-col'
-              )}>
-                {useSplit ? (
-                  <>
-                    {/* Left: structured fields */}
-                    <div className="lg:border-r border-border min-h-0 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                {/* Body — split or single depending on which sections are visible */}
+                <div className={cn(
+                  'flex-1 lg:min-h-0',
+                  useSplit
+                    ? 'grid grid-cols-1 lg:grid-cols-[minmax(0,_1.05fr)_minmax(0,_1fr)]'
+                    : 'flex flex-col'
+                )}>
+                  {useSplit ? (
+                    <>
+                      {/* Left: structured fields */}
+                      <div className="lg:border-r border-border lg:min-h-0 lg:overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                        {showCode && (
+                          <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
+                            <CodeEditor
+                              value={form.code}
+                              onChange={(v) => setForm({ ...form, code: v })}
+                              resolvedMode={resolvedMode}
+                            />
+                          </FormSection>
+                        )}
+                        {showExpected && (
+                          <FormSection icon={<Code2 size={14} />} title="Expected Output">
+                            <Field hint="Single line for single-answer; one line per output (in order) for ordered prediction.">
+                              <Textarea
+                                value={form.expectedOutput}
+                                onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
+                                placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
+                                rows={4}
+                                className="font-mono text-sm"
+                              />
+                            </Field>
+                          </FormSection>
+                        )}
+                        {showOptions && (
+                          <FormSection icon={<ListChecks size={14} />} title={kind === 'output-prediction' ? 'Output Options' : 'Options'}>
+                            <OptionsList
+                              options={form.options}
+                              onAdd={addOption}
+                              onUpdate={updateOption}
+                              onRemove={removeOption}
+                            />
+                          </FormSection>
+                        )}
+                        {showHint && (
+                          <FormSection icon={<Lightbulb size={14} />} title="Hint (optional)">
+                            <Textarea
+                              value={form.hint}
+                              onChange={(e) => setForm({ ...form, hint: e.target.value })}
+                              placeholder="Optional hint for the candidate"
+                              rows={3}
+                            />
+                          </FormSection>
+                        )}
+                      </div>
+
+                      {/* Right: rich answer (full height) */}
+                      {showAnswer && (
+                        <div className="lg:min-h-0 flex flex-col px-6 py-4 lg:py-4">
+                          <div className="flex items-center gap-2 mb-2 shrink-0">
+                            <span className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-brand/15 text-brand">
+                              <FileText size={14} />
+                            </span>
+                            <span className="text-xs font-bold text-fg-muted uppercase tracking-wider">
+                              {answerSectionTitle}
+                            </span>
+                          </div>
+                          <div className="lg:flex-1 lg:min-h-0 lg:overflow-hidden flex flex-col">
+                            <RichTextEditor
+                              value={form.answer}
+                              onChange={(val) => setForm({ ...form, answer: val })}
+                              placeholder="Write the answer in markdown…"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    // Single-column path (theory: just answer; mcq: just options; etc)
+                    <div className="flex-1 lg:min-h-0 lg:overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                      {showAnswer && (
+                        <FormSection icon={<FileText size={14} />} title={answerSectionTitle}>
+                          <RichTextEditor
+                            value={form.answer}
+                            onChange={(val) => setForm({ ...form, answer: val })}
+                            placeholder="Write the answer in markdown…"
+                          />
+                        </FormSection>
+                      )}
                       {showCode && (
                         <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
                           <CodeEditor
@@ -488,15 +567,13 @@ const AdminQuestions = () => {
                       )}
                       {showExpected && (
                         <FormSection icon={<Code2 size={14} />} title="Expected Output">
-                          <Field hint="Single line for single-answer; one line per output (in order) for ordered prediction.">
-                            <Textarea
-                              value={form.expectedOutput}
-                              onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
-                              placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
-                              rows={4}
-                              className="font-mono text-sm"
-                            />
-                          </Field>
+                          <Textarea
+                            value={form.expectedOutput}
+                            onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
+                            placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
+                            rows={5}
+                            className="font-mono text-sm"
+                          />
                         </FormSection>
                       )}
                       {showOptions && (
@@ -520,82 +597,8 @@ const AdminQuestions = () => {
                         </FormSection>
                       )}
                     </div>
-
-                    {/* Right: rich answer (full height) */}
-                    {showAnswer && (
-                      <div className="min-h-0 flex flex-col px-6 py-4 lg:py-4">
-                        <div className="flex items-center gap-2 mb-2 shrink-0">
-                          <span className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-brand/15 text-brand">
-                            <FileText size={14} />
-                          </span>
-                          <span className="text-xs font-bold text-fg-muted uppercase tracking-wider">
-                            {answerSectionTitle}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
-                          <RichTextEditor
-                            value={form.answer}
-                            onChange={(val) => setForm({ ...form, answer: val })}
-                            placeholder="Write the answer in markdown…"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  // Single-column path (theory: just answer; mcq: just options; etc)
-                  <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 flex flex-col gap-4">
-                    {showAnswer && (
-                      <FormSection icon={<FileText size={14} />} title={answerSectionTitle}>
-                        <RichTextEditor
-                          value={form.answer}
-                          onChange={(val) => setForm({ ...form, answer: val })}
-                          placeholder="Write the answer in markdown…"
-                        />
-                      </FormSection>
-                    )}
-                    {showCode && (
-                      <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
-                        <CodeEditor
-                          value={form.code}
-                          onChange={(v) => setForm({ ...form, code: v })}
-                          resolvedMode={resolvedMode}
-                        />
-                      </FormSection>
-                    )}
-                    {showExpected && (
-                      <FormSection icon={<Code2 size={14} />} title="Expected Output">
-                        <Textarea
-                          value={form.expectedOutput}
-                          onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
-                          placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
-                          rows={5}
-                          className="font-mono text-sm"
-                        />
-                      </FormSection>
-                    )}
-                    {showOptions && (
-                      <FormSection icon={<ListChecks size={14} />} title={kind === 'output-prediction' ? 'Output Options' : 'Options'}>
-                        <OptionsList
-                          options={form.options}
-                          onAdd={addOption}
-                          onUpdate={updateOption}
-                          onRemove={removeOption}
-                        />
-                      </FormSection>
-                    )}
-                    {showHint && (
-                      <FormSection icon={<Lightbulb size={14} />} title="Hint (optional)">
-                        <Textarea
-                          value={form.hint}
-                          onChange={(e) => setForm({ ...form, hint: e.target.value })}
-                          placeholder="Optional hint for the candidate"
-                          rows={3}
-                        />
-                      </FormSection>
-                    )}
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Sticky footer */}
