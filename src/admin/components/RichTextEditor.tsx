@@ -2,36 +2,17 @@ import { useEffect, useRef } from 'react';
 import {
   MDXEditor,
   type MDXEditorMethods,
-  // Plugins
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  thematicBreakPlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  codeBlockPlugin,
-  codeMirrorPlugin,
-  toolbarPlugin,
-  diffSourcePlugin,
-  markdownShortcutPlugin,
-  tablePlugin,
-  // Toolbar primitives
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  CodeToggle,
-  CreateLink,
-  ListsToggle,
-  BlockTypeSelect,
-  InsertCodeBlock,
-  InsertThematicBreak,
-  InsertTable,
-  DiffSourceToggleWrapper,
-  Separator,
-  ConditionalContents,
-  ChangeCodeMirrorLanguage,
+  headingsPlugin, listsPlugin, quotePlugin, thematicBreakPlugin,
+  linkPlugin, linkDialogPlugin, codeBlockPlugin, codeMirrorPlugin,
+  toolbarPlugin, diffSourcePlugin, markdownShortcutPlugin, tablePlugin,
+  UndoRedo, BoldItalicUnderlineToggles, CodeToggle, CreateLink,
+  ListsToggle, BlockTypeSelect, InsertCodeBlock, InsertThematicBreak,
+  InsertTable, DiffSourceToggleWrapper, Separator,
+  ConditionalContents, ChangeCodeMirrorLanguage,
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
-import './RichTextEditor.css';
+import { useTheme } from '../../theme/ThemeProvider';
+import { cn } from '../../lib/cn';
 
 interface RichTextEditorProps {
   value: string;
@@ -41,42 +22,26 @@ interface RichTextEditorProps {
 }
 
 const CODE_BLOCK_LANGUAGES = {
-  javascript: 'JavaScript',
-  typescript: 'TypeScript',
-  jsx: 'JSX',
-  tsx: 'TSX',
-  html: 'HTML',
-  css: 'CSS',
-  json: 'JSON',
-  markdown: 'Markdown',
-  python: 'Python',
-  java: 'Java',
-  csharp: 'C#',
-  cpp: 'C++',
-  go: 'Go',
-  rust: 'Rust',
-  sql: 'SQL',
-  bash: 'Bash',
-  txt: 'Plain text',
+  javascript: 'JavaScript', typescript: 'TypeScript', jsx: 'JSX', tsx: 'TSX',
+  html: 'HTML', css: 'CSS', json: 'JSON', markdown: 'Markdown',
+  python: 'Python', java: 'Java', csharp: 'C#', cpp: 'C++',
+  go: 'Go', rust: 'Rust', sql: 'SQL', bash: 'Bash', txt: 'Plain text',
 };
 
 const RichTextEditor = ({ value, onChange, placeholder, label }: RichTextEditorProps) => {
   const editorRef = useRef<MDXEditorMethods>(null);
+  const { resolvedMode } = useTheme();
 
-  // Keep editor in sync if the controlled `value` is replaced from outside
-  // (e.g. when the parent opens for editing a different question).
   useEffect(() => {
     const current = editorRef.current?.getMarkdown();
-    if (current !== value) {
-      editorRef.current?.setMarkdown(value ?? '');
-    }
+    if (current !== value) editorRef.current?.setMarkdown(value ?? '');
   }, [value]);
 
   return (
-    <div className="rte-container">
+    <div className="rounded-xl border border-border bg-surface overflow-hidden focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-colors">
       {label && (
-        <div className="rte-header">
-          <span className="rte-label">{label}</span>
+        <div className="px-4 py-2 bg-surface-2 border-b border-border">
+          <span className="text-xs font-semibold text-fg-muted uppercase tracking-wider">{label}</span>
         </div>
       )}
 
@@ -85,16 +50,14 @@ const RichTextEditor = ({ value, onChange, placeholder, label }: RichTextEditorP
         markdown={value}
         onChange={onChange}
         placeholder={placeholder ?? 'Write here…'}
-        className="dark-theme dark-editor rte-mdx"
+        className={cn(
+          'rte-mdx',
+          resolvedMode === 'dark' ? 'dark-theme dark-editor' : 'light-editor'
+        )}
         contentEditableClassName="rte-mdx-content"
         plugins={[
-          headingsPlugin(),
-          listsPlugin(),
-          quotePlugin(),
-          thematicBreakPlugin(),
-          linkPlugin(),
-          linkDialogPlugin(),
-          tablePlugin(),
+          headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(),
+          linkPlugin(), linkDialogPlugin(), tablePlugin(),
           codeBlockPlugin({ defaultCodeBlockLanguage: 'javascript' }),
           codeMirrorPlugin({ codeBlockLanguages: CODE_BLOCK_LANGUAGES }),
           markdownShortcutPlugin(),
@@ -106,27 +69,21 @@ const RichTextEditor = ({ value, onChange, placeholder, label }: RichTextEditorP
                 <ConditionalContents
                   options={[
                     {
-                      // When focus is inside a code block, show the language picker.
                       when: (editor) => editor?.editorType === 'codeblock',
                       contents: () => <ChangeCodeMirrorLanguage />,
                     },
                     {
-                      // Default rich-text toolbar.
                       fallback: () => (
                         <>
                           <UndoRedo />
                           <Separator />
-
                           <BoldItalicUnderlineToggles />
                           <CodeToggle />
                           <Separator />
-
                           <BlockTypeSelect />
                           <Separator />
-
                           <ListsToggle />
                           <Separator />
-
                           <CreateLink />
                           <InsertCodeBlock />
                           <InsertTable />
@@ -142,8 +99,8 @@ const RichTextEditor = ({ value, onChange, placeholder, label }: RichTextEditorP
         ]}
       />
 
-      <div className="rte-footer">
-        <span>WYSIWYG editor · Output stored as Markdown</span>
+      <div className="px-4 py-1.5 bg-surface-2 border-t border-border text-[11px] text-fg-subtle">
+        WYSIWYG editor · Output stored as Markdown
       </div>
     </div>
   );

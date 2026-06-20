@@ -1,8 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Layers, ListChecks, HelpCircle, ArrowRight, TrendingUp } from 'lucide-react';
 import { useAppSelector } from '../../store/hooks';
-import '../admin.css';
-import './AdminDashboard.css';
+import { Badge } from '../../components/ui/Badge';
+import { PageHeader } from '../../components/ui/PageHeader';
+import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
+import { cn } from '../../lib/cn';
 
 const AdminDashboard = () => {
   const platforms = useAppSelector((s) => s.adminPlatforms.data);
@@ -12,154 +15,148 @@ const AdminDashboard = () => {
 
   const stats = [
     {
-      label: 'Platforms',
-      value: platforms.length,
-      icon: <Layers size={22} />,
-      color: '#8b5cf6',
+      label: 'Platforms', value: platforms.length, icon: Layers,
       to: '/admin/platforms',
       desc: 'Manage interview topics',
+      gradient: 'from-violet-500 to-fuchsia-500',
     },
     {
-      label: 'Question Types',
-      value: questionTypes.length,
-      icon: <ListChecks size={22} />,
-      color: '#06b6d4',
+      label: 'Question Types', value: questionTypes.length, icon: ListChecks,
       to: '/admin/question-types',
-      desc: 'Customize question formats',
+      desc: 'Categorize questions',
+      gradient: 'from-cyan-500 to-blue-500',
     },
     {
-      label: 'Questions',
-      value: questions.length,
-      icon: <HelpCircle size={22} />,
-      color: '#10b981',
+      label: 'Questions', value: questions.length, icon: HelpCircle,
       to: '/admin/questions',
       desc: 'Interview question bank',
+      gradient: 'from-emerald-500 to-teal-500',
     },
   ];
 
   return (
-    <div className="admin-dashboard">
-      {/* Welcome */}
-      <div className="dashboard-welcome">
-        <div>
-          <h1 className="admin-page-title">Welcome back, Admin 👋</h1>
-          <p className="admin-page-subtitle">
-            Here's an overview of your interview app content.
-          </p>
-        </div>
-        <div className="dashboard-updated">
-          <TrendingUp size={14} />
-          <span>Synced with Supabase</span>
-        </div>
-      </div>
+    <div>
+      <PageHeader
+        title={<>Welcome back, <span className="gradient-text">Admin</span> 👋</>}
+        description="Here's an overview of your interview app content."
+        actions={
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/10 text-success text-xs font-semibold border border-success/30">
+            <TrendingUp size={12} />
+            Synced with Supabase
+          </div>
+        }
+      />
 
       {/* Stat cards */}
-      <div className="dashboard-stats-grid">
-        {stats.map((stat) => (
-          <button
-            key={stat.label}
-            className="dashboard-stat-card"
-            onClick={() => navigate(stat.to)}
-            style={{ '--stat-color': stat.color } as React.CSSProperties}
-          >
-            <div className="stat-card-icon" style={{ background: `${stat.color}22`, color: stat.color }}>
-              {stat.icon}
-            </div>
-            <div className="stat-card-body">
-              <div className="stat-card-value">{stat.value}</div>
-              <div className="stat-card-label">{stat.label}</div>
-              <div className="stat-card-desc">{stat.desc}</div>
-            </div>
-            <ArrowRight size={16} className="stat-card-arrow" />
-          </button>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {stats.map((stat, i) => {
+          const Icon = stat.icon;
+          return (
+            <motion.button
+              key={stat.label}
+              onClick={() => navigate(stat.to)}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.25 }}
+              whileHover={{ y: -3 }}
+              className="group relative text-left bg-surface border border-border rounded-xl p-5 overflow-hidden shadow-sm hover:shadow-xl hover:border-border-strong transition-all"
+            >
+              <div className={cn(
+                'absolute inset-x-0 top-0 h-1 bg-gradient-to-r opacity-80 group-hover:opacity-100 transition-opacity',
+                stat.gradient
+              )} />
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className={cn(
+                  'h-11 w-11 grid place-items-center rounded-xl text-white shadow-md bg-gradient-to-br',
+                  stat.gradient
+                )}>
+                  <Icon size={20} />
+                </div>
+                <ArrowRight
+                  size={18}
+                  className="text-fg-subtle group-hover:text-brand group-hover:translate-x-0.5 transition-all"
+                />
+              </div>
+              <div className="text-3xl font-bold tracking-tight">{stat.value}</div>
+              <div className="mt-1 text-sm font-semibold text-fg">{stat.label}</div>
+              <div className="text-xs text-fg-muted mt-0.5">{stat.desc}</div>
+            </motion.button>
+          );
+        })}
       </div>
 
-      {/* Quick overview */}
-      <div className="dashboard-grid">
-        {/* Recent platforms */}
-        <div className="dashboard-section">
-          <div className="dashboard-section-header">
-            <h2 className="dashboard-section-title">Platforms</h2>
-            <button className="admin-btn admin-btn-sm admin-btn-secondary" onClick={() => navigate('/admin/platforms')}>
-              View all
+      {/* Lists */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold text-fg uppercase tracking-wider">Platforms</h2>
+            <button
+              onClick={() => navigate('/admin/platforms')}
+              className="text-xs font-semibold text-brand hover:underline"
+            >
+              View all →
             </button>
           </div>
-          <div className="admin-table-wrapper">
-            <table className="admin-table">
+          <TableWrap>
+            <Table>
               <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Key</th>
-                </tr>
+                <tr><Th>Name</Th><Th>Key</Th></tr>
               </thead>
               <tbody>
                 {platforms.slice(0, 5).map((p) => (
-                  <tr key={p.id}>
-                    <td>
-                      {p.color && (
-                        <span
-                          className="color-dot"
-                          style={{ background: p.color }}
-                        />
-                      )}
-                      {p.name}
-                    </td>
-                    <td>
-                      <span className="admin-badge admin-badge-purple">{p.key}</span>
-                    </td>
-                  </tr>
+                  <TableRow key={p.id}>
+                    <Td>
+                      <span className="inline-flex items-center gap-2">
+                        {p.color && (
+                          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: p.color }} />
+                        )}
+                        <span className="font-medium">{p.name}</span>
+                      </span>
+                    </Td>
+                    <Td><Badge tone="brand"><code className="font-mono">{p.key}</code></Badge></Td>
+                  </TableRow>
                 ))}
                 {platforms.length === 0 && (
-                  <tr>
-                    <td colSpan={2} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>
-                      No platforms yet
-                    </td>
-                  </tr>
+                  <TableRow>
+                    <Td colSpan={2} className="text-center py-8 text-fg-subtle">No platforms yet</Td>
+                  </TableRow>
                 )}
               </tbody>
-            </table>
-          </div>
-        </div>
+            </Table>
+          </TableWrap>
+        </section>
 
-        {/* Question types */}
-        <div className="dashboard-section">
-          <div className="dashboard-section-header">
-            <h2 className="dashboard-section-title">Question Types</h2>
-            <button className="admin-btn admin-btn-sm admin-btn-secondary" onClick={() => navigate('/admin/question-types')}>
-              View all
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold text-fg uppercase tracking-wider">Question Types</h2>
+            <button
+              onClick={() => navigate('/admin/question-types')}
+              className="text-xs font-semibold text-brand hover:underline"
+            >
+              View all →
             </button>
           </div>
-          <div className="admin-table-wrapper">
-            <table className="admin-table">
+          <TableWrap>
+            <Table>
               <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>ID</th>
-                </tr>
+                <tr><Th>Name</Th><Th>ID</Th></tr>
               </thead>
               <tbody>
                 {questionTypes.slice(0, 5).map((qt) => (
-                  <tr key={qt.id}>
-                    <td>{qt.name}</td>
-                    <td>
-                      <span className="admin-badge admin-badge-green">
-                        #{qt.id}
-                      </span>
-                    </td>
-                  </tr>
+                  <TableRow key={qt.id}>
+                    <Td className="font-medium">{qt.name}</Td>
+                    <Td><Badge tone="success"><code className="font-mono">#{qt.id}</code></Badge></Td>
+                  </TableRow>
                 ))}
                 {questionTypes.length === 0 && (
-                  <tr>
-                    <td colSpan={2} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>
-                      No types yet
-                    </td>
-                  </tr>
+                  <TableRow>
+                    <Td colSpan={2} className="text-center py-8 text-fg-subtle">No types yet</Td>
+                  </TableRow>
                 )}
               </tbody>
-            </table>
-          </div>
-        </div>
+            </Table>
+          </TableWrap>
+        </section>
       </div>
     </div>
   );

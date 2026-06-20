@@ -9,10 +9,10 @@ import {
 } from '../../store/slices/adminQuestionTypesSlice';
 import type { QuestionType } from '../types';
 import AdminModal from '../components/AdminModal';
-import '../admin.css';
-import './AdminQuestionTypes.css';
-
-const EMPTY_FORM = { name: '' };
+import { Button } from '../../components/ui/Button';
+import { Input, Field } from '../../components/ui/Input';
+import { PageHeader, ErrorBanner, EmptyState } from '../../components/ui/PageHeader';
+import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
 
 const AdminQuestionTypes = () => {
   const dispatch = useAppDispatch();
@@ -22,41 +22,22 @@ const AdminQuestionTypes = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<QuestionType | null>(null);
-  const [form, setForm] = useState<{ name: string }>(EMPTY_FORM);
+  const [form, setForm] = useState({ name: '' });
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const openAdd = () => {
-    setEditTarget(null);
-    setForm(EMPTY_FORM);
-    setSaveError(null);
-    setModalOpen(true);
-  };
-
-  const openEdit = (qt: QuestionType) => {
-    setEditTarget(qt);
-    setForm({ name: qt.name });
-    setSaveError(null);
-    setModalOpen(true);
-  };
-
-  const handleClose = () => {
-    setModalOpen(false);
-    setEditTarget(null);
-    setSaveError(null);
-  };
+  const openAdd = () => { setEditTarget(null); setForm({ name: '' }); setSaveError(null); setModalOpen(true); };
+  const openEdit = (qt: QuestionType) => { setEditTarget(qt); setForm({ name: qt.name }); setSaveError(null); setModalOpen(true); };
+  const handleClose = () => { setModalOpen(false); setEditTarget(null); setSaveError(null); };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setSaveError(null);
     try {
-      if (editTarget) {
-        await dispatch(updateAdminQuestionType({ id: editTarget.id, patch: form })).unwrap();
-      } else {
-        await dispatch(addAdminQuestionType(form)).unwrap();
-      }
+      if (editTarget) await dispatch(updateAdminQuestionType({ id: editTarget.id, patch: form })).unwrap();
+      else            await dispatch(addAdminQuestionType(form)).unwrap();
       handleClose();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -72,141 +53,108 @@ const AdminQuestionTypes = () => {
 
   return (
     <div>
-      <div className="admin-page-header">
-        <div>
-          <h1 className="admin-page-title">Question Types</h1>
-          <p className="admin-page-subtitle">Categorize questions — synced with Supabase</p>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            className="admin-btn admin-btn-secondary"
-            onClick={() => dispatch(fetchAdminQuestionTypes())}
-            disabled={loading}
-            title="Refresh from Supabase"
-          >
-            <RefreshCw
-              size={15}
-              style={loading ? { animation: 'spin-slow 1s linear infinite' } : {}}
-            />
-          </button>
-          <button className="admin-btn admin-btn-primary" onClick={openAdd} id="add-question-type-btn">
-            <Plus size={16} />
-            New Type
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Question Types"
+        description="Categorize questions — synced with Supabase"
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              size="icon"
+              onClick={() => dispatch(fetchAdminQuestionTypes())}
+              disabled={loading}
+              title="Refresh from Supabase"
+            >
+              <RefreshCw size={15} className={loading ? 'animate-[spin-slow_1s_linear_infinite]' : ''} />
+            </Button>
+            <Button onClick={openAdd} leftIcon={<Plus size={16} />}>New Type</Button>
+          </>
+        }
+      />
 
       {error && (
-        <div className="platforms-error-banner">
+        <ErrorBanner>
           <AlertCircle size={15} />
           <span>Supabase error: {error}</span>
-        </div>
+        </ErrorBanner>
       )}
 
-      <div className="admin-table-wrapper">
+      <TableWrap>
         {loading ? (
-          <div className="admin-empty">
-            <span className="platforms-spinner" />
-            <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading question types…</p>
+          <div className="py-16 text-center text-fg-muted">
+            <span className="inline-block w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-[spin-slow_0.8s_linear_infinite]" />
+            <p className="mt-3 text-sm">Loading question types…</p>
           </div>
         ) : questionTypes.length === 0 ? (
-          <div className="admin-empty">
-            <div className="admin-empty-icon"><ListChecks size={40} /></div>
-            <p>No question types yet. Click "New Type" to create one.</p>
-          </div>
+          <EmptyState
+            icon={<ListChecks size={28} />}
+            title="No question types yet"
+            description="Click 'New Type' to add one."
+          />
         ) : (
-          <table className="admin-table">
+          <Table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Actions</th>
+                <Th className="w-12">#</Th>
+                <Th>ID</Th>
+                <Th>Name</Th>
+                <Th className="text-right pr-4">Actions</Th>
               </tr>
             </thead>
             <tbody>
               {questionTypes.map((qt, idx) => (
-                <tr key={qt.id}>
-                  <td style={{ color: 'var(--text-muted)', width: '40px' }}>{idx + 1}</td>
-                  <td style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{qt.id}</td>
-                  <td style={{ fontWeight: 600 }}>{qt.name}</td>
-                  <td>
-                    <div className="admin-table-actions">
-                      <button
-                        className="admin-btn admin-btn-icon admin-btn-secondary"
-                        onClick={() => openEdit(qt)}
-                        title="Edit"
-                        id={`edit-qtype-${qt.id}`}
-                      >
+                <TableRow key={qt.id}>
+                  <Td className="text-fg-subtle">{idx + 1}</Td>
+                  <Td className="text-fg-subtle font-mono text-xs">{qt.id}</Td>
+                  <Td className="font-semibold">{qt.name}</Td>
+                  <Td>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button variant="ghost" size="icon-sm" onClick={() => openEdit(qt)} title="Edit">
                         <Pencil size={14} />
-                      </button>
+                      </Button>
                       {deleteConfirm === qt.id ? (
                         <>
-                          <button className="admin-btn admin-btn-sm admin-btn-danger" onClick={() => handleDelete(qt.id)}>
-                            Confirm
-                          </button>
-                          <button className="admin-btn admin-btn-sm admin-btn-secondary" onClick={() => setDeleteConfirm(null)}>
-                            Cancel
-                          </button>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(qt.id)}>Confirm</Button>
+                          <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
                         </>
                       ) : (
-                        <button
-                          className="admin-btn admin-btn-icon admin-btn-danger"
-                          onClick={() => setDeleteConfirm(qt.id)}
-                          title="Delete"
-                        >
+                        <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(qt.id)} title="Delete" className="text-danger hover:bg-danger/10">
                           <Trash2 size={14} />
-                        </button>
+                        </Button>
                       )}
                     </div>
-                  </td>
-                </tr>
+                  </Td>
+                </TableRow>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
+      </TableWrap>
 
-      <AdminModal
-        open={modalOpen}
-        onClose={handleClose}
-        title={editTarget ? `Edit: ${editTarget.name}` : 'New Question Type'}
-      >
-        <form onSubmit={handleSubmit}>
-          <div className="admin-form-group">
-            <label className="admin-label">
-              Name <span className="required">*</span>
-            </label>
-            <input
-              className="admin-input"
+      <AdminModal open={modalOpen} onClose={handleClose} title={editTarget ? `Edit: ${editTarget.name}` : 'New Question Type'}>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <Field label="Name" required>
+            <Input
               value={form.name}
               onChange={(e) => setForm({ name: e.target.value })}
               placeholder="e.g. Theory, MCQ, Output Prediction, Practical"
               required
               autoFocus
             />
-          </div>
+          </Field>
 
           {saveError && (
-            <div className="platforms-error-banner" style={{ marginTop: '8px' }}>
+            <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-danger/10 border border-danger/30 text-danger text-sm">
               <AlertCircle size={14} />
               <span>{saveError}</span>
             </div>
           )}
 
-          <div className="admin-form-actions">
-            <button type="button" className="admin-btn admin-btn-secondary" onClick={handleClose}>
-              Cancel
-            </button>
-            <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-              {saving ? (
-                <span className="admin-login-spinner" style={{ width: '16px', height: '16px' }} />
-              ) : editTarget ? (
-                'Save Changes'
-              ) : (
-                'Create Type'
-              )}
-            </button>
+          <div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
+            <Button type="button" variant="secondary" onClick={handleClose}>Cancel</Button>
+            <Button type="submit" loading={saving}>
+              {editTarget ? 'Save Changes' : 'Create Type'}
+            </Button>
           </div>
         </form>
       </AdminModal>

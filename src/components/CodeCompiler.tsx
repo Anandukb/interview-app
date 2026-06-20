@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { Lightbulb, Play, CheckCircle, SplitSquareHorizontal, SplitSquareVertical } from 'lucide-react';
-import './CodeCompiler.css';
+import { useTheme } from '../theme/ThemeProvider';
+import { Button } from './ui/Button';
+import { cn } from '../lib/cn';
 
 interface CodeCompilerProps {
   initialCode: string;
@@ -11,6 +13,7 @@ interface CodeCompilerProps {
 }
 
 const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hint, language }) => {
+  const { resolvedMode } = useTheme();
   const [userCode, setUserCode] = useState(initialCode);
   const [activeTab, setActiveTab] = useState<'index.js' | 'solution.js'>('index.js');
   const [showSolutionTab, setShowSolutionTab] = useState(false);
@@ -22,54 +25,39 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const workspaceRef = useRef<HTMLDivElement>(null);
 
-  // Setup dragging handlers
   useEffect(() => {
     if (!isDragging) return;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
+    const onMove = (e: MouseEvent) => {
       if (!workspaceRef.current) return;
       const rect = workspaceRef.current.getBoundingClientRect();
-      
       if (consolePosition === 'side') {
-        const deltaX = moveEvent.clientX - rect.left;
-        const newPercent = Math.max(15, Math.min(85, (deltaX / rect.width) * 100));
-        setSideSplitPercent(newPercent);
+        const dx = e.clientX - rect.left;
+        setSideSplitPercent(Math.max(15, Math.min(85, (dx / rect.width) * 100)));
       } else {
-        const mouseY = moveEvent.clientY - rect.top;
-        const newHeight = Math.max(80, Math.min(rect.height - 80, rect.height - mouseY));
-        setBottomSplitHeight(newHeight);
+        const my = e.clientY - rect.top;
+        setBottomSplitHeight(Math.max(80, Math.min(rect.height - 80, rect.height - my)));
       }
     };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
+    const onUp = () => setIsDragging(false);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
     };
   }, [isDragging, consolePosition]);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  // Load Babel Standalone for TS type stripping and JSX transpilation dynamically if needed
+  // Lazy-load Babel for transpilation
   useEffect(() => {
     if (!(window as any).Babel) {
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@babel/standalone/babel.min.js';
-      script.async = true;
-      document.body.appendChild(script);
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/@babel/standalone/babel.min.js';
+      s.async = true;
+      document.body.appendChild(s);
     }
   }, []);
 
-  // Reset state when a new question is selected
+  // Reset on new question
   useEffect(() => {
     setUserCode(initialCode);
     setActiveTab('index.js');
@@ -86,161 +74,177 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
 
   const handleRunCode = () => {
     try {
-      const originalCode = activeTab === 'index.js' ? userCode : answerCode;
-      let codeToRun = originalCode;
+      const orig = activeTab === 'index.js' ? userCode : answerCode;
+      let codeToRun = orig;
 
-      // Transpile using Babel if available (for TS type stripping, JSX compiling, and ES module resolution)
       if ((window as any).Babel) {
         try {
           const presets = ['env', 'react'];
-          if (language === 'typescript' || originalCode.includes('<T') || originalCode.includes(': ') || originalCode.includes('interface ')) {
+          if (language === 'typescript' || orig.includes('<T') || orig.includes(': ') || orig.includes('interface ')) {
             presets.push('typescript');
           }
-          codeToRun = (window as any).Babel.transform(originalCode, {
-            presets: presets,
-            filename: language === 'typescript' ? 'file.ts' : 'file.jsx'
-          }).code || originalCode;
-        } catch (transpilationErr: any) {
-          setOutput(`Transpilation Error: ${transpilationErr.message}`);
+          codeToRun = (window as any).Babel.transform(orig, {
+            presets,
+            filename: language === 'typescript' ? 'file.ts' : 'file.jsx',
+          }).code || orig;
+        } catch (e: any) {
+          setOutput(`Transpilation Error: ${e.message}`);
           return;
         }
-      } else if (language === 'typescript' || originalCode.includes('<T') || originalCode.includes('interface ')) {
-        setOutput("Error: Compiler engine is initializing. Please wait a moment and try again.");
+      } else if (language === 'typescript' || orig.includes('<T') || orig.includes('interface ')) {
+        setOutput("Compiler engine is initializing. Please wait a moment and try again.");
         return;
       }
-      
-      // Override console.log to capture output
-      let consoleOutput = '';
-      const originalLog = console.log;
-      
+
+      let captured = '';
+      const origLog = console.log;
       try {
         console.log = (...args) => {
-          consoleOutput += args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') + '\n';
+          captured += args.map((a) => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') + '\n';
         };
-
-        const customRequire = (moduleName: string) => {
-          if (moduleName === 'react') return React;
-          throw new Error(`Module "${moduleName}" is not available in the interactive compiler.`);
+        const customRequire = (mod: string) => {
+          if (mod === 'react') return React;
+          throw new Error(`Module "${mod}" is not available in the interactive compiler.`);
         };
-
-        const exportsObj = {};
-
-        // Wrap code to execute, passing React, require, and exports
-        const execute = new Function('React', 'require', 'exports', codeToRun);
-        execute(React, customRequire, exportsObj);
+        const exports_ = {};
+        const fn = new Function('React', 'require', 'exports', codeToRun);
+        fn(React, customRequire, exports_);
       } finally {
-        // Restore console.log
-        console.log = originalLog;
+        console.log = origLog;
       }
-      
-      setOutput(consoleOutput || 'Code executed successfully with no output.');
-    } catch (err: any) {
-      setOutput(`Error: ${err.message}`);
-    }
-  };
-
-  const handleCodeChange = (value: string | undefined) => {
-    if (activeTab === 'index.js') {
-      setUserCode(value || '');
+      setOutput(captured || 'Code executed successfully with no output.');
+    } catch (e: any) {
+      setOutput(`Error: ${e.message}`);
     }
   };
 
   return (
-    <div className="compiler-container glass">
-      <div className="compiler-header">
-        <div className="tabs">
-          <div 
-            className={`tab ${activeTab === 'index.js' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('index.js');
-              setOutput('');
-            }}
+    <div className="flex flex-col rounded-xl border border-border bg-surface overflow-hidden h-full shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-border bg-surface-2">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => { setActiveTab('index.js'); setOutput(''); }}
+            className={cn(
+              'px-3 py-1.5 rounded-md text-xs font-mono font-semibold transition-colors',
+              activeTab === 'index.js'
+                ? 'bg-surface text-fg shadow-sm'
+                : 'text-fg-muted hover:bg-surface'
+            )}
           >
             index.js
-          </div>
+          </button>
           {showSolutionTab && (
-            <div 
-              className={`tab solution-tab ${activeTab === 'solution.js' ? 'active' : ''}`}
+            <button
               onClick={() => setActiveTab('solution.js')}
+              className={cn(
+                'px-3 py-1.5 rounded-md text-xs font-mono font-semibold transition-colors',
+                activeTab === 'solution.js'
+                  ? 'bg-success/15 text-success shadow-sm'
+                  : 'text-success/70 hover:bg-success/10'
+              )}
             >
               solution.js
-            </div>
-          )}
-        </div>
-        <div className="actions">
-          <button 
-            className="action-btn layout-btn" 
-            onClick={() => setConsolePosition(p => p === 'bottom' ? 'side' : 'bottom')}
-            title="Toggle Console Position"
-          >
-            {consolePosition === 'bottom' ? <SplitSquareHorizontal size={16} /> : <SplitSquareVertical size={16} />}
-          </button>
-          <button className="action-btn hint-btn" onClick={() => setShowHint(!showHint)}>
-            <Lightbulb size={16} /> {showHint ? 'Hide Hint' : 'Hint'}
-          </button>
-          {!showSolutionTab && (
-            <button className="action-btn answer-btn" onClick={handleShowResult}>
-              <CheckCircle size={16} /> Show Result
             </button>
           )}
-          <button className="action-btn run-btn" onClick={handleRunCode}>
-            <Play size={16} /> Run Code
-          </button>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <Button
+            variant="ghost" size="icon-sm"
+            onClick={() => setConsolePosition(p => p === 'bottom' ? 'side' : 'bottom')}
+            title="Toggle console position"
+          >
+            {consolePosition === 'bottom' ? <SplitSquareHorizontal size={14} /> : <SplitSquareVertical size={14} />}
+          </Button>
+          <Button
+            variant="ghost" size="sm"
+            onClick={() => setShowHint(!showHint)}
+            leftIcon={<Lightbulb size={14} />}
+          >
+            {showHint ? 'Hide Hint' : 'Hint'}
+          </Button>
+          {!showSolutionTab && (
+            <Button
+              variant="subtle" size="sm"
+              onClick={handleShowResult}
+              leftIcon={<CheckCircle size={14} />}
+            >
+              Show Result
+            </Button>
+          )}
+          <Button size="sm" onClick={handleRunCode} leftIcon={<Play size={14} />}>
+            Run
+          </Button>
         </div>
       </div>
-      
+
+      {/* Hint */}
       {showHint && (
-        <div className="hint-box">
-          <strong>Hint:</strong> {hint}
+        <div className="px-4 py-3 bg-warning/8 border-b border-warning/30 text-sm text-warning">
+          <strong className="font-bold">Hint:</strong> {hint}
         </div>
       )}
 
-      <div 
+      {/* Workspace */}
+      <div
         ref={workspaceRef}
-        className={`workspace ${consolePosition === 'side' ? 'layout-side' : 'layout-bottom'} ${isDragging ? 'dragging' : ''}`}
+        className={cn(
+          'flex flex-1 min-h-0',
+          consolePosition === 'side' ? 'flex-row' : 'flex-col'
+        )}
       >
-        <div 
-          className="editor-wrapper"
+        <div
+          className="min-w-0 min-h-0"
           style={
-            consolePosition === 'side' 
-              ? { width: `${sideSplitPercent}%`, flexGrow: 0, flexShrink: 0 } 
-              : undefined
+            consolePosition === 'side'
+              ? { width: `${sideSplitPercent}%`, flexShrink: 0 }
+              : { flex: 1 }
           }
         >
           <Editor
             key={activeTab}
             height="100%"
-            defaultLanguage={language || "javascript"}
-            theme="vs-dark"
+            defaultLanguage={language || 'javascript'}
+            theme={resolvedMode === 'dark' ? 'vs-dark' : 'vs-light'}
             value={activeTab === 'index.js' ? userCode : answerCode}
-            onChange={handleCodeChange}
+            onChange={(v) => activeTab === 'index.js' && setUserCode(v || '')}
             options={{
               readOnly: activeTab === 'solution.js',
               minimap: { enabled: false },
               fontSize: 14,
-              fontFamily: 'ui-monospace, SFMono-Regular, Consolas, "Courier New", monospace',
-              padding: { top: 16 },
+              fontFamily: 'ui-monospace, Menlo, Monaco, Consolas, monospace',
+              padding: { top: 12, bottom: 12 },
               scrollBeyondLastLine: false,
               automaticLayout: true,
             }}
           />
         </div>
 
-        <div 
-          className={`divider ${consolePosition === 'side' ? 'divider-vertical' : 'divider-horizontal'}`}
-          onMouseDown={handleMouseDown}
+        {/* Splitter */}
+        <div
+          onMouseDown={(e) => { e.preventDefault(); setIsDragging(true); }}
+          className={cn(
+            'bg-border hover:bg-brand transition-colors flex-shrink-0',
+            consolePosition === 'side' ? 'w-1 cursor-col-resize' : 'h-1 cursor-row-resize',
+            isDragging && 'bg-brand'
+          )}
         />
 
-        <div 
-          className="output-panel"
+        <div
+          className="flex flex-col bg-surface-2 min-w-0 min-h-0"
           style={
             consolePosition === 'side'
-              ? { width: `${100 - sideSplitPercent}%`, flexGrow: 0, flexShrink: 0 }
-              : { height: `${bottomSplitHeight}px` }
+              ? { width: `${100 - sideSplitPercent}%`, flexShrink: 0 }
+              : { height: `${bottomSplitHeight}px`, flexShrink: 0 }
           }
         >
-          <div className="output-header">Console Output</div>
-          <pre className="output-content">{output || 'Run your code to see output here...'}</pre>
+          <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-fg-subtle border-b border-border">
+            Console Output
+          </div>
+          <pre className="flex-1 overflow-auto px-4 py-3 text-xs font-mono text-fg whitespace-pre-wrap">
+            {output || <span className="text-fg-subtle">Run your code to see output here…</span>}
+          </pre>
         </div>
       </div>
     </div>

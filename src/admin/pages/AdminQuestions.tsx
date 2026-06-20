@@ -1,40 +1,36 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Pencil, Trash2, HelpCircle, RefreshCw, AlertCircle,
-  FileText, Code2, ListChecks, Lightbulb, Eye, ArrowLeft,
+  FileText, Code2, ListChecks, Lightbulb, Eye, ArrowLeft, X, Search,
 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-  fetchAdminQuestions,
-  addAdminQuestion,
-  updateAdminQuestion,
-  deleteAdminQuestion,
+  fetchAdminQuestions, addAdminQuestion, updateAdminQuestion, deleteAdminQuestion,
 } from '../../store/slices/adminQuestionsSlice';
 import type { AdminQuestion, MCOption, Difficulty } from '../types';
-import AdminModal from '../components/AdminModal';
+import { Modal } from '../../components/ui/Modal';
 import RichTextEditor from '../components/RichTextEditor';
 import QuestionPreview from '../components/QuestionPreview';
-import { detectQuestionKind, isSectionVisible } from '../components/questionKind';
-import '../admin.css';
-import './AdminQuestions.css';
+import { detectQuestionKind, isSectionVisible, type QuestionKind } from '../components/questionKind';
+import { Button } from '../../components/ui/Button';
+import { Input, Textarea, Select, Field } from '../../components/ui/Input';
+import { Badge, DifficultyBadge } from '../../components/ui/Badge';
+import { PageHeader, ErrorBanner, WarningBanner, EmptyState } from '../../components/ui/PageHeader';
+import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
+import { useTheme } from '../../theme/ThemeProvider';
+import { cn } from '../../lib/cn';
 
 // ── Form state ────────────────────────────────────────────────────────────────
 
 type FormState = Omit<AdminQuestion, 'id' | 'createdAt'>;
 
 const EMPTY_FORM: FormState = {
-  title: '',
-  questions: '',
-  answer: '',
-  code: '',
-  options: [],
-  expectedOutput: '',
-  hint: '',
-  difficulty: '',
-  platformId: '',
-  questionTypeId: '',
-  tags: '',
+  title: '', questions: '', answer: '', code: '',
+  options: [], expectedOutput: '', hint: '',
+  difficulty: '', platformId: '', questionTypeId: '', tags: '',
 };
 
 const newOptionId = () => `opt-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -50,6 +46,7 @@ const DIFFICULTIES: { value: Difficulty; label: string }[] = [
 
 const AdminQuestions = () => {
   const dispatch = useAppDispatch();
+  const { resolvedMode } = useTheme();
   const questions = useAppSelector((s) => s.adminQuestions.data);
   const loading = useAppSelector((s) => s.adminQuestions.loading);
   const error = useAppSelector((s) => s.adminQuestions.error);
@@ -64,7 +61,60 @@ const AdminQuestions = () => {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // Derived values from current selection
+  // ── Filters: platform & type live in the URL (so the sidebar stays in sync),
+  //    search is local UI state.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const platformKeyFilter = searchParams.get('platform');
+  const typeIdFilter = searchParams.get('type');
+  const [search, setSearch] = useState('');
+
+  const filterPlatform = useMemo(() => {
+    if (!platformKeyFilter) return null;
+    return (
+      platforms.find((p) => p.key.toLowerCase() === platformKeyFilter.toLowerCase()) ?? null
+    );
+  }, [platforms, platformKeyFilter]);
+
+  const filterType = useMemo(() => {
+    if (!typeIdFilter) return null;
+    return questionTypes.find((qt) => qt.id === typeIdFilter) ?? null;
+  }, [questionTypes, typeIdFilter]);
+
+  const filterUnknown = !!platformKeyFilter && !filterPlatform && platforms.length > 0;
+
+  const visibleQuestions = useMemo(() => {
+    let list = questions;
+    if (filterPlatform) list = list.filter((q) => q.platformId === filterPlatform.id);
+    if (filterType)     list = list.filter((q) => q.questionTypeId === filterType.id);
+    const needle = search.trim().toLowerCase();
+    if (needle) {
+      list = list.filter(
+        (q) =>
+          q.title.toLowerCase().includes(needle) ||
+          q.questions.toLowerCase().includes(needle) ||
+          q.tags.toLowerCase().includes(needle)
+      );
+    }
+    return list;
+  }, [questions, filterPlatform, filterType, search]);
+
+  const setUrlParam = (key: string, value: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    setSearchParams(next, { replace: true });
+  };
+
+  const clearAllFilters = () => {
+    setSearch('');
+    const next = new URLSearchParams(searchParams);
+    next.delete('platform');
+    next.delete('type');
+    setSearchParams(next, { replace: true });
+  };
+
+  const hasActiveFilter = !!filterPlatform || !!filterType || search.trim().length > 0;
+
   const selectedType = useMemo(
     () => questionTypes.find((qt) => qt.id === form.questionTypeId),
     [questionTypes, form.questionTypeId]
@@ -79,7 +129,7 @@ const AdminQuestions = () => {
     setEditTarget(null);
     setForm({
       ...EMPTY_FORM,
-      platformId: platforms[0]?.id ?? '',
+      platformId: filterPlatform?.id ?? platforms[0]?.id ?? '',
       questionTypeId: questionTypes[0]?.id ?? '',
     });
     setSaveError(null);
@@ -109,15 +159,9 @@ const AdminQuestions = () => {
     setSaving(true);
     setSaveError(null);
     try {
-      // Strip data that doesn't apply to this kind so we don't persist
-      // stale fields when the admin switched type mid-edit.
       const cleaned = applyKindMask(form, kind);
-
-      if (editTarget) {
-        await dispatch(updateAdminQuestion({ id: editTarget.id, patch: cleaned })).unwrap();
-      } else {
-        await dispatch(addAdminQuestion(cleaned)).unwrap();
-      }
+      if (editTarget) await dispatch(updateAdminQuestion({ id: editTarget.id, patch: cleaned })).unwrap();
+      else            await dispatch(addAdminQuestion(cleaned)).unwrap();
       handleClose();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -131,194 +175,238 @@ const AdminQuestions = () => {
     setDeleteConfirm(null);
   };
 
-  // Lookups for table rows
   const getPlatformName = (id: string) => platforms.find((p) => p.id === id)?.name ?? '—';
   const getTypeName = (id: string) => questionTypes.find((qt) => qt.id === id)?.name ?? '—';
 
-  // Option helpers
   const addOption = () =>
-    setForm((f) => ({
-      ...f,
-      options: [...f.options, { id: newOptionId(), label: '', isCorrect: false }],
-    }));
-
+    setForm((f) => ({ ...f, options: [...f.options, { id: newOptionId(), label: '', isCorrect: false }] }));
   const updateOption = (optId: string, patch: Partial<MCOption>) =>
-    setForm((f) => ({
-      ...f,
-      options: f.options.map((o) => (o.id === optId ? { ...o, ...patch } : o)),
-    }));
-
+    setForm((f) => ({ ...f, options: f.options.map((o) => (o.id === optId ? { ...o, ...patch } : o)) }));
   const removeOption = (optId: string) =>
     setForm((f) => ({ ...f, options: f.options.filter((o) => o.id !== optId) }));
 
   const prereqMissing = platforms.length === 0 || questionTypes.length === 0;
 
-  // ── Section visibility helpers (kind-driven) ────────────────────────────
   const showAnswer   = isSectionVisible('answer',          kind);
   const showCode     = isSectionVisible('code',            kind);
   const showExpected = isSectionVisible('expected-output', kind);
   const showOptions  = isSectionVisible('options',         kind);
   const showHint     = isSectionVisible('hint',            kind);
 
-  const codeSectionTitle = kind === 'practical' ? 'Starter Code' : 'Code';
+  const codeSectionTitle   = kind === 'practical' ? 'Starter Code' : 'Code';
   const answerSectionTitle = kind === 'practical' ? 'Solution / Explanation' : 'Answer';
+
+  // Use side-by-side layout when the rich-editor (Answer) and at least one
+  // structured section are visible together.
+  const useSplit = showAnswer && (showCode || showExpected || showOptions);
 
   return (
     <div>
-      <div className="admin-page-header">
-        <div>
-          <h1 className="admin-page-title">Questions</h1>
-          <p className="admin-page-subtitle">Manage interview questions — synced with Supabase</p>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            className="admin-btn admin-btn-secondary"
-            onClick={() => dispatch(fetchAdminQuestions())}
-            disabled={loading}
-            title="Refresh from Supabase"
-          >
-            <RefreshCw
-              size={15}
-              style={loading ? { animation: 'spin-slow 1s linear infinite' } : {}}
-            />
-          </button>
-          <button
-            className="admin-btn admin-btn-primary"
-            onClick={openAdd}
-            id="add-question-btn"
-            disabled={prereqMissing}
-            title={
-              platforms.length === 0
-                ? 'Add a platform first'
-                : questionTypes.length === 0
-                ? 'Add a question type first'
-                : ''
-            }
-          >
-            <Plus size={16} />
-            Add Question
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Questions"
+        description="Manage interview questions — synced with Supabase"
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              size="icon"
+              onClick={() => dispatch(fetchAdminQuestions())}
+              disabled={loading}
+              title="Refresh from Supabase"
+            >
+              <RefreshCw size={15} className={loading ? 'animate-[spin-slow_1s_linear_infinite]' : ''} />
+            </Button>
+            <Button
+              onClick={openAdd}
+              leftIcon={<Plus size={16} />}
+              disabled={prereqMissing}
+              title={
+                platforms.length === 0
+                  ? 'Add a platform first'
+                  : questionTypes.length === 0
+                  ? 'Add a question type first'
+                  : ''
+              }
+            >
+              Add Question
+            </Button>
+          </>
+        }
+      />
 
       {error && (
-        <div className="platforms-error-banner">
+        <ErrorBanner>
           <AlertCircle size={15} />
           <span>Supabase error: {error}</span>
-        </div>
+        </ErrorBanner>
+      )}
+
+      {filterUnknown && (
+        <WarningBanner>
+          <AlertCircle size={15} />
+          <span>
+            No platform with key <code className="px-1 rounded bg-brand/10 text-brand font-mono">{platformKeyFilter}</code> exists. Showing all questions.
+          </span>
+        </WarningBanner>
       )}
 
       {prereqMissing && (
-        <div className="questions-prereq-warning">
+        <WarningBanner>
           <HelpCircle size={16} />
           <span>
             {platforms.length === 0
               ? 'Please add at least one platform before adding questions.'
               : 'Please add at least one question type before adding questions.'}
           </span>
+        </WarningBanner>
+      )}
+
+      {/* ── Filter toolbar ──────────────────────────────────────────────── */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1 min-w-0">
+          <Search
+            size={15}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-fg-subtle"
+          />
+          <Input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search title, question, or tags…"
+            className="pl-9"
+            aria-label="Search questions"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 inline-flex items-center justify-center rounded-md text-fg-subtle hover:bg-surface-3 hover:text-fg transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <Select
+            value={filterPlatform?.key ?? ''}
+            onChange={(e) => setUrlParam('platform', e.target.value)}
+            aria-label="Filter by platform"
+            className="sm:w-48"
+          >
+            <option value="">All Platforms</option>
+            {platforms.map((p) => (
+              <option key={p.id} value={p.key}>{p.name}</option>
+            ))}
+          </Select>
+
+          <Select
+            value={filterType?.id ?? ''}
+            onChange={(e) => setUrlParam('type', e.target.value)}
+            aria-label="Filter by question type"
+            className="sm:w-48"
+          >
+            <option value="">All Types</option>
+            {questionTypes.map((qt) => (
+              <option key={qt.id} value={qt.id}>{qt.name}</option>
+            ))}
+          </Select>
+
+          {hasActiveFilter && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              leftIcon={<X size={14} />}
+            >
+              Clear
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {hasActiveFilter && !loading && (
+        <div className="mb-3 text-xs text-fg-muted">
+          Showing <span className="font-semibold text-fg">{visibleQuestions.length}</span>{' '}
+          of <span className="font-semibold text-fg">{questions.length}</span> questions
         </div>
       )}
 
-      <div className="admin-table-wrapper">
+      <TableWrap>
         {loading ? (
-          <div className="admin-empty">
-            <span className="platforms-spinner" />
-            <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading questions…</p>
+          <div className="py-16 text-center text-fg-muted">
+            <span className="inline-block w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-[spin-slow_0.8s_linear_infinite]" />
+            <p className="mt-3 text-sm">Loading questions…</p>
           </div>
-        ) : questions.length === 0 ? (
-          <div className="admin-empty">
-            <div className="admin-empty-icon"><HelpCircle size={40} /></div>
-            <p>No questions yet. Click "Add Question" to start building your question bank.</p>
-          </div>
+        ) : visibleQuestions.length === 0 ? (
+          <EmptyState
+            icon={<HelpCircle size={28} />}
+            title={
+              hasActiveFilter
+                ? 'No questions match your filters'
+                : 'No questions yet'
+            }
+            description={
+              hasActiveFilter
+                ? 'Try clearing a filter or adjusting your search.'
+                : 'Click "Add Question" to start building your question bank.'
+            }
+          />
         ) : (
-          <table className="admin-table">
+          <Table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Title / Question</th>
-                <th>Platform</th>
-                <th>Type</th>
-                <th>Difficulty</th>
-                <th>Created</th>
-                <th>Actions</th>
+                <Th className="w-12">#</Th>
+                <Th>Title / Question</Th>
+                <Th>Platform</Th>
+                <Th>Type</Th>
+                <Th>Difficulty</Th>
+                <Th className="hidden md:table-cell">Created</Th>
+                <Th className="text-right pr-4">Actions</Th>
               </tr>
             </thead>
             <tbody>
-              {questions.map((q, idx) => (
-                <tr key={q.id}>
-                  <td style={{ color: 'var(--text-muted)', width: '40px' }}>{idx + 1}</td>
-                  <td style={{ maxWidth: '320px' }}>
-                    <div className="question-title-cell" title={q.title || q.questions}>
-                      {q.title || q.questions || <span style={{ color: 'var(--text-muted)' }}>Untitled</span>}
+              {visibleQuestions.map((q, idx) => (
+                <TableRow key={q.id}>
+                  <Td className="text-fg-subtle">{idx + 1}</Td>
+                  <Td className="max-w-[320px]">
+                    <div className="line-clamp-2 text-sm font-medium" title={q.title || q.questions}>
+                      {q.title || q.questions || <span className="text-fg-subtle">Untitled</span>}
                     </div>
-                  </td>
-                  <td>
-                    <span className="admin-badge admin-badge-purple">
-                      {getPlatformName(q.platformId)}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="admin-badge admin-badge-green">
-                      {getTypeName(q.questionTypeId)}
-                    </span>
-                  </td>
-                  <td>
-                    {q.difficulty ? (
-                      <span className={`difficulty-pill difficulty-${q.difficulty}`}>
-                        {q.difficulty}
-                      </span>
-                    ) : (
-                      <span style={{ color: 'var(--text-muted)' }}>—</span>
-                    )}
-                  </td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                  </Td>
+                  <Td><Badge tone="brand">{getPlatformName(q.platformId)}</Badge></Td>
+                  <Td><Badge tone="success">{getTypeName(q.questionTypeId)}</Badge></Td>
+                  <Td><DifficultyBadge value={q.difficulty} /></Td>
+                  <Td className="hidden md:table-cell text-fg-subtle text-xs">
                     {new Date(q.createdAt).toLocaleDateString()}
-                  </td>
-                  <td>
-                    <div className="admin-table-actions">
-                      <button
-                        className="admin-btn admin-btn-icon admin-btn-secondary"
-                        onClick={() => openEdit(q)}
-                        title="Edit"
-                        id={`edit-question-${q.id}`}
-                      >
+                  </Td>
+                  <Td>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button variant="ghost" size="icon-sm" onClick={() => openEdit(q)} title="Edit">
                         <Pencil size={14} />
-                      </button>
+                      </Button>
                       {deleteConfirm === q.id ? (
                         <>
-                          <button
-                            className="admin-btn admin-btn-sm admin-btn-danger"
-                            onClick={() => handleDelete(q.id)}
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            className="admin-btn admin-btn-sm admin-btn-secondary"
-                            onClick={() => setDeleteConfirm(null)}
-                          >
-                            Cancel
-                          </button>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(q.id)}>Confirm</Button>
+                          <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
                         </>
                       ) : (
-                        <button
-                          className="admin-btn admin-btn-icon admin-btn-danger"
-                          onClick={() => setDeleteConfirm(q.id)}
-                          title="Delete"
-                        >
+                        <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(q.id)} title="Delete" className="text-danger hover:bg-danger/10">
                           <Trash2 size={14} />
-                        </button>
+                        </Button>
                       )}
                     </div>
-                  </td>
-                </tr>
+                  </Td>
+                </TableRow>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
+      </TableWrap>
 
-      {/* ── Add / Edit Modal ────────────────────────────────────────────────── */}
-      <AdminModal
+      <Modal
         open={modalOpen}
         onClose={handleClose}
         title={
@@ -326,291 +414,357 @@ const AdminQuestions = () => {
             ? `Preview${editTarget ? ' · ' + (editTarget.title || 'Untitled') : ''}`
             : editTarget ? 'Edit Question' : 'Add Question'
         }
-        width="820px"
+        maxWidth="max-w-7xl"
+        maxHeight="max-h-[92vh]"
+        contained={false}
       >
-        {previewing ? (
-          <div>
-            <div className="questions-preview-toolbar">
-              <button
-                type="button"
-                className="admin-btn admin-btn-secondary"
-                onClick={() => setPreviewing(false)}
-              >
-                <ArrowLeft size={14} />
-                Back to Edit
-              </button>
-              <span className="questions-preview-kind">
-                {labelForKind(kind)}
-              </span>
-            </div>
-            <QuestionPreview
-              form={form}
-              kind={kind}
-              platform={selectedPlatform}
-              questionType={selectedType}
-            />
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            {/* Section: Basics */}
-            <FormSection icon={<FileText size={14} />} title="Basics">
-              <div className="admin-form-group">
-                <label className="admin-label">Title</label>
-                <input
-                  className="admin-input"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="Short title or identifier"
+        <AnimatePresence mode="wait">
+          {previewing ? (
+            <motion.div
+              key="preview"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="flex flex-col flex-1 min-h-0"
+            >
+              <div className="flex items-center justify-between gap-3 px-6 py-3 border-b border-border bg-surface-2 shrink-0">
+                <Button variant="secondary" size="sm" onClick={() => setPreviewing(false)} leftIcon={<ArrowLeft size={14} />}>
+                  Back to Edit
+                </Button>
+                <Badge tone="brand" className="uppercase">
+                  {labelForKind(kind)}
+                </Badge>
+              </div>
+              <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5">
+                <QuestionPreview
+                  form={form}
+                  kind={kind}
+                  platform={selectedPlatform}
+                  questionType={selectedType}
+                />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.form
+              key="form"
+              onSubmit={handleSubmit}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="flex flex-col flex-1 min-h-0"
+            >
+              {/* Top compact basics row (always visible) */}
+              <div className="px-6 pt-4 pb-3 border-b border-border bg-surface-2/40 shrink-0">
+                <BasicsRow
+                  form={form}
+                  setForm={setForm}
+                  platforms={platforms}
+                  questionTypes={questionTypes}
+                  kindLabel={selectedType ? labelForKind(kind) : undefined}
                 />
               </div>
 
-              <div className="admin-form-group">
-                <label className="admin-label">
-                  Question <span className="required">*</span>
-                </label>
-                <textarea
-                  className="admin-textarea"
-                  value={form.questions}
-                  onChange={(e) => setForm({ ...form, questions: e.target.value })}
-                  placeholder="The actual question / prompt"
-                  rows={3}
-                  required
-                />
-              </div>
-
-              <div className="questions-selectors">
-                <div className="admin-form-group" style={{ flex: 1 }}>
-                  <label className="admin-label">
-                    Platform <span className="required">*</span>
-                  </label>
-                  <select
-                    className="admin-select"
-                    value={form.platformId}
-                    onChange={(e) => setForm({ ...form, platformId: e.target.value })}
-                    required
-                  >
-                    <option value="" disabled>Select platform…</option>
-                    {platforms.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="admin-form-group" style={{ flex: 1 }}>
-                  <label className="admin-label">
-                    Question Type <span className="required">*</span>
-                  </label>
-                  <select
-                    className="admin-select"
-                    value={form.questionTypeId}
-                    onChange={(e) => setForm({ ...form, questionTypeId: e.target.value })}
-                    required
-                  >
-                    <option value="" disabled>Select type…</option>
-                    {questionTypes.map((qt) => (
-                      <option key={qt.id} value={qt.id}>{qt.name}</option>
-                    ))}
-                  </select>
-                  {selectedType && (
-                    <span className="admin-form-hint">
-                      Detected: <code>{labelForKind(kind)}</code>
-                    </span>
-                  )}
-                </div>
-
-                <div className="admin-form-group" style={{ flex: 1 }}>
-                  <label className="admin-label">Difficulty</label>
-                  <select
-                    className="admin-select"
-                    value={form.difficulty}
-                    onChange={(e) => setForm({ ...form, difficulty: e.target.value as Difficulty })}
-                  >
-                    {DIFFICULTIES.map((d) => (
-                      <option key={d.value} value={d.value}>{d.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-label">Tags</label>
-                <input
-                  className="admin-input"
-                  value={form.tags}
-                  onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                  placeholder="closures, hoisting, async"
-                />
-                <span className="admin-form-hint">Comma-separated</span>
-              </div>
-            </FormSection>
-
-            {/* Section: Code (output-prediction / practical) */}
-            {showCode && (
-              <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
-                <div className="admin-form-group">
-                  <div className="dqf-code-editor">
-                    <div className="dqf-code-header">
-                      <span className="dqf-code-lang">javascript</span>
+              {/* Body — split or single depending on which sections are visible */}
+              <div className={cn(
+                'flex-1 min-h-0',
+                useSplit
+                  ? 'grid grid-cols-1 lg:grid-cols-[minmax(0,_1.05fr)_minmax(0,_1fr)]'
+                  : 'flex flex-col'
+              )}>
+                {useSplit ? (
+                  <>
+                    {/* Left: structured fields */}
+                    <div className="lg:border-r border-border min-h-0 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                      {showCode && (
+                        <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
+                          <CodeEditor
+                            value={form.code}
+                            onChange={(v) => setForm({ ...form, code: v })}
+                            resolvedMode={resolvedMode}
+                          />
+                        </FormSection>
+                      )}
+                      {showExpected && (
+                        <FormSection icon={<Code2 size={14} />} title="Expected Output">
+                          <Field hint="Single line for single-answer; one line per output (in order) for ordered prediction.">
+                            <Textarea
+                              value={form.expectedOutput}
+                              onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
+                              placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
+                              rows={4}
+                              className="font-mono text-sm"
+                            />
+                          </Field>
+                        </FormSection>
+                      )}
+                      {showOptions && (
+                        <FormSection icon={<ListChecks size={14} />} title={kind === 'output-prediction' ? 'Output Options' : 'Options'}>
+                          <OptionsList
+                            options={form.options}
+                            onAdd={addOption}
+                            onUpdate={updateOption}
+                            onRemove={removeOption}
+                          />
+                        </FormSection>
+                      )}
+                      {showHint && (
+                        <FormSection icon={<Lightbulb size={14} />} title="Hint (optional)">
+                          <Textarea
+                            value={form.hint}
+                            onChange={(e) => setForm({ ...form, hint: e.target.value })}
+                            placeholder="Optional hint for the candidate"
+                            rows={3}
+                          />
+                        </FormSection>
+                      )}
                     </div>
-                    <Editor
-                      height="240px"
-                      language="javascript"
-                      value={form.code}
-                      onChange={(v) => setForm({ ...form, code: v ?? '' })}
-                      theme="vs-dark"
-                      options={{
-                        minimap: { enabled: false },
-                        fontSize: 13,
-                        lineNumbers: 'on',
-                        scrollBeyondLastLine: false,
-                        padding: { top: 12, bottom: 12 },
-                        fontFamily: 'ui-monospace, Menlo, Monaco, Consolas, monospace',
-                      }}
-                    />
-                  </div>
-                </div>
-              </FormSection>
-            )}
 
-            {/* Section: Expected output (output-prediction only) */}
-            {showExpected && (
-              <FormSection icon={<Code2 size={14} />} title="Expected Output">
-                <div className="admin-form-group">
-                  <textarea
-                    className="admin-textarea"
-                    value={form.expectedOutput}
-                    onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
-                    placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
-                    rows={5}
-                  />
-                  <span className="admin-form-hint">
-                    Single line for single-answer questions; one line per output (in order) for ordered prediction.
-                  </span>
-                </div>
-              </FormSection>
-            )}
-
-            {/* Section: MCQ Options (mcq / output-prediction) */}
-            {showOptions && (
-              <FormSection
-                icon={<ListChecks size={14} />}
-                title={kind === 'output-prediction' ? 'Output Options' : 'Options'}
-              >
-                <div className="dqf-options">
-                  {form.options.map((opt, idx) => (
-                    <div key={opt.id} className="dqf-option-row">
-                      <span className="dqf-option-idx">{String.fromCharCode(65 + idx)}</span>
-                      <input
-                        className="admin-input"
-                        value={opt.label}
-                        onChange={(e) => updateOption(opt.id, { label: e.target.value })}
-                        placeholder={`Option ${String.fromCharCode(65 + idx)}…`}
-                      />
-                      <label className="dqf-correct-toggle" title="Mark as correct">
-                        <input
-                          type="checkbox"
-                          checked={opt.isCorrect}
-                          onChange={(e) => updateOption(opt.id, { isCorrect: e.target.checked })}
-                        />
-                        <span className={`dqf-correct-pill ${opt.isCorrect ? 'correct' : ''}`}>
-                          {opt.isCorrect ? '✓ Correct' : 'Correct?'}
-                        </span>
-                      </label>
-                      <button
-                        type="button"
-                        className="admin-btn admin-btn-icon admin-btn-danger"
-                        onClick={() => removeOption(opt.id)}
-                        title="Remove option"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="admin-btn admin-btn-sm admin-btn-secondary dqf-add-option"
-                    onClick={addOption}
-                  >
-                    <Plus size={13} />
-                    Add Option
-                  </button>
-                </div>
-              </FormSection>
-            )}
-
-            {/* Section: Answer (theory / practical) */}
-            {showAnswer && (
-              <FormSection icon={<FileText size={14} />} title={answerSectionTitle}>
-                <div className="admin-form-group">
-                  <RichTextEditor
-                    value={form.answer}
-                    onChange={(val) => setForm({ ...form, answer: val })}
-                    placeholder="Write the answer in markdown…"
-                  />
-                </div>
-              </FormSection>
-            )}
-
-            {/* Section: Hint */}
-            {showHint && (
-              <FormSection icon={<Lightbulb size={14} />} title="Hint (optional)">
-                <div className="admin-form-group">
-                  <textarea
-                    className="admin-textarea"
-                    value={form.hint}
-                    onChange={(e) => setForm({ ...form, hint: e.target.value })}
-                    placeholder="Optional hint for the candidate"
-                    rows={3}
-                  />
-                </div>
-              </FormSection>
-            )}
-
-            {saveError && (
-              <div className="platforms-error-banner" style={{ marginTop: '8px' }}>
-                <AlertCircle size={14} />
-                <span>{saveError}</span>
-              </div>
-            )}
-
-            <div className="admin-form-actions">
-              <button type="button" className="admin-btn admin-btn-secondary" onClick={handleClose}>
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="admin-btn admin-btn-secondary"
-                onClick={() => setPreviewing(true)}
-                disabled={!form.questionTypeId || !form.platformId}
-                title={
-                  !form.questionTypeId || !form.platformId
-                    ? 'Pick platform and type first'
-                    : 'Preview how this question will render'
-                }
-              >
-                <Eye size={14} />
-                Preview
-              </button>
-              <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-                {saving ? (
-                  <span className="admin-login-spinner" style={{ width: '16px', height: '16px' }} />
-                ) : editTarget ? (
-                  'Save Changes'
+                    {/* Right: rich answer (full height) */}
+                    {showAnswer && (
+                      <div className="min-h-0 flex flex-col px-6 py-4 lg:py-4">
+                        <div className="flex items-center gap-2 mb-2 shrink-0">
+                          <span className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-brand/15 text-brand">
+                            <FileText size={14} />
+                          </span>
+                          <span className="text-xs font-bold text-fg-muted uppercase tracking-wider">
+                            {answerSectionTitle}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+                          <RichTextEditor
+                            value={form.answer}
+                            onChange={(val) => setForm({ ...form, answer: val })}
+                            placeholder="Write the answer in markdown…"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
                 ) : (
-                  'Add Question'
+                  // Single-column path (theory: just answer; mcq: just options; etc)
+                  <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                    {showAnswer && (
+                      <FormSection icon={<FileText size={14} />} title={answerSectionTitle}>
+                        <RichTextEditor
+                          value={form.answer}
+                          onChange={(val) => setForm({ ...form, answer: val })}
+                          placeholder="Write the answer in markdown…"
+                        />
+                      </FormSection>
+                    )}
+                    {showCode && (
+                      <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
+                        <CodeEditor
+                          value={form.code}
+                          onChange={(v) => setForm({ ...form, code: v })}
+                          resolvedMode={resolvedMode}
+                        />
+                      </FormSection>
+                    )}
+                    {showExpected && (
+                      <FormSection icon={<Code2 size={14} />} title="Expected Output">
+                        <Textarea
+                          value={form.expectedOutput}
+                          onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
+                          placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
+                          rows={5}
+                          className="font-mono text-sm"
+                        />
+                      </FormSection>
+                    )}
+                    {showOptions && (
+                      <FormSection icon={<ListChecks size={14} />} title={kind === 'output-prediction' ? 'Output Options' : 'Options'}>
+                        <OptionsList
+                          options={form.options}
+                          onAdd={addOption}
+                          onUpdate={updateOption}
+                          onRemove={removeOption}
+                        />
+                      </FormSection>
+                    )}
+                    {showHint && (
+                      <FormSection icon={<Lightbulb size={14} />} title="Hint (optional)">
+                        <Textarea
+                          value={form.hint}
+                          onChange={(e) => setForm({ ...form, hint: e.target.value })}
+                          placeholder="Optional hint for the candidate"
+                          rows={3}
+                        />
+                      </FormSection>
+                    )}
+                  </div>
                 )}
-              </button>
-            </div>
-          </form>
-        )}
-      </AdminModal>
+              </div>
+
+              {/* Sticky footer */}
+              <div className="px-6 py-3 border-t border-border bg-surface-2/40 shrink-0">
+                {saveError && (
+                  <div className="flex items-start gap-2 mb-3 px-3 py-2 rounded-lg bg-danger/10 border border-danger/30 text-danger text-sm">
+                    <AlertCircle size={14} />
+                    <span>{saveError}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-end gap-2">
+                  <Button type="button" variant="secondary" onClick={handleClose}>Cancel</Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setPreviewing(true)}
+                    disabled={!form.questionTypeId || !form.platformId}
+                    leftIcon={<Eye size={14} />}
+                    title={
+                      !form.questionTypeId || !form.platformId
+                        ? 'Pick platform and type first'
+                        : 'Preview how this question will render'
+                    }
+                  >
+                    Preview
+                  </Button>
+                  <Button type="submit" loading={saving}>
+                    {editTarget ? 'Save Changes' : 'Add Question'}
+                  </Button>
+                </div>
+              </div>
+            </motion.form>
+          )}
+        </AnimatePresence>
+      </Modal>
     </div>
   );
 };
 
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+const BasicsRow = ({
+  form, setForm, platforms, questionTypes, kindLabel,
+}: {
+  form: FormState;
+  setForm: (next: FormState) => void;
+  platforms: { id: string; name: string }[];
+  questionTypes: { id: string; name: string }[];
+  kindLabel?: string;
+}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
+    <Field label="Title" className="lg:col-span-4">
+      <Input
+        value={form.title}
+        onChange={(e) => setForm({ ...form, title: e.target.value })}
+        placeholder="Short title or identifier"
+      />
+    </Field>
+    <Field label="Question" required className="lg:col-span-8">
+      <Input
+        value={form.questions}
+        onChange={(e) => setForm({ ...form, questions: e.target.value })}
+        placeholder="The actual question / prompt"
+        required
+      />
+    </Field>
+
+    <Field label="Platform" required className="lg:col-span-3">
+      <Select
+        value={form.platformId}
+        onChange={(e) => setForm({ ...form, platformId: e.target.value })}
+        required
+      >
+        <option value="" disabled>Select platform…</option>
+        {platforms.map((p) => (<option key={p.id} value={p.id}>{p.name}</option>))}
+      </Select>
+    </Field>
+
+    <Field
+      label="Question Type"
+      required
+      className="lg:col-span-3"
+      hint={kindLabel ? <>Detected: <code className="px-1 rounded bg-brand/10 text-brand font-mono">{kindLabel}</code></> : undefined}
+    >
+      <Select
+        value={form.questionTypeId}
+        onChange={(e) => setForm({ ...form, questionTypeId: e.target.value })}
+        required
+      >
+        <option value="" disabled>Select type…</option>
+        {questionTypes.map((qt) => (<option key={qt.id} value={qt.id}>{qt.name}</option>))}
+      </Select>
+    </Field>
+
+    <Field label="Difficulty" className="lg:col-span-2">
+      <Select
+        value={form.difficulty}
+        onChange={(e) => setForm({ ...form, difficulty: e.target.value as Difficulty })}
+      >
+        {DIFFICULTIES.map((d) => (<option key={d.value} value={d.value}>{d.label}</option>))}
+      </Select>
+    </Field>
+
+    <Field label="Tags" className="lg:col-span-4" hint="Comma-separated">
+      <Input
+        value={form.tags}
+        onChange={(e) => setForm({ ...form, tags: e.target.value })}
+        placeholder="closures, hoisting, async"
+      />
+    </Field>
+  </div>
+);
+
+const OptionsList = ({
+  options, onAdd, onUpdate, onRemove,
+}: {
+  options: MCOption[];
+  onAdd: () => void;
+  onUpdate: (id: string, patch: Partial<MCOption>) => void;
+  onRemove: (id: string) => void;
+}) => (
+  <div className="space-y-2">
+    {options.map((opt, idx) => (
+      <div key={opt.id} className="flex items-center gap-2">
+        <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-surface-3 border border-border text-xs font-bold text-fg-muted shrink-0">
+          {String.fromCharCode(65 + idx)}
+        </span>
+        <Input
+          value={opt.label}
+          onChange={(e) => onUpdate(opt.id, { label: e.target.value })}
+          placeholder={`Option ${String.fromCharCode(65 + idx)}…`}
+        />
+        <label className="cursor-pointer shrink-0">
+          <input
+            type="checkbox"
+            checked={opt.isCorrect}
+            onChange={(e) => onUpdate(opt.id, { isCorrect: e.target.checked })}
+            className="hidden"
+          />
+          <span className={cn(
+            'inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-semibold transition-all',
+            opt.isCorrect
+              ? 'bg-success/15 border-success/40 text-success'
+              : 'bg-surface-3 border-border text-fg-muted hover:bg-surface-2'
+          )}>
+            {opt.isCorrect ? '✓ Correct' : 'Correct?'}
+          </span>
+        </label>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onRemove(opt.id)}
+          title="Remove option"
+          className="text-danger hover:bg-danger/10 shrink-0"
+        >
+          <Trash2 size={13} />
+        </Button>
+      </div>
+    ))}
+    <Button type="button" variant="secondary" size="sm" onClick={onAdd} leftIcon={<Plus size={13} />}>
+      Add Option
+    </Button>
+  </div>
+);
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const labelForKind = (kind: ReturnType<typeof detectQuestionKind>) => {
+const labelForKind = (kind: QuestionKind) => {
   switch (kind) {
     case 'theory': return 'Theory';
     case 'output-prediction': return 'Output Prediction';
@@ -620,34 +774,48 @@ const labelForKind = (kind: ReturnType<typeof detectQuestionKind>) => {
   }
 };
 
-/**
- * Strip fields that don't apply to the detected kind so the DB doesn't
- * keep stale data when the admin switches type after entering values.
- */
-const applyKindMask = (
-  form: FormState,
-  kind: ReturnType<typeof detectQuestionKind>,
-): FormState => {
+const applyKindMask = (form: FormState, kind: QuestionKind): FormState => {
   const masked: FormState = { ...form };
   if (!isSectionVisible('answer',          kind)) masked.answer = '';
   if (!isSectionVisible('code',            kind)) masked.code = '';
   if (!isSectionVisible('expected-output', kind)) masked.expectedOutput = '';
   if (!isSectionVisible('options',         kind)) masked.options = [];
-  // hint is always optional → keep as-is
   return masked;
 };
 
-// ── Section wrapper ───────────────────────────────────────────────────────────
-
 const FormSection = ({
   icon, title, children,
-}: { icon: React.ReactNode; title: string; children: React.ReactNode }) => (
-  <div className="questions-section">
-    <div className="questions-section-header">
-      <span className="questions-section-icon">{icon}</span>
-      <span className="questions-section-title">{title}</span>
+}: { icon: ReactNode; title: string; children: ReactNode }) => (
+  <div className="rounded-xl border border-border bg-surface overflow-hidden">
+    <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-brand/5">
+      <span className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-brand/15 text-brand">
+        {icon}
+      </span>
+      <span className="text-xs font-bold text-fg-muted uppercase tracking-wider">{title}</span>
     </div>
-    <div className="questions-section-body">{children}</div>
+    <div className="p-3">{children}</div>
+  </div>
+);
+
+const CodeEditor = ({
+  value, onChange, resolvedMode,
+}: { value: string; onChange: (v: string) => void; resolvedMode: 'light' | 'dark' }) => (
+  <div className="rounded-lg overflow-hidden border border-border bg-[#1e1e1e]">
+    <div className="flex items-center px-3 py-1.5 bg-surface-2 border-b border-border">
+      <Badge tone="brand" className="uppercase text-[10px]">javascript</Badge>
+    </div>
+    <Editor
+      height="220px"
+      language="javascript"
+      value={value}
+      onChange={(v) => onChange(v ?? '')}
+      theme={resolvedMode === 'dark' ? 'vs-dark' : 'vs-light'}
+      options={{
+        minimap: { enabled: false }, fontSize: 13, lineNumbers: 'on',
+        scrollBeyondLastLine: false, padding: { top: 12, bottom: 12 },
+        fontFamily: 'ui-monospace, Menlo, Monaco, Consolas, monospace',
+      }}
+    />
   </div>
 );
 

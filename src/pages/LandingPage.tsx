@@ -1,20 +1,19 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
-  Atom, Server, Code2,
-  FileCode, Palette, HelpCircle, ArrowRight, Sparkles
+  Atom, Server, Code2, FileCode, Palette, HelpCircle, ArrowRight, Sparkles,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchPlatforms } from '../store/slices/platformsSlice';
+import type { Platform } from '../store/slices/platformsSlice';
+import { PageShell } from '../components/PageShell';
+import { PageNav } from '../components/PageNav';
+import { cn } from '../lib/cn';
 
-// Official TypeScript logo
 const TypeScriptIcon = ({ size = 28 }: { size?: number }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 256 256"
-    width={size}
-    height={size}
-    aria-hidden="true"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width={size} height={size} aria-hidden="true">
     <rect width="256" height="256" rx="24" fill="#3178C6" />
     <path
       fill="#FFFFFF"
@@ -22,173 +21,116 @@ const TypeScriptIcon = ({ size = 28 }: { size?: number }) => (
     />
   </svg>
 );
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchPlatforms } from '../store/slices/platformsSlice';
-import type { Platform } from '../store/slices/platformsSlice';
-import './LandingPage.css';
 
-// ── Icon / colour map keyed by platform.key ────────────────────────────────────
-
-const PLATFORM_META: Record<string, { icon: ReactNode; color: string; desc: string }> = {
-  js: {
-    icon: <Code2 size={28} className="lang-icon js" />,
-    color: '#f7df1e',
-    desc: 'Closures, promises, event loop & DOM.',
-  },
-  javascript: {
-    icon: <Code2 size={28} className="lang-icon js" />,
-    color: '#f7df1e',
-    desc: 'Closures, promises, event loop & DOM.',
-  },
-  reactjs: {
-    icon: <Atom size={28} className="lang-icon react" />,
-    color: '#61dafb',
-    desc: 'Components, state, hooks & rendering.',
-  },
-  react: {
-    icon: <Atom size={28} className="lang-icon react" />,
-    color: '#61dafb',
-    desc: 'Components, state, hooks & rendering.',
-  },
-  'react-native': {
-    icon: <Atom size={28} className="lang-icon react" />,
-    color: '#61dafb',
-    desc: 'Core components, styling & mobile APIs.',
-  },
-  nodejs: {
-    icon: <Server size={28} className="lang-icon node" />,
-    color: '#339933',
-    desc: 'Event Loop, streams, processes & APIs.',
-  },
-  node: {
-    icon: <Server size={28} className="lang-icon node" />,
-    color: '#339933',
-    desc: 'Event Loop, streams, processes & APIs.',
-  },
-  ts: {
-    icon: <TypeScriptIcon size={36} />,
-    color: '#3178c6',
-    desc: 'Types, generics & utility types.',
-  },
-  tsx: {
-    icon: <TypeScriptIcon size={36} />,
-    color: '#3178c6',
-    desc: 'Types, generics & utility types.',
-  },
-  typescript: {
-    icon: <TypeScriptIcon size={36} />,
-    color: '#3178c6',
-    desc: 'Types, generics & utility types.',
-  },
-  html: {
-    icon: <FileCode size={28} className="lang-icon html" />,
-    color: '#e34f26',
-    desc: 'Semantic layout, CRP & accessibility.',
-  },
-  css: {
-    icon: <Palette size={28} className="lang-icon css" />,
-    color: '#264de4',
-    desc: 'Grid, flexbox, animations & queries.',
-  },
+const PLATFORM_META: Record<string, { icon: ReactNode; gradient: string; desc: string }> = {
+  js:           { icon: <Code2 size={26} />,            gradient: 'from-yellow-400 to-amber-500',  desc: 'Closures, promises, event loop & DOM.' },
+  javascript:   { icon: <Code2 size={26} />,            gradient: 'from-yellow-400 to-amber-500',  desc: 'Closures, promises, event loop & DOM.' },
+  reactjs:      { icon: <Atom size={26} />,             gradient: 'from-cyan-400 to-sky-500',      desc: 'Components, state, hooks & rendering.' },
+  react:        { icon: <Atom size={26} />,             gradient: 'from-cyan-400 to-sky-500',      desc: 'Components, state, hooks & rendering.' },
+  'react-native': { icon: <Atom size={26} />,           gradient: 'from-cyan-400 to-blue-600',     desc: 'Core components, styling & mobile APIs.' },
+  nodejs:       { icon: <Server size={26} />,           gradient: 'from-emerald-500 to-green-600', desc: 'Event Loop, streams, processes & APIs.' },
+  node:         { icon: <Server size={26} />,           gradient: 'from-emerald-500 to-green-600', desc: 'Event Loop, streams, processes & APIs.' },
+  ts:           { icon: <TypeScriptIcon size={26} />,   gradient: 'from-blue-500 to-indigo-600',   desc: 'Types, generics & utility types.' },
+  typescript:   { icon: <TypeScriptIcon size={26} />,   gradient: 'from-blue-500 to-indigo-600',   desc: 'Types, generics & utility types.' },
+  html:         { icon: <FileCode size={26} />,         gradient: 'from-orange-500 to-red-500',    desc: 'Semantic layout, CRP & accessibility.' },
+  css:          { icon: <Palette size={26} />,          gradient: 'from-blue-600 to-indigo-700',   desc: 'Grid, flexbox, animations & queries.' },
 };
 
 const DEFAULT_META = {
-  icon: <HelpCircle size={28} className="lang-icon" />,
-  color: '#a78bfa',
+  icon: <HelpCircle size={26} />,
+  gradient: 'from-violet-500 to-fuchsia-500',
   desc: 'Explore interview questions for this topic.',
 };
-
-// ── Component ──────────────────────────────────────────────────────────────────
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const { data: platforms, loading, error } = useAppSelector(
-    (state) => state.platforms
-  );
+  const { data: platforms, loading, error } = useAppSelector((state) => state.platforms);
 
   useEffect(() => {
-    if (platforms.length === 0) {
-      dispatch(fetchPlatforms());
-    }
+    if (platforms.length === 0) dispatch(fetchPlatforms());
   }, [dispatch, platforms.length]);
 
   const getMeta = (platform: Platform) => {
     const key = platform.key?.toLowerCase().trim();
     if (key && PLATFORM_META[key]) return PLATFORM_META[key];
-
-    // Fallback: match by display name (handles cases where key differs from name)
     const name = platform.Name?.toLowerCase().trim();
     if (name && PLATFORM_META[name]) return PLATFORM_META[name];
-
     return DEFAULT_META;
   };
 
   return (
-    <div className="landing-page">
-      <div className="bg-glow bg-glow-1" aria-hidden />
-      <div className="bg-glow bg-glow-2" aria-hidden />
+    <PageShell>
+      <PageNav showAdminLink />
 
-      <div className="landing-container">
-      <header className="hero-section">
-        <div className="badge glass">
-          <Sparkles size={14} />
+      {/* Decorative background */}
+      <div aria-hidden className="pointer-events-none absolute -top-40 right-0 h-[420px] w-[420px] rounded-full bg-brand/15 blur-[120px]" />
+      <div aria-hidden className="pointer-events-none absolute top-40 -left-40 h-[360px] w-[360px] rounded-full bg-brand-2/15 blur-[100px]" />
+
+      {/* Hero */}
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="text-center max-w-2xl mx-auto mb-8 sm:mb-10 relative"
+      >
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-semibold mb-4">
+          <Sparkles size={13} />
           <span>Interview Prep</span>
         </div>
-        <h1 className="hero-title">
-          Master Frontend <span className="gradient-text">Interviews</span>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+          Master Frontend{' '}
+          <span className="gradient-text">Interviews</span>
         </h1>
-        <p className="hero-subtitle">
-          Upskill. Apply. Escape
-        </p>
-        {error && <p className="stats-error">{error}</p>}
-      </header>
+        <p className="mt-2 text-base text-fg-muted">Upskill. Apply. Escape.</p>
+        {error && <p className="mt-3 text-sm text-danger">{error}</p>}
+      </motion.section>
 
-      {/* ── Loading skeleton ── */}
-      {loading && (
-        <div className="language-grid">
+      {/* Cards */}
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="lang-card glass-card skeleton-card">
-              <div className="skeleton skeleton-icon" />
-              <div className="skeleton skeleton-title" />
-              <div className="skeleton skeleton-text" />
+            <div key={i} className="rounded-2xl border border-border bg-surface p-5 animate-pulse">
+              <div className="h-10 w-10 rounded-xl bg-surface-3 mb-3" />
+              <div className="h-4 w-1/2 rounded bg-surface-3 mb-2" />
+              <div className="h-3 w-3/4 rounded bg-surface-3" />
             </div>
           ))}
         </div>
-      )}
-
-      {/* ── Platform cards from API ── */}
-      {!loading && (
-        <div className="language-grid">
-          {platforms.map((platform) => {
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {platforms.map((platform, i) => {
             const meta = getMeta(platform);
             return (
-              <button
+              <motion.button
                 type="button"
                 key={platform.id}
-                className="lang-card glass-card"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.03 * i, duration: 0.25 }}
+                whileHover={{ y: -3 }}
                 onClick={() => navigate(`/${platform.key}`)}
-                style={{ '--hover-color': meta.color } as React.CSSProperties}
-                aria-label={`Start practicing ${platform.Name}`}
+                className="group relative text-left bg-surface border border-border rounded-2xl p-4 sm:p-5 overflow-hidden shadow-sm hover:shadow-xl hover:border-border-strong transition-all"
               >
-                <div className="card-top">
-                  <div className="icon-wrapper">{meta.icon}</div>
-                  <ArrowRight size={18} className="card-arrow" />
+                <div className={cn('absolute inset-x-0 top-0 h-1 bg-gradient-to-r', meta.gradient)} />
+                <div className="flex items-start justify-between mb-4">
+                  <div className={cn('h-11 w-11 grid place-items-center rounded-xl text-white shadow-md bg-gradient-to-br', meta.gradient)}>
+                    {meta.icon}
+                  </div>
+                  <ArrowRight size={16} className="text-fg-subtle group-hover:text-brand group-hover:translate-x-1 transition-all" />
                 </div>
-                <h2>{platform.Name}</h2>
-                <p>{meta.desc}</p>
-                <span className="card-cta">
-                  Start Practice
-                  <ArrowRight size={14} />
-                </span>
-              </button>
+                <h2 className="text-base font-bold mb-1">{platform.Name}</h2>
+                <p className="text-xs text-fg-muted leading-relaxed line-clamp-2">{meta.desc}</p>
+              </motion.button>
             );
           })}
         </div>
       )}
-      </div>
-    </div>
+
+      <p className="mt-12 text-center text-xs text-fg-subtle">
+        Built for upskilling — practice smart, interview confident.
+      </p>
+    </PageShell>
   );
 };
 

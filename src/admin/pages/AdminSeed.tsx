@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
-  Database, AlertCircle, CheckCircle2, RefreshCw, Sparkles, Loader2,
+  Database, AlertCircle, CheckCircle2, Sparkles, Loader2, RefreshCw,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchAdminQuestions } from '../../store/slices/adminQuestionsSlice';
@@ -15,13 +16,12 @@ import {
   reactNativeTheoryQuestions,
   type TheoryQuestion,
 } from '../../data/parsedQuestions';
-import '../admin.css';
-import './AdminSeed.css';
-
-// ── Source mapping ────────────────────────────────────────────────────────────
-//
-// Each source maps a hardcoded array to a platform `key` already present in
-// the Supabase Platforms table.
+import { Button } from '../../components/ui/Button';
+import { Select, Field } from '../../components/ui/Input';
+import { Badge } from '../../components/ui/Badge';
+import { PageHeader, ErrorBanner } from '../../components/ui/PageHeader';
+import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
+import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
 
 interface SeedSource {
   platformKey: string;
@@ -39,14 +39,7 @@ const SOURCES: SeedSource[] = [
   { platformKey: 'react-native', label: 'React Native', list: reactNativeTheoryQuestions },
 ];
 
-// ── Progress shape ────────────────────────────────────────────────────────────
-
-interface SeedError {
-  platformKey: string;
-  questionId: string;
-  message: string;
-}
-
+interface SeedError { platformKey: string; questionId: string; message: string; }
 interface SeedProgress {
   done: number;
   total: number;
@@ -56,18 +49,9 @@ interface SeedProgress {
   current: string;
   perPlatform: Record<string, { inserted: number; skipped: number }>;
 }
-
 const EMPTY_PROGRESS: SeedProgress = {
-  done: 0,
-  total: 0,
-  inserted: 0,
-  skipped: 0,
-  errors: [],
-  current: '',
-  perPlatform: {},
+  done: 0, total: 0, inserted: 0, skipped: 0, errors: [], current: '', perPlatform: {},
 };
-
-// ── Page ─────────────────────────────────────────────────────────────────────
 
 const AdminSeed = () => {
   const dispatch = useAppDispatch();
@@ -79,7 +63,6 @@ const AdminSeed = () => {
   const [progress, setProgress] = useState<SeedProgress>(EMPTY_PROGRESS);
   const [completed, setCompleted] = useState(false);
 
-  // Default the type to anything that contains "theory" (case-insensitive).
   useEffect(() => {
     if (!selectedTypeId && questionTypes.length) {
       const theory = questionTypes.find((qt) => /theory/i.test(qt.name));
@@ -87,17 +70,14 @@ const AdminSeed = () => {
     }
   }, [questionTypes, selectedTypeId]);
 
-  // Pre-compute totals, and which sources are missing platforms.
-  const summary = useMemo(() => {
-    return SOURCES.map((src) => {
-      const platform = platforms.find((p) => p.key === src.platformKey);
-      return {
-        ...src,
-        platform,
-        count: src.list.length,
-      };
-    });
-  }, [platforms]);
+  const summary = useMemo(() =>
+    SOURCES.map((src) => ({
+      ...src,
+      platform: platforms.find((p) => p.key === src.platformKey),
+      count: src.list.length,
+    })),
+    [platforms]
+  );
 
   const totalCount = summary.reduce((s, x) => s + x.count, 0);
   const missingPlatforms = summary.filter((s) => !s.platform);
@@ -109,14 +89,12 @@ const AdminSeed = () => {
     setCompleted(false);
     setProgress({ ...EMPTY_PROGRESS, total: totalCount });
 
-    // ── 1. Fetch existing titles for this question type (single query) ────
     let existingKeys = new Set<string>();
     try {
       const { data, error } = await supabase
         .from('Quesitons')
         .select('title, platform_id')
         .eq('question_type_id', Number(selectedTypeId));
-
       if (error) throw new Error(error.message);
       existingKeys = new Set(
         (data ?? []).map((r: { title: string | null; platform_id: number | string | null }) =>
@@ -124,19 +102,15 @@ const AdminSeed = () => {
         )
       );
     } catch (e) {
-      // Pre-fetch failure shouldn't be fatal — we can still try inserts.
       console.warn('Pre-fetch existing titles failed:', e);
     }
 
-    // ── 2. Loop platforms / questions sequentially ────────────────────────
     for (const src of summary) {
       if (!src.platform) {
-        // Mark every question as skipped with a reason.
         for (const q of src.list) {
           setProgress((p) => ({
             ...p,
-            done: p.done + 1,
-            skipped: p.skipped + 1,
+            done: p.done + 1, skipped: p.skipped + 1,
             current: `Skipped ${q.id} — platform "${src.platformKey}" not in DB`,
             perPlatform: bumpPlatform(p.perPlatform, src.platformKey, 'skipped'),
           }));
@@ -150,12 +124,9 @@ const AdminSeed = () => {
         const key = `${platformId}|${q.question.trim().toLowerCase()}`;
         setProgress((p) => ({ ...p, current: `${src.label}: ${q.question.slice(0, 80)}` }));
 
-        // Skip duplicates
         if (existingKeys.has(key)) {
           setProgress((p) => ({
-            ...p,
-            done: p.done + 1,
-            skipped: p.skipped + 1,
+            ...p, done: p.done + 1, skipped: p.skipped + 1,
             perPlatform: bumpPlatform(p.perPlatform, src.platformKey, 'skipped'),
           }));
           continue;
@@ -163,31 +134,21 @@ const AdminSeed = () => {
 
         try {
           const { error } = await supabase.from('Quesitons').insert({
-            title: q.question,
-            questions: q.question,
-            answer: q.answer,
-            platform_id: platformId,
-            question_type_id: Number(selectedTypeId),
+            title: q.question, questions: q.question, answer: q.answer,
+            platform_id: platformId, question_type_id: Number(selectedTypeId),
             tags: 'theory',
           });
-
           if (error) throw new Error(error.message);
 
-          existingKeys.add(key); // local dedup for this run
+          existingKeys.add(key);
           setProgress((p) => ({
-            ...p,
-            done: p.done + 1,
-            inserted: p.inserted + 1,
+            ...p, done: p.done + 1, inserted: p.inserted + 1,
             perPlatform: bumpPlatform(p.perPlatform, src.platformKey, 'inserted'),
           }));
         } catch (err) {
           setProgress((p) => ({
-            ...p,
-            done: p.done + 1,
-            errors: [
-              ...p.errors,
-              { platformKey: src.platformKey, questionId: q.id, message: errMsg(err) },
-            ],
+            ...p, done: p.done + 1,
+            errors: [...p.errors, { platformKey: src.platformKey, questionId: q.id, message: errMsg(err) }],
           }));
         }
       }
@@ -195,83 +156,72 @@ const AdminSeed = () => {
 
     setSeeding(false);
     setCompleted(true);
-    // Refresh the Questions slice so the Questions page picks them up immediately.
     dispatch(fetchAdminQuestions());
   };
 
-  const reset = () => {
-    setProgress(EMPTY_PROGRESS);
-    setCompleted(false);
-  };
+  const reset = () => { setProgress(EMPTY_PROGRESS); setCompleted(false); };
 
-  const percent = progress.total === 0
-    ? 0
-    : Math.round((progress.done / progress.total) * 100);
+  const percent = progress.total === 0 ? 0 : Math.round((progress.done / progress.total) * 100);
 
   return (
     <div>
-      <div className="admin-page-header">
-        <div>
-          <h1 className="admin-page-title">Seed Theory Questions</h1>
-          <p className="admin-page-subtitle">
-            Import all hardcoded theory questions into Supabase, mapped by platform.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Seed Theory Questions"
+        description="Import all hardcoded theory questions into Supabase, mapped by platform."
+      />
 
-      {/* Pre-flight info */}
-      <div className="seed-grid">
-        <div className="seed-card">
-          <div className="seed-card-header">
-            <Database size={16} />
-            <span>Source counts</span>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4">
+        {/* Source counts */}
+        <Card className="lg:col-span-3" bleed>
+          <div className="px-5 py-4 border-b border-border flex items-center gap-2">
+            <Database size={16} className="text-brand" />
+            <span className="text-sm font-bold uppercase tracking-wider text-fg-muted">Source counts</span>
           </div>
-          <table className="admin-table seed-table">
-            <thead>
-              <tr>
-                <th>Platform</th>
-                <th>DB key</th>
-                <th>Mapped to</th>
-                <th>Questions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {summary.map((s) => (
-                <tr key={s.platformKey}>
-                  <td>{s.label}</td>
-                  <td><code>{s.platformKey}</code></td>
-                  <td>
-                    {s.platform ? (
-                      <span className="admin-badge admin-badge-purple">{s.platform.name}</span>
-                    ) : (
-                      <span className="admin-badge admin-badge-danger">Missing</span>
-                    )}
-                  </td>
-                  <td style={{ fontFamily: 'var(--font-mono)' }}>{s.count}</td>
+          <div className="overflow-x-auto">
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Platform</Th>
+                  <Th>DB key</Th>
+                  <Th>Mapped to</Th>
+                  <Th className="text-right">Questions</Th>
                 </tr>
-              ))}
-              <tr className="seed-total-row">
-                <td colSpan={3} style={{ textAlign: 'right', fontWeight: 600 }}>Total</td>
-                <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-                  {totalCount}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div className="seed-card">
-          <div className="seed-card-header">
-            <Sparkles size={16} />
-            <span>Target settings</span>
+              </thead>
+              <tbody>
+                {summary.map((s) => (
+                  <TableRow key={s.platformKey}>
+                    <Td className="font-medium">{s.label}</Td>
+                    <Td><code className="px-1.5 py-0.5 rounded bg-brand/10 text-brand text-xs font-mono">{s.platformKey}</code></Td>
+                    <Td>
+                      {s.platform
+                        ? <Badge tone="brand">{s.platform.name}</Badge>
+                        : <Badge tone="danger">Missing</Badge>}
+                    </Td>
+                    <Td className="text-right font-mono">{s.count}</Td>
+                  </TableRow>
+                ))}
+                <TableRow className="bg-surface-2">
+                  <Td colSpan={3} className="text-right font-semibold">Total</Td>
+                  <Td className="text-right font-mono font-bold text-brand">{totalCount}</Td>
+                </TableRow>
+              </tbody>
+            </Table>
           </div>
+        </Card>
 
-          <div className="admin-form-group">
-            <label className="admin-label">
-              Question Type <span className="required">*</span>
-            </label>
-            <select
-              className="admin-select"
+        {/* Target settings */}
+        <Card className="lg:col-span-2 flex flex-col gap-4">
+          <CardHeader>
+            <Sparkles size={16} className="text-brand" />
+            <CardTitle>Target settings</CardTitle>
+          </CardHeader>
+
+          <Field
+            label="Question Type"
+            required
+            hint='Pick the Supabase question type to attach these to (e.g. "Theory").'
+          >
+            <Select
               value={selectedTypeId}
               onChange={(e) => setSelectedTypeId(e.target.value)}
               disabled={seeding || questionTypes.length === 0}
@@ -280,162 +230,143 @@ const AdminSeed = () => {
               {questionTypes.map((qt) => (
                 <option key={qt.id} value={qt.id}>{qt.name}</option>
               ))}
-            </select>
-            <span className="admin-form-hint">
-              Pick the Supabase question type to attach these to (e.g. "Theory").
-            </span>
-          </div>
+            </Select>
+          </Field>
 
           {missingPlatforms.length > 0 && (
-            <div className="platforms-error-banner" style={{ marginTop: '8px' }}>
+            <ErrorBanner>
               <AlertCircle size={14} />
               <span>
                 Missing platform key{missingPlatforms.length > 1 ? 's' : ''}:{' '}
                 {missingPlatforms.map((m) => m.platformKey).join(', ')}.
-                Add them on the Platforms page first — those questions will be skipped.
+                Add them on Platforms first — those questions will be skipped.
               </span>
-            </div>
+            </ErrorBanner>
           )}
 
-          <div className="seed-actions">
-            <button
-              type="button"
-              className="admin-btn admin-btn-primary"
+          <div className="flex items-center gap-2 mt-auto">
+            <Button
               onClick={handleSeed}
-              disabled={seeding || !selectedTypeId || questionTypes.length === 0}
+              disabled={!selectedTypeId || questionTypes.length === 0}
+              loading={seeding}
+              leftIcon={!seeding && <Database size={16} />}
+              className="flex-1"
             >
-              {seeding ? (
-                <>
-                  <Loader2 size={16} className="seed-spin" />
-                  Seeding…
-                </>
-              ) : (
-                <>
-                  <Database size={16} />
-                  Start Seeding
-                </>
-              )}
-            </button>
+              {seeding ? 'Seeding…' : 'Start Seeding'}
+            </Button>
             {completed && !seeding && (
-              <button
-                type="button"
-                className="admin-btn admin-btn-secondary"
-                onClick={reset}
-              >
-                <RefreshCw size={14} />
-                Reset
-              </button>
+              <Button variant="secondary" onClick={reset} leftIcon={<RefreshCw size={14} />}>Reset</Button>
             )}
           </div>
-        </div>
+        </Card>
       </div>
 
-      {/* Progress */}
       {(seeding || completed) && (
-        <div className="seed-card seed-progress-card">
-          <div className="seed-card-header">
-            {completed ? <CheckCircle2 size={16} /> : <Loader2 size={16} className="seed-spin" />}
-            <span>{completed ? 'Done' : 'Seeding in progress'}</span>
-          </div>
+        <Card>
+          <CardHeader>
+            {completed
+              ? <CheckCircle2 size={16} className="text-success" />
+              : <Loader2 size={16} className="text-brand animate-[spin-slow_1s_linear_infinite]" />
+            }
+            <CardTitle>{completed ? 'Done' : 'Seeding in progress'}</CardTitle>
+          </CardHeader>
 
-          <div className="seed-progress-row">
-            <span className="seed-progress-label">
+          {/* Progress bar */}
+          <div className="flex items-center gap-3 mb-5">
+            <span className="min-w-[80px] font-mono text-sm text-fg-muted">
               {progress.done} / {progress.total}
             </span>
-            <div className="seed-progress-bar">
-              <div className="seed-progress-fill" style={{ width: `${percent}%` }} />
+            <div className="flex-1 h-2 bg-surface-3 border border-border rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-brand to-brand-2"
+                initial={{ width: 0 }}
+                animate={{ width: `${percent}%` }}
+                transition={{ type: 'tween', duration: 0.18 }}
+              />
             </div>
-            <span className="seed-progress-percent">{percent}%</span>
+            <span className="min-w-[40px] text-right font-mono text-sm text-brand">{percent}%</span>
           </div>
 
-          <div className="seed-stats">
-            <div className="seed-stat seed-stat-inserted">
-              <span className="seed-stat-num">{progress.inserted}</span>
-              <span className="seed-stat-label">Inserted</span>
-            </div>
-            <div className="seed-stat seed-stat-skipped">
-              <span className="seed-stat-num">{progress.skipped}</span>
-              <span className="seed-stat-label">Skipped</span>
-            </div>
-            <div className="seed-stat seed-stat-errors">
-              <span className="seed-stat-num">{progress.errors.length}</span>
-              <span className="seed-stat-label">Errors</span>
-            </div>
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3 mb-3">
+            <StatTile label="Inserted" value={progress.inserted} tone="success" />
+            <StatTile label="Skipped"  value={progress.skipped}  tone="muted" />
+            <StatTile label="Errors"   value={progress.errors.length} tone="danger" />
           </div>
 
           {seeding && progress.current && (
-            <div className="seed-current">{progress.current}</div>
+            <div className="font-mono text-xs text-fg-muted bg-surface-3 border border-border rounded-md px-3 py-2 truncate">
+              {progress.current}
+            </div>
           )}
 
-          {/* Per-platform breakdown */}
+          {/* Per-platform */}
           {Object.keys(progress.perPlatform).length > 0 && (
-            <table className="admin-table seed-table" style={{ marginTop: '12px' }}>
-              <thead>
-                <tr>
-                  <th>Platform</th>
-                  <th>Inserted</th>
-                  <th>Skipped</th>
-                </tr>
-              </thead>
-              <tbody>
-                {summary.map((src) => {
-                  const stats = progress.perPlatform[src.platformKey];
-                  if (!stats) return null;
-                  return (
-                    <tr key={src.platformKey}>
-                      <td>{src.label}</td>
-                      <td style={{ color: '#10b981', fontFamily: 'var(--font-mono)' }}>
-                        {stats.inserted ?? 0}
-                      </td>
-                      <td style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        {stats.skipped ?? 0}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="mt-4">
+              <TableWrap>
+                <Table>
+                  <thead>
+                    <tr><Th>Platform</Th><Th>Inserted</Th><Th>Skipped</Th></tr>
+                  </thead>
+                  <tbody>
+                    {summary.map((src) => {
+                      const stats = progress.perPlatform[src.platformKey];
+                      if (!stats) return null;
+                      return (
+                        <TableRow key={src.platformKey}>
+                          <Td className="font-medium">{src.label}</Td>
+                          <Td className="font-mono text-success">{stats.inserted ?? 0}</Td>
+                          <Td className="font-mono text-fg-muted">{stats.skipped ?? 0}</Td>
+                        </TableRow>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </TableWrap>
+            </div>
           )}
 
-          {/* Errors */}
           {progress.errors.length > 0 && (
-            <details className="seed-errors">
-              <summary>
-                {progress.errors.length} error{progress.errors.length > 1 ? 's' : ''} —
-                click to expand
+            <details className="mt-4 px-4 py-3 rounded-lg bg-danger/5 border border-danger/30">
+              <summary className="cursor-pointer text-sm font-semibold text-danger">
+                {progress.errors.length} error{progress.errors.length > 1 ? 's' : ''} — click to expand
               </summary>
-              <ul>
+              <ul className="mt-2 pl-5 text-sm text-fg-muted space-y-1">
                 {progress.errors.slice(0, 50).map((err, i) => (
                   <li key={i}>
-                    <code>{err.questionId}</code> ({err.platformKey}) — {err.message}
+                    <code className="px-1.5 py-0.5 rounded bg-surface-3 text-xs font-mono">{err.questionId}</code>
+                    {' '}({err.platformKey}) — {err.message}
                   </li>
                 ))}
                 {progress.errors.length > 50 && (
-                  <li className="seed-error-more">
-                    …and {progress.errors.length - 50} more
-                  </li>
+                  <li className="italic text-fg-subtle">…and {progress.errors.length - 50} more</li>
                 )}
               </ul>
             </details>
           )}
-        </div>
+        </Card>
       )}
     </div>
   );
 };
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+const StatTile = ({
+  label, value, tone,
+}: { label: string; value: number; tone: 'success' | 'muted' | 'danger' }) => {
+  const colorMap = { success: 'text-success', muted: 'text-fg-muted', danger: 'text-danger' };
+  return (
+    <div className="bg-surface-3 border border-border rounded-lg p-3 text-center">
+      <div className={`text-2xl font-bold font-mono ${colorMap[tone]}`}>{value}</div>
+      <div className="text-[10px] uppercase tracking-wider text-fg-subtle mt-0.5">{label}</div>
+    </div>
+  );
+};
 
 const bumpPlatform = (
-  current: SeedProgress['perPlatform'],
-  key: string,
-  bucket: 'inserted' | 'skipped',
+  current: SeedProgress['perPlatform'], key: string, bucket: 'inserted' | 'skipped',
 ): SeedProgress['perPlatform'] => {
   const prev = current[key] ?? { inserted: 0, skipped: 0 };
-  return {
-    ...current,
-    [key]: { ...prev, [bucket]: prev[bucket] + 1 },
-  };
+  return { ...current, [key]: { ...prev, [bucket]: prev[bucket] + 1 } };
 };
 
 const errMsg = (e: unknown): string => {

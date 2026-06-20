@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { motion } from 'framer-motion';
 import { Plus, Pencil, Trash2, Layers, RefreshCw, AlertCircle } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -9,21 +10,19 @@ import {
 } from '../../store/slices/adminPlatformsSlice';
 import type { AdminPlatform } from '../types';
 import AdminModal from '../components/AdminModal';
-import '../admin.css';
-import './AdminPlatforms.css';
+import { Button } from '../../components/ui/Button';
+import { Input, Field } from '../../components/ui/Input';
+import { Badge } from '../../components/ui/Badge';
+import { PageHeader, ErrorBanner, EmptyState } from '../../components/ui/PageHeader';
+import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
+import { cn } from '../../lib/cn';
 
 const PRESET_COLORS = [
   '#f7df1e', '#3178c6', '#61dafb', '#e34f26', '#264de4',
   '#339933', '#a78bfa', '#f59e0b', '#10b981', '#ef4444',
 ];
 
-type FormState = {
-  name: string;
-  key: string;
-  description: string;
-  color: string;
-};
-
+type FormState = { name: string; key: string; description: string; color: string };
 const EMPTY_FORM: FormState = { name: '', key: '', description: '', color: '#8b5cf6' };
 
 const AdminPlatforms = () => {
@@ -32,13 +31,6 @@ const AdminPlatforms = () => {
   const platformsLoading = useAppSelector((s) => s.adminPlatforms.loading);
   const platformsError = useAppSelector((s) => s.adminPlatforms.error);
 
-  const fetchPlatforms = () => { dispatch(fetchAdminPlatforms()); };
-  const addPlatform = (p: Omit<AdminPlatform, 'id' | 'createdAt'>) =>
-    dispatch(addAdminPlatform(p)).unwrap();
-  const updatePlatform = (id: string, patch: Partial<AdminPlatform>) =>
-    dispatch(updateAdminPlatform({ id, patch })).unwrap();
-  const deletePlatform = (id: string) => dispatch(deleteAdminPlatform(id)).unwrap();
-
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<AdminPlatform | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -46,48 +38,35 @@ const AdminPlatforms = () => {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const openAdd = () => {
-    setEditTarget(null);
-    setForm(EMPTY_FORM);
-    setModalOpen(true);
-  };
-
+  const openAdd = () => { setEditTarget(null); setForm(EMPTY_FORM); setSaveError(null); setModalOpen(true); };
   const openEdit = (p: AdminPlatform) => {
     setEditTarget(p);
     setForm({ name: p.name, key: p.key, description: p.description ?? '', color: p.color ?? '#8b5cf6' });
+    setSaveError(null);
     setModalOpen(true);
   };
-
-  const handleClose = () => {
-    setModalOpen(false);
-    setEditTarget(null);
-    setSaveError(null);
-  };
+  const handleClose = () => { setModalOpen(false); setEditTarget(null); setSaveError(null); };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setSaveError(null);
     try {
-      if (editTarget) {
-        await updatePlatform(editTarget.id, form);
-      } else {
-        await addPlatform(form);
-      }
+      if (editTarget) await dispatch(updateAdminPlatform({ id: editTarget.id, patch: form })).unwrap();
+      else            await dispatch(addAdminPlatform(form)).unwrap();
       handleClose();
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Operation failed');
+      setSaveError(err instanceof Error ? err.message : String(err));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    await deletePlatform(id);
+    await dispatch(deleteAdminPlatform(id));
     setDeleteConfirm(null);
   };
 
-  // Auto-generate key from name
   const handleNameChange = (name: string) => {
     setForm((f) => ({
       ...f,
@@ -98,215 +77,166 @@ const AdminPlatforms = () => {
 
   return (
     <div>
-      {/* Page header */}
-      <div className="admin-page-header">
-        <div>
-          <h1 className="admin-page-title">Platforms</h1>
-          <p className="admin-page-subtitle">Manage interview topics — synced with Supabase</p>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            className="admin-btn admin-btn-secondary"
-            onClick={fetchPlatforms}
-            disabled={platformsLoading}
-            title="Refresh from Supabase"
-          >
-            <RefreshCw size={15} style={platformsLoading ? { animation: 'spin-slow 1s linear infinite' } : {}} />
-          </button>
-          <button className="admin-btn admin-btn-primary" onClick={openAdd} id="add-platform-btn">
-            <Plus size={16} />
-            Add Platform
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Platforms"
+        description="Manage interview topics — synced with Supabase"
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              size="icon"
+              onClick={() => dispatch(fetchAdminPlatforms())}
+              disabled={platformsLoading}
+              title="Refresh from Supabase"
+            >
+              <RefreshCw size={15} className={platformsLoading ? 'animate-[spin-slow_1s_linear_infinite]' : ''} />
+            </Button>
+            <Button onClick={openAdd} leftIcon={<Plus size={16} />}>Add Platform</Button>
+          </>
+        }
+      />
 
-      {/* API error banner */}
       {platformsError && (
-        <div className="platforms-error-banner">
+        <ErrorBanner>
           <AlertCircle size={15} />
           <span>Supabase error: {platformsError}</span>
-        </div>
+        </ErrorBanner>
       )}
 
-      {/* Table */}
-      <div className="admin-table-wrapper">
+      <TableWrap>
         {platformsLoading ? (
-          <div className="admin-empty">
-            <span className="platforms-spinner" />
-            <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading platforms…</p>
+          <div className="py-16 text-center text-fg-muted">
+            <span className="inline-block w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-[spin-slow_0.8s_linear_infinite]" />
+            <p className="mt-3 text-sm">Loading platforms…</p>
           </div>
         ) : platforms.length === 0 ? (
-          <div className="admin-empty">
-            <div className="admin-empty-icon"><Layers size={40} /></div>
-            <p>No platforms yet. Click "Add Platform" to create one.</p>
-          </div>
+          <EmptyState
+            icon={<Layers size={28} />}
+            title="No platforms yet"
+            description="Click 'Add Platform' to create one."
+          />
         ) : (
-          <table className="admin-table">
+          <Table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Color</th>
-                <th>Name</th>
-                <th>Key (slug)</th>
-                <th>Description</th>
-                <th>Created</th>
-                <th>Actions</th>
+                <Th className="w-12">#</Th>
+                <Th className="w-16">Color</Th>
+                <Th>Name</Th>
+                <Th>Key</Th>
+                <Th>Description</Th>
+                <Th className="hidden md:table-cell">Created</Th>
+                <Th className="text-right pr-4">Actions</Th>
               </tr>
             </thead>
             <tbody>
               {platforms.map((p, idx) => (
-                <tr key={p.id}>
-                  <td style={{ color: 'var(--text-muted)', width: '40px' }}>{idx + 1}</td>
-                  <td style={{ width: '50px' }}>
+                <TableRow key={p.id}>
+                  <Td className="text-fg-subtle">{idx + 1}</Td>
+                  <Td>
                     <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '6px',
-                        background: p.color ?? '#8b5cf6',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                      }}
+                      className="h-6 w-6 rounded-md border border-border ring-2 ring-inset ring-white/5"
+                      style={{ background: p.color ?? '#8b5cf6' }}
                     />
-                  </td>
-                  <td style={{ fontWeight: 600 }}>{p.name}</td>
-                  <td>
-                    <span className="admin-badge admin-badge-purple">{p.key}</span>
-                  </td>
-                  <td style={{ color: 'var(--text-secondary)', maxWidth: '220px' }}>
-                    {p.description || <span style={{ color: 'var(--text-muted)' }}>—</span>}
-                  </td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                  </Td>
+                  <Td className="font-semibold">{p.name}</Td>
+                  <Td><Badge tone="brand"><code className="font-mono">{p.key}</code></Badge></Td>
+                  <Td className="text-fg-muted max-w-[260px] truncate">{p.description || '—'}</Td>
+                  <Td className="hidden md:table-cell text-fg-subtle text-xs">
                     {new Date(p.createdAt).toLocaleDateString()}
-                  </td>
-                  <td>
-                    <div className="admin-table-actions">
-                      <button
-                        className="admin-btn admin-btn-icon admin-btn-secondary"
-                        onClick={() => openEdit(p)}
-                        title="Edit"
-                        id={`edit-platform-${p.id}`}
-                      >
+                  </Td>
+                  <Td>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button variant="ghost" size="icon-sm" onClick={() => openEdit(p)} title="Edit">
                         <Pencil size={14} />
-                      </button>
+                      </Button>
                       {deleteConfirm === p.id ? (
                         <>
-                          <button
-                            className="admin-btn admin-btn-sm admin-btn-danger"
-                            onClick={() => handleDelete(p.id)}
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            className="admin-btn admin-btn-sm admin-btn-secondary"
-                            onClick={() => setDeleteConfirm(null)}
-                          >
-                            Cancel
-                          </button>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(p.id)}>Confirm</Button>
+                          <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
                         </>
                       ) : (
-                        <button
-                          className="admin-btn admin-btn-icon admin-btn-danger"
-                          onClick={() => setDeleteConfirm(p.id)}
-                          title="Delete"
-                        >
+                        <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(p.id)} title="Delete" className="text-danger hover:bg-danger/10">
                           <Trash2 size={14} />
-                        </button>
+                        </Button>
                       )}
                     </div>
-                  </td>
-                </tr>
+                  </Td>
+                </TableRow>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
+      </TableWrap>
 
-      {/* Add/Edit Modal */}
-      <AdminModal
-        open={modalOpen}
-        onClose={handleClose}
-        title={editTarget ? 'Edit Platform' : 'Add Platform'}
-      >
-        <form onSubmit={handleSubmit}>
-          <div className="admin-form-group">
-            <label className="admin-label">
-              Name <span className="required">*</span>
-            </label>
-            <input
-              className="admin-input"
+      <AdminModal open={modalOpen} onClose={handleClose} title={editTarget ? 'Edit Platform' : 'Add Platform'}>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <Field label="Name" required>
+            <Input
               value={form.name}
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="e.g. React Native"
               required
               autoFocus
             />
-          </div>
+          </Field>
 
-          <div className="admin-form-group">
-            <label className="admin-label">
-              Key (slug) <span className="required">*</span>
-            </label>
-            <input
-              className="admin-input"
+          <Field label="Key (slug)" required hint="Used in URLs — auto-generated from name">
+            <Input
               value={form.key}
-              onChange={(e) => setForm((f) => ({ ...f, key: e.target.value }))}
+              onChange={(e) => setForm({ ...form, key: e.target.value })}
               placeholder="e.g. react-native"
               required
             />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Used in URLs — auto-generated from name
-            </span>
-          </div>
+          </Field>
 
-          <div className="admin-form-group">
-            <label className="admin-label">Description</label>
-            <input
-              className="admin-input"
+          <Field label="Description">
+            <Input
               value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="Brief description…"
             />
-          </div>
+          </Field>
 
-          <div className="admin-form-group">
-            <label className="admin-label">Color</label>
-            <div className="platform-color-picker">
-              <div className="platform-color-swatches">
-                {PRESET_COLORS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={`color-swatch ${form.color === c ? 'selected' : ''}`}
-                    style={{ background: c }}
-                    onClick={() => setForm((f) => ({ ...f, color: c }))}
-                    title={c}
-                  />
-                ))}
-              </div>
+          <Field label="Color">
+            <div className="flex flex-wrap items-center gap-2">
+              {PRESET_COLORS.map((c) => (
+                <motion.button
+                  key={c}
+                  type="button"
+                  onClick={() => setForm({ ...form, color: c })}
+                  className={cn(
+                    'h-8 w-8 rounded-lg border transition-all',
+                    form.color === c
+                      ? 'border-fg ring-2 ring-brand/40 scale-110'
+                      : 'border-border hover:scale-105'
+                  )}
+                  style={{ background: c }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label={`Color ${c}`}
+                />
+              ))}
               <input
                 type="color"
-                className="platform-color-input"
                 value={form.color}
-                onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
+                onChange={(e) => setForm({ ...form, color: e.target.value })}
+                className="h-8 w-10 rounded-lg cursor-pointer border border-border bg-transparent"
                 title="Custom color"
               />
             </div>
-          </div>
+          </Field>
 
           {saveError && (
-            <div className="platforms-error-banner" style={{ marginTop: '8px' }}>
+            <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-danger/10 border border-danger/30 text-danger text-sm">
               <AlertCircle size={14} />
               <span>{saveError}</span>
             </div>
           )}
 
-          <div className="admin-form-actions">
-            <button type="button" className="admin-btn admin-btn-secondary" onClick={handleClose}>
-              Cancel
-            </button>
-            <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-              {saving ? <span className="admin-login-spinner" style={{ width: '16px', height: '16px' }} /> : (editTarget ? 'Update Platform' : 'Add Platform')}
-            </button>
+          <div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
+            <Button type="button" variant="secondary" onClick={handleClose}>Cancel</Button>
+            <Button type="submit" loading={saving}>
+              {editTarget ? 'Update Platform' : 'Add Platform'}
+            </Button>
           </div>
         </form>
       </AdminModal>

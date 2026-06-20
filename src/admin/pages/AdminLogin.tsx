@@ -1,9 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loginAdmin, clearAdminAuthError } from '../../store/slices/adminAuthSlice';
-import './AdminLogin.css';
+import { Button } from '../../components/ui/Button';
+import { Input, Field } from '../../components/ui/Input';
+import { ThemeToggle } from '../../components/ui/ThemeToggle';
+import { Logo } from '../../components/Logo';
 
 const AdminLogin = () => {
   const dispatch = useAppDispatch();
@@ -18,12 +22,10 @@ const AdminLogin = () => {
   );
   const [showPass, setShowPass] = useState(false);
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) navigate('/admin/dashboard', { replace: true });
   }, [isAuthenticated, navigate]);
 
-  // Clear error on unmount
   useEffect(() => () => { dispatch(clearAdminAuthError()); }, [dispatch]);
 
   const handleSubmit = (e: FormEvent) => {
@@ -32,75 +34,88 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="admin-login-page">
-      <div className="admin-login-glow admin-login-glow-1" />
-      <div className="admin-login-glow admin-login-glow-2" />
+    <div className="relative min-h-screen flex items-center justify-center bg-bg overflow-hidden px-4 py-10">
+      {/* Decorative glows */}
+      <div className="pointer-events-none absolute -top-32 -right-32 h-96 w-96 rounded-full bg-brand/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-brand-2/25 blur-3xl" />
 
-      <div className="admin-login-card glass">
-        <div className="admin-login-header">
-          <div className="admin-login-icon">
-            <ShieldCheck size={28} />
-          </div>
-          <h1 className="admin-login-title">Admin Panel</h1>
-          <p className="admin-login-subtitle">Sign in to manage your interview app</p>
-        </div>
+      {/* Theme toggle */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
 
-        <form className="admin-login-form" onSubmit={handleSubmit}>
-          <div className="admin-form-group">
-            <label className="admin-login-label" htmlFor="admin-email">Email</label>
-            <input
-              id="admin-email"
-              type="email"
-              className="admin-login-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@example.com"
-              autoComplete="email"
-              autoFocus
-              required
-            />
+      <motion.div
+        initial={{ opacity: 0, y: 12, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="relative w-full max-w-md"
+      >
+        <div className="bg-surface/90 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-8">
+          {/* Header */}
+          <div className="flex flex-col items-center text-center mb-8">
+            <Logo height={64} className="mb-4" />
+            <p className="text-sm text-fg-muted">Sign in to manage your interview app</p>
           </div>
 
-          <div className="admin-form-group">
-            <label className="admin-login-label" htmlFor="admin-password">Password</label>
-            <div className="admin-login-password-wrapper">
-              <input
-                id="admin-password"
-                type={showPass ? 'text' : 'password'}
-                className="admin-login-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                autoComplete="current-password"
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <Field label="Email" required>
+              <Input
+                id="admin-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@example.com"
+                autoComplete="email"
+                autoFocus
                 required
               />
-              <button
-                type="button"
-                className="admin-login-eye"
-                onClick={() => setShowPass(!showPass)}
-                aria-label={showPass ? 'Hide password' : 'Show password'}
+            </Field>
+
+            <Field label="Password" required>
+              <div className="relative">
+                <Input
+                  id="admin-password"
+                  type={showPass ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  required
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  aria-label={showPass ? 'Hide password' : 'Show password'}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 inline-flex items-center justify-center rounded-md text-fg-muted hover:text-fg hover:bg-surface-3 transition-colors"
+                >
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </Field>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 text-sm text-danger bg-danger/10 border border-danger/30 rounded-lg px-3 py-2"
               >
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
+                <AlertCircle size={14} />
+                <span>{error}</span>
+              </motion.div>
+            )}
 
-          {error && (
-            <div className="admin-login-error">
-              <AlertCircle size={14} />
-              <span>{error}</span>
-            </div>
-          )}
+            <Button type="submit" loading={loading} className="w-full" size="lg">
+              {loading ? 'Signing in…' : 'Sign In'}
+            </Button>
+          </form>
 
-          <button type="submit" className="admin-login-btn" disabled={loading}>
-            {loading ? <span className="admin-login-spinner" /> : 'Sign In'}
-          </button>
-        </form>
-
-        <p className="admin-login-hint">
-          Local mode: credentials are validated against your <code>.env</code>
-        </p>
-      </div>
+          <p className="mt-6 text-center text-xs text-fg-subtle">
+            Local mode: credentials are validated against your <code className="px-1.5 py-0.5 rounded bg-surface-3 text-brand">.env</code>
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 };

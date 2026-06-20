@@ -1,18 +1,27 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions, htmlTheoryQuestions, cssTheoryQuestions, reactNativeTheoryQuestions } from '../data/parsedQuestions';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import './TheoryQuestionsPage.css';
+import { useState, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Search } from 'lucide-react';
+import {
+  jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions,
+  htmlTheoryQuestions, cssTheoryQuestions, reactNativeTheoryQuestions,
+} from '../data/parsedQuestions';
+import { PageShell } from '../components/PageShell';
+import { PageNav } from '../components/PageNav';
+import { Input } from '../components/ui/Input';
+import { cn } from '../lib/cn';
+
+// ── Markdown rendering ────────────────────────────────────────────────────────
 
 const renderInlineFormatting = (text: string) => {
   const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
   return parts.map((part, index) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
+      return <strong key={index} className="text-fg font-semibold">{part.slice(2, -2)}</strong>;
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
-        <code key={index} className="answer-inline-code">
+        <code key={index} className="px-1.5 py-0.5 rounded bg-brand/15 text-brand border border-brand/25 text-[0.85em] font-mono">
           {part.slice(1, -1)}
         </code>
       );
@@ -23,207 +32,204 @@ const renderInlineFormatting = (text: string) => {
 
 const renderTextBlock = (blockText: string) => {
   const lines = blockText.split('\n');
-  const renderedElements: React.ReactNode[] = [];
-  let currentList: { type: 'ul' | 'ol'; items: React.ReactNode[] } | null = null;
+  const out: React.ReactNode[] = [];
+  let list: { type: 'ul' | 'ol'; items: React.ReactNode[] } | null = null;
 
-  const pushCurrentList = (key: string | number) => {
-    if (currentList) {
-      if (currentList.type === 'ul') {
-        renderedElements.push(
-          <ul key={key} className="answer-list">
-            {currentList.items}
-          </ul>
-        );
-      } else {
-        renderedElements.push(
-          <ol key={key} className="answer-list">
-            {currentList.items}
-          </ol>
-        );
-      }
-      currentList = null;
-    }
+  const flushList = (key: string | number) => {
+    if (!list) return;
+    const Tag = list.type;
+    out.push(
+      <Tag key={key} className={cn('pl-6 my-2 space-y-1', list.type === 'ul' ? 'list-disc' : 'list-decimal')}>
+        {list.items}
+      </Tag>
+    );
+    list = null;
   };
 
-  lines.forEach((line, lineIndex) => {
+  lines.forEach((line, i) => {
     const trimmed = line.trim();
-    if (!trimmed) {
-      pushCurrentList(`list-close-${lineIndex}`);
-      return;
-    }
+    if (!trimmed) { flushList(`x-${i}`); return; }
 
-    // Check for unordered list item
     const ulMatch = line.match(/^(\s*)[-*]\s+(.*)$/);
     if (ulMatch) {
-      const content = ulMatch[2];
-      const formattedContent = renderInlineFormatting(content);
-      
-      if (!currentList || currentList.type !== 'ul') {
-        pushCurrentList(`list-close-${lineIndex}`);
-        currentList = { type: 'ul', items: [] };
-      }
-      currentList.items.push(<li key={lineIndex}>{formattedContent}</li>);
+      if (!list || list.type !== 'ul') { flushList(`x-${i}`); list = { type: 'ul', items: [] }; }
+      list.items.push(<li key={i}>{renderInlineFormatting(ulMatch[2])}</li>);
       return;
     }
 
-    // Check for ordered list item
     const olMatch = line.match(/^(\s*)\d+\.\s+(.*)$/);
     if (olMatch) {
-      const content = olMatch[2];
-      const formattedContent = renderInlineFormatting(content);
-      
-      if (!currentList || currentList.type !== 'ol') {
-        pushCurrentList(`list-close-${lineIndex}`);
-        currentList = { type: 'ol', items: [] };
-      }
-      currentList.items.push(<li key={lineIndex}>{formattedContent}</li>);
+      if (!list || list.type !== 'ol') { flushList(`x-${i}`); list = { type: 'ol', items: [] }; }
+      list.items.push(<li key={i}>{renderInlineFormatting(olMatch[2])}</li>);
       return;
     }
 
-    // It's a regular paragraph line, close list if any
-    pushCurrentList(`list-close-${lineIndex}`);
-    
-    // Check if it's a heading
+    flushList(`x-${i}`);
+
     const headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
     if (headingMatch) {
       const level = headingMatch[1].length;
-      const content = headingMatch[2];
       const Tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-      renderedElements.push(
-        <Tag key={lineIndex} className={`answer-h${level}`}>
-          {renderInlineFormatting(content)}
+      const sizeClass =
+        level === 1 ? 'text-2xl' :
+        level === 2 ? 'text-xl' :
+        level === 3 ? 'text-lg' : 'text-base';
+      out.push(
+        <Tag key={i} className={cn('font-bold mt-4 mb-2', sizeClass)}>
+          {renderInlineFormatting(headingMatch[2])}
         </Tag>
       );
       return;
     }
 
-    // Otherwise standard paragraph
-    renderedElements.push(
-      <p key={lineIndex} className="answer-paragraph">
+    out.push(
+      <p key={i} className="my-2 text-fg-muted leading-relaxed">
         {renderInlineFormatting(line)}
       </p>
     );
   });
 
-  pushCurrentList('list-close-final');
-  return renderedElements;
+  flushList('x-final');
+  return out;
 };
 
 const renderFormattedAnswer = (text: string) => {
-  // Split the text by code blocks
   const blocks = text.split(/(```[a-z]*[\s\S]*?```)/gi);
-  
-  return blocks.map((block, index) => {
+  return blocks.map((block, i) => {
     if (block.startsWith('```')) {
       const lines = block.split('\n');
-      const codeLines = lines.slice(1, -1);
-      const codeContent = codeLines.join('\n');
-      
+      const codeContent = lines.slice(1, -1).join('\n');
       return (
-        <pre key={index} className="answer-code-block">
-          <code>{codeContent}</code>
+        <pre key={i} className="my-3 p-4 bg-surface-3 border border-border rounded-lg overflow-x-auto">
+          <code className="text-sm font-mono text-fg leading-relaxed">{codeContent}</code>
         </pre>
       );
     }
-    
-    return <div key={index}>{renderTextBlock(block)}</div>;
+    return <div key={i}>{renderTextBlock(block)}</div>;
   });
 };
 
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+const TRACK_LABELS: Record<string, string> = {
+  js: 'JavaScript', node: 'Node JS', react: 'React', 'react-native': 'React Native',
+  ts: 'TypeScript', html: 'HTML', css: 'CSS',
+};
+
+const QUESTION_LISTS = {
+  js: jsTheoryQuestions, node: nodeTheoryQuestions, react: reactTheoryQuestions,
+  'react-native': reactNativeTheoryQuestions, ts: tsTheoryQuestions,
+  html: htmlTheoryQuestions, css: cssTheoryQuestions,
+};
+
 const TheoryQuestionsPage = () => {
-  const navigate = useNavigate();
   const { platform } = useParams<{ platform: string }>();
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
 
-  let questions = jsTheoryQuestions;
-  let trackTitle = 'JavaScript';
+  const trackTitle = TRACK_LABELS[platform ?? 'js'] ?? 'JavaScript';
+  const questions = QUESTION_LISTS[(platform ?? 'js') as keyof typeof QUESTION_LISTS] ?? jsTheoryQuestions;
 
-  if (platform === 'node') {
-    questions = nodeTheoryQuestions;
-    trackTitle = 'Node JS';
-  } else if (platform === 'react') {
-    questions = reactTheoryQuestions;
-    trackTitle = 'React';
-  } else if (platform === 'react-native') {
-    questions = reactNativeTheoryQuestions;
-    trackTitle = 'React Native';
-  } else if (platform === 'ts') {
-    questions = tsTheoryQuestions;
-    trackTitle = 'TypeScript';
-  } else if (platform === 'html') {
-    questions = htmlTheoryQuestions;
-    trackTitle = 'HTML';
-  } else if (platform === 'css') {
-    questions = cssTheoryQuestions;
-    trackTitle = 'CSS';
-  }
-
-  const toggleQuestion = (id: string) => {
-    const newOpenIds = new Set(openIds);
-    if (newOpenIds.has(id)) {
-      newOpenIds.delete(id);
-    } else {
-      newOpenIds.add(id);
-    }
-    setOpenIds(newOpenIds);
+  const toggle = (id: string) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   };
 
-  const filteredQuestions = questions.filter(q => 
-    q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    q.answer.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    if (!q) return questions;
+    return questions.filter((x) =>
+      x.question.toLowerCase().includes(q) || x.answer.toLowerCase().includes(q)
+    );
+  }, [searchQuery, questions]);
 
   return (
-    <div className="theory-container container">
-      <div className="page-header">
-        <div className="header-left">
-          <button className="back-btn" onClick={() => navigate(`/${platform}`)}>
-            &larr; Back to Formats
-          </button>
-          <h1 className="title">{trackTitle} <span className="gradient-text">Questions</span></h1>
+    <PageShell>
+      <PageNav backTo={`/${platform}`} backLabel="Formats" />
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          {trackTitle} <span className="gradient-text">Questions</span>
+        </h1>
+
+        <div className="relative w-full sm:max-w-xs">
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-subtle pointer-events-none" />
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search questions…"
+            className="pl-9 h-9"
+          />
         </div>
-        <input
-          type="text"
-          placeholder="Search questions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
       </div>
 
-      <div className="theory-list">
-        {filteredQuestions.length === 0 ? (
-          <div className="no-results glass-card">
-            No questions found matching your search.
-          </div>
-        ) : (
-          filteredQuestions.map((q, index) => {
+      {filtered.length === 0 ? (
+        <div className="bg-surface border border-border rounded-xl p-10 text-center text-fg-muted">
+          No questions found matching your search.
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((q, idx) => {
             const isOpen = openIds.has(q.id);
             return (
-              <div key={q.id} className={`theory-card glass-card ${isOpen ? 'open' : ''}`}>
-                <div className="theory-header" onClick={() => toggleQuestion(q.id)}>
-                  <div className="question-title">
-                    <span className="q-number">{index + 1}.</span> {q.question}
-                  </div>
-                  <button className="toggle-btn">
-                    {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                  </button>
-                </div>
-                
-                {isOpen && (
-                  <div className="theory-answer">
-                    <div className="answer-content">
-                      {renderFormattedAnswer(q.answer)}
-                    </div>
-                  </div>
+              <motion.div
+                key={q.id}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.15, delay: Math.min(idx * 0.01, 0.08) }}
+                className={cn(
+                  'rounded-xl border overflow-hidden transition-colors',
+                  isOpen
+                    ? 'bg-surface border-brand/50 shadow-md shadow-brand/5'
+                    : 'bg-surface border-border hover:border-border-strong'
                 )}
-              </div>
+              >
+                <button
+                  onClick={() => toggle(q.id)}
+                  className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left"
+                >
+                  <div className="flex items-start gap-3 min-w-0">
+                    <span className="shrink-0 inline-flex items-center justify-center h-6 w-6 rounded-full bg-brand/15 text-brand text-[11px] font-bold">
+                      {idx + 1}
+                    </span>
+                    <span className="font-medium text-[15px]">
+                      {renderInlineFormatting(q.question)}
+                    </span>
+                  </div>
+                  <motion.span
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="shrink-0 text-fg-muted"
+                  >
+                    <ChevronDown size={18} />
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 pt-1 border-t border-border bg-surface-2/40">
+                        {renderFormattedAnswer(q.answer)}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
-          })
-        )}
-      </div>
-    </div>
+          })}
+        </div>
+      )}
+    </PageShell>
   );
 };
 

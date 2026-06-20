@@ -1,58 +1,32 @@
-import { useEffect, type ReactNode } from 'react';
-import { X } from 'lucide-react';
-import './AdminModal.css';
+// Thin re-export so legacy imports (`AdminModal`) keep working while the
+// underlying implementation lives in our shared UI primitives.
+import { Modal } from '../../components/ui/Modal';
+import type { ReactNode } from 'react';
 
 interface AdminModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
-  width?: string;
+  width?: string; // legacy: px width string like '720px'
 }
 
-const AdminModal = ({ open, onClose, title, children, width = '560px' }: AdminModalProps) => {
-  // Close on Escape key
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (open) document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [open, onClose]);
-
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [open]);
-
-  if (!open) return null;
-
-  return (
-    <div className="admin-modal-overlay" onClick={onClose}>
-      <div
-        className="admin-modal"
-        style={{ maxWidth: width }}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="admin-modal-title"
-      >
-        {/* Header */}
-        <div className="admin-modal-header">
-          <h2 id="admin-modal-title" className="admin-modal-title">{title}</h2>
-          <button className="admin-modal-close" onClick={onClose} aria-label="Close modal">
-            <X size={18} />
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="admin-modal-body">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
+const widthToTailwind = (w?: string): string => {
+  if (!w) return 'max-w-2xl';
+  const px = parseInt(w, 10);
+  if (Number.isNaN(px)) return 'max-w-2xl';
+  if (px <= 480) return 'max-w-md';
+  if (px <= 560) return 'max-w-lg';
+  if (px <= 640) return 'max-w-xl';
+  if (px <= 720) return 'max-w-3xl';
+  if (px <= 820) return 'max-w-4xl';
+  return 'max-w-5xl';
 };
+
+const AdminModal = ({ open, onClose, title, children, width }: AdminModalProps) => (
+  <Modal open={open} onClose={onClose} title={title} maxWidth={widthToTailwind(width)}>
+    {children}
+  </Modal>
+);
 
 export default AdminModal;
