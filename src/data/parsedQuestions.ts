@@ -8,6 +8,7 @@ export interface OutputPredictionQuestion {
   code: string;
   expectedOutput: string[];
   options: string[];
+  answer?: string;
 }
 
 export interface TheoryQuestion {

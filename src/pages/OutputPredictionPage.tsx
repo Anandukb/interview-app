@@ -14,6 +14,7 @@ import { PageNav } from '../components/PageNav';
 import { Button } from '../components/ui/Button';
 import { useTheme } from '../theme/ThemeProvider';
 import { cn } from '../lib/cn';
+import { renderFormattedAnswer } from '../lib/markdown';
 
 const OutputPredictionPage = () => {
   const { platform } = useParams<{ platform: string }>();
@@ -291,7 +292,16 @@ const OutputPredictionPage = () => {
                           </div>
                         )}
 
-                        <div className="flex items-center gap-2">
+                        {selectedQuestion.answer && (
+                          <div className="mt-4 pt-4 border-t border-border/40">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-fg-muted mb-2">Explanation</h4>
+                            <div className="text-sm leading-relaxed text-fg-muted">
+                              {renderFormattedAnswer(selectedQuestion.answer)}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 mt-4">
                           {!isCorrect && (
                             <Button variant="secondary" size="sm" onClick={handleReset} leftIcon={<RotateCcw size={14} />}>
                               Try Again

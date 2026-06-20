@@ -24,9 +24,9 @@ export const isSectionVisible = (
       // Hint is optional but always offered.
       return true;
     case 'answer':
-      return kind === 'theory' || kind === 'practical' || kind === 'unknown';
+      return true;
     case 'code':
-      return kind === 'output-prediction' || kind === 'practical' || kind === 'unknown';
+      return kind === 'output-prediction' || kind === 'mcq' || kind === 'practical' || kind === 'unknown';
     case 'expected-output':
       return kind === 'output-prediction' || kind === 'unknown';
     case 'options':

@@ -39,8 +39,8 @@ const QuestionPreview = ({ form, kind, platform, questionType }: PreviewProps) =
 
   const tagList = form.tags.split(',').map((t) => t.trim()).filter(Boolean);
 
-  const showAnswer = !!form.answer && (kind === 'theory' || kind === 'practical' || kind === 'unknown');
-  const showCode = !!form.code && (kind === 'output-prediction' || kind === 'practical' || kind === 'unknown');
+  const showAnswer = !!form.answer;
+  const showCode = !!form.code && (kind === 'output-prediction' || kind === 'mcq' || kind === 'practical' || kind === 'unknown');
   const showExpected = expectedLines.length > 0 && (kind === 'output-prediction' || kind === 'unknown');
   const showOptions = form.options.length > 0 && (kind === 'mcq' || kind === 'output-prediction' || kind === 'unknown');
   const showHint = !!form.hint;

@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { useMemo, useState, type FormEvent, type ReactNode, type Dispatch, type SetStateAction } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Pencil, Trash2, HelpCircle, RefreshCw, AlertCircle,
@@ -60,6 +60,9 @@ const AdminQuestions = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [opAnswerMode, setOpAnswerMode] = useState<'single' | 'ordered' | 'text'>('single');
+  // Two-tab UI used only for Output Prediction.
+  const [opTab, setOpTab] = useState<'question' | 'answer'>('question');
 
   // ── Filters: platform & type live in the URL (so the sidebar stays in sync),
   //    search is local UI state.
@@ -132,6 +135,8 @@ const AdminQuestions = () => {
       platformId: filterPlatform?.id ?? platforms[0]?.id ?? '',
       questionTypeId: questionTypes[0]?.id ?? '',
     });
+    setOpAnswerMode('single');
+    setOpTab('question');
     setSaveError(null);
     setPreviewing(false);
     setModalOpen(true);
@@ -142,6 +147,18 @@ const AdminQuestions = () => {
     const { id: _id, createdAt: _ca, ...rest } = q;
     void _id; void _ca;
     setForm(rest);
+    
+    // Auto-detect Output Prediction Answer Mode
+    const lines = (q.expectedOutput ?? '').split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.length > 1) {
+      setOpAnswerMode('ordered');
+    } else if (lines.length === 1 && q.options.some(o => o.label === lines[0])) {
+      setOpAnswerMode('single');
+    } else {
+      setOpAnswerMode('text');
+    }
+
+    setOpTab('question');
     setSaveError(null);
     setPreviewing(false);
     setModalOpen(true);
@@ -455,30 +472,138 @@ const AdminQuestions = () => {
               transition={{ duration: 0.15 }}
               className="flex flex-col flex-1 min-h-0"
             >
-              {/* Scrollable area on mobile, flex container on desktop */}
-              <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col">
-                {/* Top compact basics row (always visible) */}
-                <div className="px-6 pt-4 pb-3 border-b border-border bg-surface-2/40 shrink-0">
-                  <BasicsRow
-                    form={form}
-                    setForm={setForm}
-                    platforms={platforms}
-                    questionTypes={questionTypes}
-                    kindLabel={selectedType ? labelForKind(kind) : undefined}
-                  />
-                </div>
+              {/* Sticky basics row */}
+              <div className="px-6 pt-4 pb-3 border-b border-border bg-surface-2/40 shrink-0">
+                <BasicsRow
+                  form={form}
+                  setForm={setForm}
+                  platforms={platforms}
+                  questionTypes={questionTypes}
+                  kindLabel={selectedType ? labelForKind(kind) : undefined}
+                />
+              </div>
 
-                {/* Body — split or single depending on which sections are visible */}
-                <div className={cn(
-                  'flex-1 lg:min-h-0',
-                  useSplit
-                    ? 'grid grid-cols-1 lg:grid-cols-[minmax(0,_1.05fr)_minmax(0,_1fr)]'
-                    : 'flex flex-col'
-                )}>
+              {/* Sticky tab bar (output-prediction only) */}
+              {kind === 'output-prediction' && (
+                <div className="border-b border-border bg-surface-2/40 px-6 shrink-0">
+                  <div className="flex gap-1">
+                    {(
+                      [
+                        { value: 'question', label: 'Question', icon: <HelpCircle size={14} /> },
+                        { value: 'answer',   label: 'Answer',   icon: <FileText size={14} /> },
+                      ] as const
+                    ).map((t) => (
+                      <button
+                        key={t.value}
+                        type="button"
+                        onClick={() => setOpTab(t.value)}
+                        className={cn(
+                          'inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors',
+                          opTab === t.value
+                            ? 'border-brand text-brand'
+                            : 'border-transparent text-fg-muted hover:text-fg'
+                        )}
+                        aria-pressed={opTab === t.value}
+                      >
+                        {t.icon}
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Single scroll region for the body */}
+              <div className="flex-1 min-h-0 overflow-y-auto">
+                {kind === 'output-prediction' ? (
+                  <div className="px-6 py-4 flex flex-col gap-4">
+                    {opTab === 'question' ? (
+                      <>
+                        {showCode && (
+                          <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
+                            <CodeEditor
+                              value={form.code}
+                              onChange={(v) => setForm({ ...form, code: v })}
+                              resolvedMode={resolvedMode}
+                            />
+                          </FormSection>
+                        )}
+                        {showHint && (
+                          <FormSection icon={<Lightbulb size={14} />} title="Hint (optional)">
+                            <Textarea
+                              value={form.hint}
+                              onChange={(e) => setForm({ ...form, hint: e.target.value })}
+                              placeholder="Optional hint for the candidate"
+                              rows={4}
+                            />
+                          </FormSection>
+                        )}
+                        <div className="mt-2 flex items-center justify-end">
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setOpTab('answer')}
+                          >
+                            Next: Answer →
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {showOptions && (
+                          <FormSection icon={<ListChecks size={14} />} title="Output Options">
+                            <OptionsList
+                              options={form.options}
+                              onAdd={addOption}
+                              onUpdate={updateOption}
+                              onRemove={removeOption}
+                            />
+                          </FormSection>
+                        )}
+                        {showExpected && (
+                          <ExpectedOutputSection
+                            form={form}
+                            setForm={setForm}
+                            kind={kind}
+                            opAnswerMode={opAnswerMode}
+                            setOpAnswerMode={setOpAnswerMode}
+                          />
+                        )}
+                        {showAnswer && (
+                          <FormSection icon={<FileText size={14} />} title={answerSectionTitle}>
+                            <RichTextEditor
+                              value={form.answer}
+                              onChange={(val) => setForm({ ...form, answer: val })}
+                              placeholder="Write the answer in markdown…"
+                            />
+                          </FormSection>
+                        )}
+                        <div className="mt-2 flex items-center justify-start">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setOpTab('question')}
+                            leftIcon={<ArrowLeft size={14} />}
+                          >
+                            Back to Question
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  /* Non-OP layout: split (left structured + right rich editor) or single column */
+                  <div className={cn(
+                    useSplit
+                      ? 'grid grid-cols-1 lg:grid-cols-[minmax(0,_1.05fr)_minmax(0,_1fr)]'
+                      : 'flex flex-col'
+                  )}>
                   {useSplit ? (
                     <>
                       {/* Left: structured fields */}
-                      <div className="lg:border-r border-border lg:min-h-0 lg:overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                      <div className="lg:border-r border-border px-6 py-4 flex flex-col gap-4">
                         {showCode && (
                           <FormSection icon={<Code2 size={14} />} title={codeSectionTitle}>
                             <CodeEditor
@@ -489,20 +614,16 @@ const AdminQuestions = () => {
                           </FormSection>
                         )}
                         {showExpected && (
-                          <FormSection icon={<Code2 size={14} />} title="Expected Output">
-                            <Field hint="Single line for single-answer; one line per output (in order) for ordered prediction.">
-                              <Textarea
-                                value={form.expectedOutput}
-                                onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
-                                placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
-                                rows={4}
-                                className="font-mono text-sm"
-                              />
-                            </Field>
-                          </FormSection>
+                          <ExpectedOutputSection
+                            form={form}
+                            setForm={setForm}
+                            kind={kind}
+                            opAnswerMode={opAnswerMode}
+                            setOpAnswerMode={setOpAnswerMode}
+                          />
                         )}
                         {showOptions && (
-                          <FormSection icon={<ListChecks size={14} />} title={kind === 'output-prediction' ? 'Output Options' : 'Options'}>
+                          <FormSection icon={<ListChecks size={14} />} title="Options">
                             <OptionsList
                               options={form.options}
                               onAdd={addOption}
@@ -523,9 +644,9 @@ const AdminQuestions = () => {
                         )}
                       </div>
 
-                      {/* Right: rich answer (full height) */}
+                      {/* Right: rich answer */}
                       {showAnswer && (
-                        <div className="lg:min-h-0 flex flex-col px-6 py-4 lg:py-4">
+                        <div className="flex flex-col px-6 py-4">
                           <div className="flex items-center gap-2 mb-2 shrink-0">
                             <span className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-brand/15 text-brand">
                               <FileText size={14} />
@@ -534,7 +655,7 @@ const AdminQuestions = () => {
                               {answerSectionTitle}
                             </span>
                           </div>
-                          <div className="lg:flex-1 lg:min-h-0 lg:overflow-hidden flex flex-col">
+                          <div className="flex flex-col">
                             <RichTextEditor
                               value={form.answer}
                               onChange={(val) => setForm({ ...form, answer: val })}
@@ -546,7 +667,7 @@ const AdminQuestions = () => {
                     </>
                   ) : (
                     // Single-column path (theory: just answer; mcq: just options; etc)
-                    <div className="flex-1 lg:min-h-0 lg:overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                    <div className="px-6 py-4 flex flex-col gap-4">
                       {showAnswer && (
                         <FormSection icon={<FileText size={14} />} title={answerSectionTitle}>
                           <RichTextEditor
@@ -566,18 +687,16 @@ const AdminQuestions = () => {
                         </FormSection>
                       )}
                       {showExpected && (
-                        <FormSection icon={<Code2 size={14} />} title="Expected Output">
-                          <Textarea
-                            value={form.expectedOutput}
-                            onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
-                            placeholder={'One line per expected output, in order:\nStart\nEnd\nPromise\nTimeout'}
-                            rows={5}
-                            className="font-mono text-sm"
-                          />
-                        </FormSection>
+                        <ExpectedOutputSection
+                          form={form}
+                          setForm={setForm}
+                          kind={kind}
+                          opAnswerMode={opAnswerMode}
+                          setOpAnswerMode={setOpAnswerMode}
+                        />
                       )}
                       {showOptions && (
-                        <FormSection icon={<ListChecks size={14} />} title={kind === 'output-prediction' ? 'Output Options' : 'Options'}>
+                        <FormSection icon={<ListChecks size={14} />} title="Options">
                           <OptionsList
                             options={form.options}
                             onAdd={addOption}
@@ -599,6 +718,7 @@ const AdminQuestions = () => {
                     </div>
                   )}
                 </div>
+                )}
               </div>
 
               {/* Sticky footer */}
@@ -821,5 +941,187 @@ const CodeEditor = ({
     />
   </div>
 );
+
+const ExpectedOutputSection = ({
+  form,
+  setForm,
+  kind,
+  opAnswerMode,
+  setOpAnswerMode,
+}: {
+  form: FormState;
+  setForm: Dispatch<SetStateAction<FormState>>;
+  kind: QuestionKind;
+  opAnswerMode: 'single' | 'ordered' | 'text';
+  setOpAnswerMode: (mode: 'single' | 'ordered' | 'text') => void;
+}) => {
+  const expectedLines = form.expectedOutput
+    ? form.expectedOutput.split('\n').filter(Boolean)
+    : [];
+
+  return (
+    <FormSection icon={<Code2 size={14} />} title="Expected Output">
+      {kind === 'output-prediction' ? (
+        <div className="space-y-3">
+          {/* Tab selector */}
+          <div className="flex rounded-lg bg-surface-3 p-0.5 gap-0.5 border border-border">
+            {(
+              [
+                { value: 'single', label: 'Single Answer' },
+                { value: 'ordered', label: 'Ordered Sequence' },
+                { value: 'text', label: 'Custom Text' },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => {
+                  setOpAnswerMode(t.value);
+                  if (t.value === 'single') {
+                    const correctOpt = form.options.find((o) => o.isCorrect) || form.options[0];
+                    setForm((f) => ({ ...f, expectedOutput: correctOpt?.label ?? '' }));
+                  } else if (t.value === 'ordered') {
+                    setForm((f) => ({ ...f, expectedOutput: '' }));
+                  }
+                }}
+                className={cn(
+                  'flex-1 text-center py-1.5 text-xs font-semibold rounded-md transition-colors',
+                  opAnswerMode === t.value
+                    ? 'bg-surface text-brand shadow-sm border border-border/60'
+                    : 'text-fg-muted hover:text-fg hover:bg-surface-2/60'
+                )}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Single Mode View */}
+          {opAnswerMode === 'single' && (
+            <div className="space-y-2">
+              <span className="text-xs font-medium text-fg-subtle">Choose the correct option:</span>
+              {form.options.length === 0 ? (
+                <div className="text-xs text-fg-subtle italic bg-surface-2 p-3 rounded-lg border border-border">
+                  Add some options under "Output Options" first.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {form.options.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setForm((f) => ({
+                          ...f,
+                          expectedOutput: opt.label,
+                          options: f.options.map((o) => ({
+                            ...o,
+                            isCorrect: o.id === opt.id,
+                          })),
+                        }));
+                      }}
+                      className={cn(
+                        'px-3 py-2 text-left text-sm rounded-lg border font-mono transition-all',
+                        form.expectedOutput === opt.label
+                          ? 'bg-success/10 border-success/40 text-success font-semibold shadow-sm'
+                          : 'bg-surface-2 border-border text-fg-muted hover:bg-surface-3'
+                      )}
+                    >
+                      {opt.label || <span className="italic text-fg-subtle">(empty option)</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Ordered Mode View */}
+          {opAnswerMode === 'ordered' && (
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <span className="text-xs font-medium text-fg-subtle">
+                  Click the options below in the order they will be output:
+                </span>
+                {form.options.length === 0 ? (
+                  <div className="text-xs text-fg-subtle italic bg-surface-2 p-3 rounded-lg border border-border">
+                    Add some options under "Output Options" first.
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-1.5 p-2 rounded-lg bg-surface-2 border border-border">
+                    {form.options.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          setForm((f) => ({
+                            ...f,
+                            expectedOutput: [...expectedLines, opt.label].join('\n'),
+                          }));
+                        }}
+                        className="px-2.5 py-1 text-xs rounded-md bg-surface-3 border border-border hover:bg-surface hover:border-border-strong font-mono transition-colors"
+                      >
+                        {opt.label || '(empty)'}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Current sequence */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-fg-muted uppercase tracking-wider">Output Sequence</span>
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, expectedOutput: '' }))}
+                    className="text-[10px] font-bold text-danger hover:underline"
+                  >
+                    Clear Sequence
+                  </button>
+                </div>
+
+                <div className="min-h-[80px] p-3 rounded-lg bg-[#1e1e1e] border border-border flex flex-col gap-1.5 font-mono text-xs">
+                  {expectedLines.length === 0 ? (
+                    <span className="text-fg-subtle italic">Click options above to build the log sequence.</span>
+                  ) : (
+                    expectedLines.map((line, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-success">
+                        <span className="text-fg-subtle">{idx + 1}</span>
+                        <span>{line}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Text Mode View */}
+          {opAnswerMode === 'text' && (
+            <Field hint="Single line for single-answer; one line per output (in order) for ordered prediction.">
+              <Textarea
+                value={form.expectedOutput}
+                onChange={(e) => setForm((f) => ({ ...f, expectedOutput: e.target.value }))}
+                placeholder={'One line per expected output, in order:\nStart\nEnd'}
+                rows={4}
+                className="font-mono text-sm"
+              />
+            </Field>
+          )}
+        </div>
+      ) : (
+        <Field hint="Expected correct output.">
+          <Textarea
+            value={form.expectedOutput}
+            onChange={(e) => setForm((f) => ({ ...f, expectedOutput: e.target.value }))}
+            placeholder={'Expected correct output:\nValue'}
+            rows={4}
+            className="font-mono text-sm"
+          />
+        </Field>
+      )}
+    </FormSection>
+  );
+};
 
 export default AdminQuestions;
