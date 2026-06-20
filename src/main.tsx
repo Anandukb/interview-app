@@ -28,17 +28,11 @@ import 'prismjs/components/prism-objectivec';
 import 'prismjs/components/prism-powershell';
 import 'prismjs/components/prism-swift';
 
-declare global {
-  // eslint-disable-next-line no-var
-  var Prism: typeof import('prismjs');
-  interface Window {
-    Prism: typeof import('prismjs');
-  }
-}
-
+// `@types/prismjs` already declares `Prism` as a global namespace via
+// `export as namespace Prism`, so no extra global typing is needed here.
 (globalThis as { Prism?: typeof Prism }).Prism = Prism;
 if (typeof window !== 'undefined') {
-  window.Prism = Prism;
+  (window as unknown as { Prism: typeof Prism }).Prism = Prism;
 }
 
 // ── App bootstrap ────────────────────────────────────────────────────────────
