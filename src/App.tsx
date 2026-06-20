@@ -3,6 +3,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import { initAdminAuth } from './store/slices/adminAuthSlice';
 import { fetchAdminPlatforms, clearAdminPlatforms } from './store/slices/adminPlatformsSlice';
+import {
+  fetchAdminQuestionTypes,
+  clearAdminQuestionTypes,
+} from './store/slices/adminQuestionTypesSlice';
+import {
+  fetchAdminQuestions,
+  clearAdminQuestions,
+} from './store/slices/adminQuestionsSlice';
 
 import LandingPage from './pages/LandingPage';
 import QuestionTypesPage from './pages/QuestionTypesPage';
@@ -16,6 +24,7 @@ import AdminDashboard from './admin/pages/AdminDashboard';
 import AdminPlatforms from './admin/pages/AdminPlatforms';
 import AdminQuestionTypes from './admin/pages/AdminQuestionTypes';
 import AdminQuestions from './admin/pages/AdminQuestions';
+import AdminSeed from './admin/pages/AdminSeed';
 import AdminLayout from './admin/components/AdminLayout';
 
 // ── Protected admin route ──────────────────────────────────────────────────────
@@ -42,12 +51,16 @@ function App() {
     dispatch(initAdminAuth());
   }, [dispatch]);
 
-  // ── Fetch / clear admin platforms in step with auth state ────────────────────
+  // ── Fetch / clear admin data in step with auth state ────────────────────────
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchAdminPlatforms());
+      dispatch(fetchAdminQuestionTypes());
+      dispatch(fetchAdminQuestions());
     } else {
       dispatch(clearAdminPlatforms());
+      dispatch(clearAdminQuestionTypes());
+      dispatch(clearAdminQuestions());
     }
   }, [isAuthenticated, dispatch]);
 
@@ -67,6 +80,7 @@ function App() {
         <Route path="/admin/platforms" element={<AdminWithLayout><AdminPlatforms /></AdminWithLayout>} />
         <Route path="/admin/question-types" element={<AdminWithLayout><AdminQuestionTypes /></AdminWithLayout>} />
         <Route path="/admin/questions" element={<AdminWithLayout><AdminQuestions /></AdminWithLayout>} />
+        <Route path="/admin/seed" element={<AdminWithLayout><AdminSeed /></AdminWithLayout>} />
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/*" element={<Navigate to="/admin/login" replace />} />
       </Routes>

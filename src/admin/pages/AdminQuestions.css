@@ -71,3 +71,215 @@
 .questions-dynamic-section .dqf-container {
   padding: 14px;
 }
+
+
+/* ── Form sections ────────────────────────────────────────────────────────── */
+
+.questions-section {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.questions-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(139, 92, 246, 0.06);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.questions-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(139, 92, 246, 0.18);
+  color: var(--accent-secondary);
+}
+
+.questions-section-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.questions-section-body {
+  padding: 14px;
+}
+
+.questions-section-body .admin-form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Difficulty pill ──────────────────────────────────────────────────────── */
+
+.difficulty-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.difficulty-easy {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.difficulty-medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.difficulty-hard {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ── Form hint text ───────────────────────────────────────────────────────── */
+
+.admin-form-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+
+/* ── Code editor (used inside the question form) ──────────────────────────── */
+
+.dqf-code-editor {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #1e1e1e;
+}
+
+.dqf-code-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dqf-code-lang {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-secondary);
+  background: rgba(139, 92, 246, 0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* ── MCQ options ──────────────────────────────────────────────────────────── */
+
+.dqf-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dqf-option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dqf-option-idx {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.dqf-correct-toggle {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.dqf-correct-toggle input {
+  display: none;
+}
+
+.dqf-correct-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.dqf-correct-pill.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.dqf-add-option {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+
+/* ── Preview toolbar (in-modal) ───────────────────────────────────────────── */
+
+.questions-preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0 14px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.questions-preview-kind {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-secondary);
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+/* Make hint codespan style match the rest */
+.admin-form-hint code {
+  font-family: var(--font-mono);
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--accent-secondary);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}

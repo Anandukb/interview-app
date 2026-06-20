@@ -1,43 +1,3 @@
-// ── Field Types ────────────────────────────────────────────────────────────────
-
-export type FieldType =
-  | 'text'
-  | 'richtext'
-  | 'code-editor'
-  | 'options'
-  | 'hint'
-  | 'sample';
-
-export const FIELD_TYPE_LABELS: Record<FieldType, string> = {
-  text: 'Text Input',
-  richtext: 'Rich Text (Markdown)',
-  'code-editor': 'Code Editor',
-  options: 'Options (MC)',
-  hint: 'Hint / Notes',
-  sample: 'Sample I/O',
-};
-
-// ── Question Field Config ──────────────────────────────────────────────────────
-
-export interface QuestionField {
-  id: string;
-  label: string;
-  fieldType: FieldType;
-  required: boolean;
-  placeholder?: string;
-  language?: string; // for code-editor, e.g. 'javascript'
-}
-
-// ── Question Type ──────────────────────────────────────────────────────────────
-
-export interface QuestionType {
-  id: string;
-  name: string;
-  description?: string;
-  fields: QuestionField[];
-  createdAt: string;
-}
-
 // ── Platform ───────────────────────────────────────────────────────────────────
 
 export interface AdminPlatform {
@@ -49,22 +9,43 @@ export interface AdminPlatform {
   createdAt: string;
 }
 
-// ── Option (for options field type) ───────────────────────────────────────────
+// ── Question Type ──────────────────────────────────────────────────────────────
+// DB shape: { id: bigint, name: text }
 
+export interface QuestionType {
+  id: string;
+  name: string;
+}
+
+// ── Question ───────────────────────────────────────────────────────────────────
+// Mirrors the Supabase `Quesitons` table.
+
+export type Difficulty = 'easy' | 'medium' | 'hard' | '';
+
+/**
+ * UI-side option shape. `isCorrect` is split out from the persisted
+ * `options` jsonb on the way in (using `correct_answers`) and merged
+ * back on the way out.
+ */
 export interface MCOption {
   id: string;
   label: string;
   isCorrect: boolean;
 }
 
-// ── Question ───────────────────────────────────────────────────────────────────
-
 export interface AdminQuestion {
   id: string;
-  platformId: string;
-  questionTypeId: string;
-  // Dynamic field values keyed by field.id
-  fieldValues: Record<string, string | MCOption[]>;
+  title: string;
+  questions: string;          // the actual prompt text
+  answer: string;             // markdown answer
+  code: string;               // code snippet
+  options: MCOption[];        // multi-choice options (UI shape — flattened)
+  expectedOutput: string;
+  hint: string;
+  difficulty: Difficulty;
+  platformId: string;         // FK → Platforms.id
+  questionTypeId: string;     // FK → "Questions Types".id
+  tags: string;               // comma-separated
   createdAt: string;
 }
 

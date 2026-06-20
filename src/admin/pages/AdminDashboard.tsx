@@ -49,7 +49,7 @@ const AdminDashboard = () => {
         </div>
         <div className="dashboard-updated">
           <TrendingUp size={14} />
-          <span>All data synced to localStorage</span>
+          <span>Synced with Supabase</span>
         </div>
       </div>
 
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Fields</th>
+                  <th>ID</th>
                 </tr>
               </thead>
               <tbody>
@@ -144,7 +144,7 @@ const AdminDashboard = () => {
                     <td>{qt.name}</td>
                     <td>
                       <span className="admin-badge admin-badge-green">
-                        {qt.fields.length} field{qt.fields.length !== 1 ? 's' : ''}
+                        #{qt.id}
                       </span>
                     </td>
                   </tr>

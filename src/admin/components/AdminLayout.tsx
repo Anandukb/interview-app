@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Database,
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { to: '/admin/platforms', icon: <Layers size={18} />, label: 'Platforms' },
   { to: '/admin/question-types', icon: <ListChecks size={18} />, label: 'Question Types' },
   { to: '/admin/questions', icon: <HelpCircle size={18} />, label: 'Questions' },
+  { to: '/admin/seed', icon: <Database size={18} />, label: 'Seed Data' },
 ];
 
 interface AdminLayoutProps {

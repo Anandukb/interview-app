@@ -64,9 +64,12 @@ export const addAdminPlatform = createAsyncThunk(
       .from('Platforms')
       .insert(insert)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) return rejectWithValue(error.message);
+    if (!data) return rejectWithValue(
+      'Insert returned no row — likely a Row Level Security policy. Check Supabase RLS for the Platforms table.'
+    );
     return rowToAdminPlatform(data as SupabasePlatformRow);
   }
 );
@@ -88,9 +91,12 @@ export const updateAdminPlatform = createAsyncThunk(
       .update(update)
       .eq('id', id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) return rejectWithValue(error.message);
+    if (!data) return rejectWithValue(
+      'Update affected 0 rows — likely a Row Level Security policy. Check Supabase RLS for the Platforms table.'
+    );
     return rowToAdminPlatform(data as SupabasePlatformRow);
   }
 );

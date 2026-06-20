@@ -1,84 +1,115 @@
 import { useState, type FormEvent } from 'react';
-import { Plus, Pencil, Trash2, ListChecks } from 'lucide-react';
+import { Plus, Pencil, Trash2, ListChecks, RefreshCw, AlertCircle } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-  addQuestionType,
-  updateQuestionType,
-  deleteQuestionType,
+  fetchAdminQuestionTypes,
+  addAdminQuestionType,
+  updateAdminQuestionType,
+  deleteAdminQuestionType,
 } from '../../store/slices/adminQuestionTypesSlice';
-import type { QuestionType, QuestionField } from '../types';
+import type { QuestionType } from '../types';
 import AdminModal from '../components/AdminModal';
-import FieldConfigurator from '../components/FieldConfigurator';
 import '../admin.css';
 import './AdminQuestionTypes.css';
 
-type FormState = {
-  name: string;
-  description: string;
-  fields: QuestionField[];
-};
-
-const EMPTY_FORM: FormState = { name: '', description: '', fields: [] };
+const EMPTY_FORM = { name: '' };
 
 const AdminQuestionTypes = () => {
   const dispatch = useAppDispatch();
   const questionTypes = useAppSelector((s) => s.adminQuestionTypes.data);
+  const loading = useAppSelector((s) => s.adminQuestionTypes.loading);
+  const error = useAppSelector((s) => s.adminQuestionTypes.error);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<QuestionType | null>(null);
-  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [form, setForm] = useState<{ name: string }>(EMPTY_FORM);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const openAdd = () => {
     setEditTarget(null);
     setForm(EMPTY_FORM);
+    setSaveError(null);
     setModalOpen(true);
   };
 
   const openEdit = (qt: QuestionType) => {
     setEditTarget(qt);
-    setForm({ name: qt.name, description: qt.description ?? '', fields: [...qt.fields] });
+    setForm({ name: qt.name });
+    setSaveError(null);
     setModalOpen(true);
   };
 
   const handleClose = () => {
     setModalOpen(false);
     setEditTarget(null);
+    setSaveError(null);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (editTarget) {
-      dispatch(updateQuestionType({ id: editTarget.id, patch: form }));
-    } else {
-      dispatch(addQuestionType(form));
+    setSaving(true);
+    setSaveError(null);
+    try {
+      if (editTarget) {
+        await dispatch(updateAdminQuestionType({ id: editTarget.id, patch: form })).unwrap();
+      } else {
+        await dispatch(addAdminQuestionType(form)).unwrap();
+      }
+      handleClose();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setSaving(false);
     }
-    handleClose();
   };
 
-  const handleDelete = (id: string) => {
-    dispatch(deleteQuestionType(id));
+  const handleDelete = async (id: string) => {
+    await dispatch(deleteAdminQuestionType(id));
     setDeleteConfirm(null);
   };
 
   return (
     <div>
-      {/* Page header */}
       <div className="admin-page-header">
         <div>
           <h1 className="admin-page-title">Question Types</h1>
-          <p className="admin-page-subtitle">
-            Create and configure question formats with custom field layouts
-          </p>
+          <p className="admin-page-subtitle">Categorize questions — synced with Supabase</p>
         </div>
-        <button className="admin-btn admin-btn-primary" onClick={openAdd} id="add-question-type-btn">
-          <Plus size={16} />
-          New Type
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            className="admin-btn admin-btn-secondary"
+            onClick={() => dispatch(fetchAdminQuestionTypes())}
+            disabled={loading}
+            title="Refresh from Supabase"
+          >
+            <RefreshCw
+              size={15}
+              style={loading ? { animation: 'spin-slow 1s linear infinite' } : {}}
+            />
+          </button>
+          <button className="admin-btn admin-btn-primary" onClick={openAdd} id="add-question-type-btn">
+            <Plus size={16} />
+            New Type
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
+      {error && (
+        <div className="platforms-error-banner">
+          <AlertCircle size={15} />
+          <span>Supabase error: {error}</span>
+        </div>
+      )}
+
       <div className="admin-table-wrapper">
-        {questionTypes.length === 0 ? (
+        {loading ? (
+          <div className="admin-empty">
+            <span className="platforms-spinner" />
+            <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading question types…</p>
+          </div>
+        ) : questionTypes.length === 0 ? (
           <div className="admin-empty">
             <div className="admin-empty-icon"><ListChecks size={40} /></div>
             <p>No question types yet. Click "New Type" to create one.</p>
@@ -88,10 +119,8 @@ const AdminQuestionTypes = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>ID</th>
                 <th>Name</th>
-                <th>Description</th>
-                <th>Fields</th>
-                <th>Created</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -99,30 +128,8 @@ const AdminQuestionTypes = () => {
               {questionTypes.map((qt, idx) => (
                 <tr key={qt.id}>
                   <td style={{ color: 'var(--text-muted)', width: '40px' }}>{idx + 1}</td>
+                  <td style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{qt.id}</td>
                   <td style={{ fontWeight: 600 }}>{qt.name}</td>
-                  <td style={{ color: 'var(--text-secondary)', maxWidth: '220px' }}>
-                    {qt.description || <span style={{ color: 'var(--text-muted)' }}>—</span>}
-                  </td>
-                  <td>
-                    <div className="qt-field-chips">
-                      {qt.fields.slice(0, 3).map((f) => (
-                        <span key={f.id} className="admin-badge admin-badge-purple">
-                          {f.label}
-                        </span>
-                      ))}
-                      {qt.fields.length > 3 && (
-                        <span className="admin-badge admin-badge-green">
-                          +{qt.fields.length - 3} more
-                        </span>
-                      )}
-                      {qt.fields.length === 0 && (
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>No fields</span>
-                      )}
-                    </div>
-                  </td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                    {new Date(qt.createdAt).toLocaleDateString()}
-                  </td>
                   <td>
                     <div className="admin-table-actions">
                       <button
@@ -160,54 +167,45 @@ const AdminQuestionTypes = () => {
         )}
       </div>
 
-      {/* Add/Edit Modal */}
       <AdminModal
         open={modalOpen}
         onClose={handleClose}
         title={editTarget ? `Edit: ${editTarget.name}` : 'New Question Type'}
-        width="680px"
       >
         <form onSubmit={handleSubmit}>
           <div className="admin-form-group">
             <label className="admin-label">
-              Type Name <span className="required">*</span>
+              Name <span className="required">*</span>
             </label>
             <input
               className="admin-input"
               value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              placeholder="e.g. Theory Question, Output Prediction…"
+              onChange={(e) => setForm({ name: e.target.value })}
+              placeholder="e.g. Theory, MCQ, Output Prediction, Practical"
               required
               autoFocus
             />
           </div>
 
-          <div className="admin-form-group">
-            <label className="admin-label">Description</label>
-            <input
-              className="admin-input"
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Brief description of when to use this type…"
-            />
-          </div>
-
-          <div className="admin-form-group">
-            <label className="admin-label" style={{ marginBottom: '8px', display: 'block' }}>
-              Form Fields
-            </label>
-            <FieldConfigurator
-              fields={form.fields}
-              onChange={(fields) => setForm((f) => ({ ...f, fields }))}
-            />
-          </div>
+          {saveError && (
+            <div className="platforms-error-banner" style={{ marginTop: '8px' }}>
+              <AlertCircle size={14} />
+              <span>{saveError}</span>
+            </div>
+          )}
 
           <div className="admin-form-actions">
             <button type="button" className="admin-btn admin-btn-secondary" onClick={handleClose}>
               Cancel
             </button>
-            <button type="submit" className="admin-btn admin-btn-primary">
-              {editTarget ? 'Save Changes' : 'Create Type'}
+            <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
+              {saving ? (
+                <span className="admin-login-spinner" style={{ width: '16px', height: '16px' }} />
+              ) : editTarget ? (
+                'Save Changes'
+              ) : (
+                'Create Type'
+              )}
             </button>
           </div>
         </form>
