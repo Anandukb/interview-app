@@ -29,7 +29,7 @@ const PracticalQuestionsPage = () => {
   const inDetail = !!selectedQuestion;
 
   return (
-    <PageShell fluid={inDetail} fixed={inDetail}>
+    <PageShell fixed={inDetail}>
       <PageNav
         backTo={inDetail ? undefined : `/${platform}`}
         backLabel="Formats"
