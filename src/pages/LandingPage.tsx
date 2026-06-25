@@ -61,7 +61,7 @@ const LandingPage = () => {
 
   return (
     <PageShell>
-      <PageNav showAdminLink />
+      <PageNav />
 
       {/* Decorative background */}
       <div aria-hidden className="pointer-events-none absolute -top-40 right-0 h-[420px] w-[420px] rounded-full bg-brand/15 blur-[120px]" />
