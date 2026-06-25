@@ -3178,3 +3178,283 @@ export const reactNativeTheoryQuestions: TheoryQuestion[] = [
     "answer": "You use the `Platform` module to apply styles conditionally based on the operating system.\n\nUsing `Platform.select()`:\n```javascript\nconst styles = StyleSheet.create({\n  container: {\n    ...Platform.select({\n      ios: { backgroundColor: 'red' },\n      android: { backgroundColor: 'blue' },\n      default: { backgroundColor: 'green' }\n    })\n  }\n});\n```\nYou can also use `Platform.OS === 'ios'` inside your style declarations."
   }
 ];
+
+// ─── JavaScript Advanced Theory (Curriculum Gaps) ──────────────────────────────
+
+export const jsAdvancedTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "js_adv_th_1",
+    "question": "Explain Memory Management in JavaScript",
+    "answer": "JavaScript uses automatic memory management. Stack stores primitives (fast, LIFO), Heap stores objects (dynamic, GC-managed). Memory lifecycle: Allocate → Use → Release. Common leaks: global variables, forgotten timers, detached DOM nodes, closures holding large refs, unremoved event listeners."
+  },
+  {
+    "id": "js_adv_th_2",
+    "question": "How does Garbage Collection work in JavaScript?",
+    "answer": "GC automatically frees unreachable memory. Modern engines use Mark-and-Sweep: mark all reachable objects from roots, sweep unmarked ones. V8 uses Generational GC — Young Generation (frequent, Scavenge) and Old Generation (infrequent, Mark-Sweep-Compact). Handles circular references correctly unlike legacy reference counting."
+  },
+  {
+    "id": "js_adv_th_3",
+    "question": "What are Symbols in JavaScript and when would you use them?",
+    "answer": "Symbol is a unique immutable primitive (Symbol('desc') !== Symbol('desc')). Used for: unique object keys (no collisions), implementing iterators (Symbol.iterator), customizing type coercion (Symbol.toPrimitive). Hidden from Object.keys(), for...in, JSON.stringify(). Well-known symbols customize built-in behavior."
+  },
+  {
+    "id": "js_adv_th_4",
+    "question": "What are WeakMap and WeakSet, and how do they differ from Map and Set?",
+    "answer": "WeakMap/WeakSet hold weak references — entries are GC'd when no other reference exists. Keys/values must be objects. Not iterable, no size property. Use cases: caching (cache entries auto-cleanup), private data storage, tracking objects without preventing GC. Map/Set prevent GC of their entries."
+  },
+  {
+    "id": "js_adv_th_5",
+    "question": "Explain the Browser Rendering Pipeline (Critical Rendering Path)",
+    "answer": "Steps: HTML→DOM, CSS→CSSOM, JS execution, Render Tree (DOM+CSSOM), Layout (reflow — geometry), Paint (pixels), Composite (GPU layers). Reflow is expensive (affects children/siblings). Repaint is cheaper (visual-only). Transform/opacity only trigger compositing (cheapest). Batch DOM reads/writes to avoid forced reflows."
+  },
+  {
+    "id": "js_adv_th_6",
+    "question": "Explain the Execution Context and Execution Stack in JavaScript",
+    "answer": "Execution Context is the environment where code runs. Types: Global, Function, Eval. Phases: Creation (hoist declarations, create scope chain, determine 'this') and Execution (assign values, run code). The Call Stack (LIFO) manages contexts — push on function call, pop on return."
+  },
+  {
+    "id": "js_adv_th_7",
+    "question": "Explain Microtasks vs Macrotasks in the Event Loop",
+    "answer": "Macrotasks: setTimeout, setInterval, I/O, UI events. Microtasks: Promise.then, queueMicrotask, MutationObserver. Order: sync code → ALL microtasks (including nested) → ONE macrotask → repeat. Microtasks always have higher priority than macrotasks."
+  },
+  {
+    "id": "js_adv_th_8",
+    "question": "What is the Lexical Environment in JavaScript?",
+    "answer": "A Lexical Environment has: Environment Record (variable/function storage) and Outer Reference (pointer to parent environment, enabling scope chain). Closures work because functions capture a reference to their surrounding Lexical Environment, retaining access to outer variables even after the outer function returns."
+  },
+  {
+    "id": "js_adv_th_9",
+    "question": "What are Iterators and the Iterable Protocol?",
+    "answer": "Iterable Protocol: object with [Symbol.iterator]() returning an iterator. Iterator Protocol: object with next() returning {value, done}. Enables for...of, spread, destructuring. Built-in iterables: String, Array, Map, Set, TypedArray, arguments, NodeList."
+  },
+  {
+    "id": "js_adv_th_10",
+    "question": "What are Generators in JavaScript and how do they work?",
+    "answer": "Generators (function*) pause (yield) and resume execution. Return Generator object (iterable + iterator). .next(value) resumes, optionally passing value back. Features: lazy evaluation, infinite sequences, pagination, async flow control. yield* delegates to another generator/iterable."
+  },
+  {
+    "id": "js_adv_th_11",
+    "question": "What is Event Delegation and why is it useful?",
+    "answer": "Event Delegation attaches one listener to a parent to handle events from children (via bubbling). Benefits: memory efficient (one listener vs many), works with dynamically added elements, cleaner code. Use e.target.matches() to filter which child triggered the event."
+  },
+  {
+    "id": "js_adv_th_12",
+    "question": "Explain DOM Manipulation methods and best practices",
+    "answer": "Key methods: querySelector/All, createElement, textContent/innerHTML, classList, appendChild/insertBefore/append, remove. Best practices: batch with DocumentFragment, minimize reflows (read all then write all), prefer textContent over innerHTML (safer/faster), cache DOM references, use event delegation."
+  },
+  {
+    "id": "js_adv_th_13",
+    "question": "Explain the Virtual DOM concept",
+    "answer": "Virtual DOM is an in-memory lightweight representation of the real DOM. On state change: new VDOM tree created → diffed with previous → only differences (patches) applied to real DOM. Benefits: batched updates, cross-platform rendering, declarative UI. Used by React, Vue, and other frameworks."
+  },
+  {
+    "id": "js_adv_th_14",
+    "question": "Implement a Polyfill for Array.prototype.map",
+    "answer": "Array.prototype.myMap = function(cb, thisArg) { const result = []; for (let i = 0; i < this.length; i++) { if (i in this) result[i] = cb.call(thisArg, this[i], i, this); } return result; }. Key points: handle sparse arrays (if i in this), support thisArg, return new array of same length."
+  },
+  {
+    "id": "js_adv_th_15",
+    "question": "Implement Deep Clone in JavaScript",
+    "answer": "Options: structuredClone(obj) (modern, handles circular refs, Dates, Maps), JSON.parse(JSON.stringify(obj)) (limited — loses functions, undefined, Dates), or recursive implementation handling: primitives, circular refs (WeakMap), Date, RegExp, Map, Set, Arrays, and plain objects."
+  },
+  {
+    "id": "js_adv_th_16",
+    "question": "Implement Debounce and Throttle from scratch",
+    "answer": "Debounce: delays execution until wait ms after LAST call. clearTimeout on each call, set new timeout. Throttle: at most one call per wait ms. Track lastTime, only execute if elapsed >= wait. Both preserve 'this' context with .apply() and support leading/trailing edge options."
+  },
+  {
+    "id": "js_adv_th_17",
+    "question": "Implement Currying in JavaScript",
+    "answer": "Currying transforms f(a,b,c) into f(a)(b)(c). Implementation: if args.length >= fn.length, call fn; otherwise return function collecting more args. Practical uses: creating reusable utility functions (multiply(2) → double), partial application, function composition."
+  },
+  {
+    "id": "js_adv_th_18",
+    "question": "Implement Memoization in JavaScript",
+    "answer": "Memoize caches results keyed by arguments. Use Map with JSON.stringify(args) as key. On cache hit, return cached value. On miss, compute, cache, and return. Advanced: LRU cache with max size, WeakMap for object arguments, custom key generators."
+  },
+  {
+    "id": "js_adv_th_19",
+    "question": "Implement Promise.all Polyfill",
+    "answer": "Create new Promise. Track completed count and results array. For each promise: Promise.resolve(p).then(val => { results[index] = val; if(++completed === total) resolve(results) }).catch(reject). Handle empty array (resolve immediately). Reject on first failure."
+  },
+  {
+    "id": "js_adv_th_20",
+    "question": "What are Truthy and Falsy values in JavaScript?",
+    "answer": "Falsy values (only 8): false, 0, -0, 0n, '', null, undefined, NaN. Everything else is truthy including: '0', 'false', [], {}, functions. Gotcha: 0 || 'default' gives 'default' (0 is falsy). Use ?? (nullish coalescing) to only check null/undefined."
+  }
+];
+
+// ─── React Advanced Theory (Curriculum Gaps) ───────────────────────────────────
+
+export const reactAdvancedTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "react_adv_th_1",
+    "question": "Explain React Reconciliation and the Diffing Algorithm",
+    "answer": "Reconciliation compares new VDOM with previous to find minimum DOM updates. Diffing heuristics (O(n)): different element types → rebuild tree; same type → update attributes only; keys match children across renders. Never use array index as key for dynamic/reorderable lists."
+  },
+  {
+    "id": "react_adv_th_2",
+    "question": "What is React Fiber Architecture?",
+    "answer": "Fiber (React 16+) reimplements the reconciler for incremental, interruptible rendering. Each element has a fiber node (unit of work). Work loop can pause/resume between units. Priority-based: user input > data fetch > offscreen. Enables: Suspense, Transitions, automatic batching, concurrent features."
+  },
+  {
+    "id": "react_adv_th_3",
+    "question": "Explain Concurrent Rendering in React",
+    "answer": "Concurrent Rendering (React 18+) prepares multiple UI versions simultaneously. Can interrupt/pause/abandon renders based on priority. Features: automatic batching (all contexts), useTransition (mark non-urgent updates), useDeferredValue (show stale content while computing), improved Suspense."
+  },
+  {
+    "id": "react_adv_th_4",
+    "question": "Explain Suspense and Lazy Loading in React",
+    "answer": "React.lazy() dynamically imports components (code splitting). Suspense wraps lazy components showing fallback during load. Benefits: smaller initial bundle, progressive loading. Suspense for data fetching (React 18+) enables declarative loading states with compatible libraries (React Query, Relay)."
+  },
+  {
+    "id": "react_adv_th_5",
+    "question": "What are Error Boundaries in React?",
+    "answer": "Error Boundaries are class components that catch JS errors in child trees via getDerivedStateFromError (render fallback) and componentDidCatch (log errors). They prevent app crashes by showing fallback UI. Do NOT catch: event handler errors, async code, SSR errors, or errors in the boundary itself."
+  },
+  {
+    "id": "react_adv_th_6",
+    "question": "What are React Portals and when should you use them?",
+    "answer": "createPortal(children, domNode) renders into a DOM node outside parent hierarchy while preserving React event bubbling. Use for: modals, tooltips, popovers, notifications, any UI breaking out of overflow:hidden or z-index stacking contexts."
+  },
+  {
+    "id": "react_adv_th_7",
+    "question": "Explain Higher Order Components (HOC) pattern",
+    "answer": "HOC: function taking a component, returning enhanced component. Example: withAuth(Dashboard) adds auth check. Issues: wrapper hell, prop conflicts, harder TypeScript typing. Modern alternative: custom hooks provide same logic reuse without wrapper nesting and with better DevTools visibility."
+  },
+  {
+    "id": "react_adv_th_8",
+    "question": "Explain the Render Props pattern",
+    "answer": "Render Props: component receives a function prop (or children) returning React elements, sharing its state/logic. Example: <MouseTracker render={({x,y}) => <div>{x},{y}</div>} />. Enables flexible composition but can lead to callback nesting. Custom hooks are the modern alternative."
+  },
+  {
+    "id": "react_adv_th_9",
+    "question": "What is the Compound Components pattern?",
+    "answer": "Compound Components share implicit state through Context. Parent manages state; children render specific parts. Example: <Tabs><Tab value='a'>A</Tab><Panel value='a'>...</Panel></Tabs>. Benefits: clean declarative API, flexible composition, encapsulated state, similar to native HTML (select/option)."
+  },
+  {
+    "id": "react_adv_th_10",
+    "question": "How do you optimize React Context performance?",
+    "answer": "Context re-renders ALL consumers on value change. Solutions: 1) Split contexts by update frequency, 2) Separate state from dispatch (two contexts), 3) Memoize context value with useMemo, 4) Use useMemo in consumers for expensive renders, 5) Consider Zustand/Jotai for fine-grained subscriptions."
+  },
+  {
+    "id": "react_adv_th_11",
+    "question": "Explain React Performance Optimization techniques",
+    "answer": "1) React.memo — skip re-renders when props unchanged, 2) useMemo — cache calculations, 3) useCallback — stable function refs, 4) Code splitting — lazy()+Suspense, 5) Virtualization — render visible items only, 6) Avoid inline objects in JSX, 7) Profile with React DevTools, 8) Split Context."
+  },
+  {
+    "id": "react_adv_th_12",
+    "question": "Explain useReducer hook and when to use it over useState",
+    "answer": "useReducer for: complex state (multiple sub-values), state depending on previous state, predictable transitions via actions/reducer. Pattern: const [state, dispatch] = useReducer(reducer, initial). Reducer is pure function: (state, action) => newState. Centralizes logic, easier to test."
+  },
+  {
+    "id": "react_adv_th_13",
+    "question": "Explain useImperativeHandle and forwardRef",
+    "answer": "forwardRef passes ref to child component. useImperativeHandle customizes what parent accesses through that ref (exposing focus(), clear(), getValue() instead of full DOM node). Useful for reusable input/form components that need imperative API without exposing internals."
+  },
+  {
+    "id": "react_adv_th_14",
+    "question": "Explain React Router core concepts",
+    "answer": "React Router provides client-side routing. Key concepts: BrowserRouter (history API), Routes/Route (path matching), Link/NavLink (navigation), Outlet (nested route rendering), useParams/useNavigate/useLocation (hooks). Features: nested routes, dynamic params (:id), protected routes, layout routes."
+  },
+  {
+    "id": "react_adv_th_15",
+    "question": "Explain Custom Hooks in React with examples",
+    "answer": "Custom hooks extract reusable stateful logic. Must start with 'use', can call other hooks. Examples: useLocalStorage (persist state), useDebounce (debounce values), useFetch (data fetching with loading/error), useMediaQuery (responsive), useOnClickOutside (close dropdowns). Follow rules of hooks."
+  }
+];
+
+// ─── State Management, Auth & API Theory (Curriculum Gaps) ─────────────────────
+
+export const stateManagementTheoryQuestions: TheoryQuestion[] = [
+  {
+    "id": "sm_th_1",
+    "question": "Explain Redux Toolkit and how it simplifies Redux",
+    "answer": "RTK is the official Redux library. configureStore (auto devtools + thunk), createSlice (generates actions + reducer, Immer for 'mutable' syntax), createAsyncThunk (async with pending/fulfilled/rejected). Eliminates boilerplate of action types, action creators, and switch-case reducers."
+  },
+  {
+    "id": "sm_th_2",
+    "question": "What is Redux Middleware and how does it work?",
+    "answer": "Middleware intercepts actions between dispatch and reducer. Signature: store => next => action => {}. Used for: logging, async operations (thunk), error reporting, API calls. RTK includes redux-thunk by default. Custom middleware can transform, delay, or cancel actions."
+  },
+  {
+    "id": "sm_th_3",
+    "question": "What is Zustand and how does it compare to Redux?",
+    "answer": "Zustand: minimal (~1KB) state library. No provider needed, create store with create(). Components subscribe to specific slices (auto re-render optimization). Supports middleware (devtools, persist). vs Redux: less boilerplate, no context, smaller bundle, but less structure for large teams."
+  },
+  {
+    "id": "sm_th_4",
+    "question": "Explain TanStack Query (React Query) core concepts",
+    "answer": "Manages server state: caching, background refetch, stale/fresh data, pagination. useQuery (read), useMutation (write), queryKey (cache identity). Features: staleTime, gcTime, refetchOnWindowFocus, retry, optimistic updates, infinite queries, prefetching. Separates server state from client state."
+  },
+  {
+    "id": "sm_th_5",
+    "question": "How do optimistic updates work in TanStack Query?",
+    "answer": "onMutate: cancel queries, save previous data, update cache optimistically. onError: rollback using saved previous data. onSettled: invalidate queries to refetch real data. Provides instant UI feedback while the server processes the mutation. Rollback ensures consistency on failure."
+  },
+  {
+    "id": "sm_th_6",
+    "question": "Explain JWT Authentication Flow",
+    "answer": "JWT: Header.Payload.Signature (Base64). Flow: login → server validates → returns access+refresh tokens → client sends Authorization: Bearer <token> → server verifies signature → on expiry, use refresh token for new access token. Stateless (no server session), self-contained (payload has claims)."
+  },
+  {
+    "id": "sm_th_7",
+    "question": "Difference between Access Token and Refresh Token",
+    "answer": "Access Token: short-lived (15min-1hr), sent with every request, stored in memory (most secure). Refresh Token: long-lived (7-30 days), only sent to refresh endpoint, stored in httpOnly cookie (XSS-proof), revocable server-side. On 401, use refresh to get new access token silently."
+  },
+  {
+    "id": "sm_th_8",
+    "question": "What is OAuth 2.0 and how does it work?",
+    "answer": "OAuth 2.0: authorization framework for third-party access (Google, GitHub). Authorization Code Flow: redirect to provider → user consents → provider returns auth code → server exchanges code for tokens (using secret) → creates session/JWT. Most secure because client_secret stays on server."
+  },
+  {
+    "id": "sm_th_9",
+    "question": "Compare Cookie, localStorage, and sessionStorage for token storage",
+    "answer": "Cookie: ~4KB, auto-sent with requests, httpOnly prevents XSS, but CSRF vulnerable. localStorage: ~5MB, persists forever, manual send, XSS vulnerable. sessionStorage: ~5MB, tab-scoped, cleared on close. Best practice: access token in memory, refresh in httpOnly secure cookie."
+  },
+  {
+    "id": "sm_th_10",
+    "question": "Explain Protected Routes and Role-Based Authentication",
+    "answer": "Protected Routes: check auth state, redirect to login if unauthenticated, pass original location for redirect-back. RBAC: store user role/permissions in JWT or fetch on login, check against required roles per route/component. Implement at route level (ProtectedRoute wrapper) and component level (usePermission hook)."
+  },
+  {
+    "id": "sm_th_11",
+    "question": "What are Axios Interceptors and how do you use them?",
+    "answer": "Request interceptors: attach auth headers, transform data. Response interceptors: unwrap response data, handle 401 (refresh token + retry), format errors, implement retry logic. Pattern: queue failed requests during refresh, replay all after new token obtained."
+  },
+  {
+    "id": "sm_th_12",
+    "question": "How do you implement file upload with progress tracking?",
+    "answer": "Use FormData + axios POST with Content-Type: multipart/form-data. Track progress via onUploadProgress callback: (event) => Math.round((event.loaded * 100) / event.total). Support: drag-and-drop, file validation (size/type), multiple files, cancel with AbortController."
+  },
+  {
+    "id": "sm_th_13",
+    "question": "Explain React Project Architecture (Feature-Based)",
+    "answer": "Feature-based: src/features/{auth,users,products}/ each with components/, hooks/, services/, store/, types/, index.ts (barrel). Shared: src/shared/{components/ui, hooks, services, utils, types}. App: src/app/{store, router, providers}. Benefits: colocation, clear boundaries, scalable, easy code-splitting."
+  },
+  {
+    "id": "sm_th_14",
+    "question": "How do you test React components?",
+    "answer": "React Testing Library: test user behavior, not implementation. render() → screen.getBy/findBy/queryBy → userEvent.type/click → expect assertions. Mock APIs with MSW (Mock Service Worker). Test hooks with renderHook + act. Integration > unit for components. AAA pattern: Arrange, Act, Assert."
+  },
+  {
+    "id": "sm_th_15",
+    "question": "Explain Production React — Performance Profiling and Bundle Analysis",
+    "answer": "React DevTools Profiler: records renders, identifies unnecessary re-renders. Bundle analysis: vite-bundle-visualizer / webpack-bundle-analyzer. Lighthouse metrics: LCP<2.5s, FID<100ms, CLS<0.1. Optimizations: code splitting, tree shaking, image optimization (WebP, lazy), service workers, CDN deployment."
+  },
+  {
+    "id": "sm_th_16",
+    "question": "How do you implement infinite scroll/pagination with React Query?",
+    "answer": "useInfiniteQuery: queryFn receives pageParam, getNextPageParam extracts next page from response. data.pages contains all fetched pages. fetchNextPage on scroll/button. IntersectionObserver triggers fetchNextPage when sentinel element enters viewport. hasNextPage boolean controls UI."
+  },
+  {
+    "id": "sm_th_17",
+    "question": "Explain Environment Variables and Configuration Management",
+    "answer": "Vite: VITE_ prefix required, accessed via import.meta.env.VITE_KEY. Files: .env (all), .env.local (gitignored), .env.production, .env.development. Never expose secrets to client bundle. Server secrets stay in backend .env only. Validate env vars at app startup."
+  },
+  {
+    "id": "sm_th_18",
+    "question": "What is CI/CD for a React application?",
+    "answer": "CI (Continuous Integration): auto lint, type-check, test, build on every push/PR. CD (Continuous Deployment): auto-deploy passing builds. Pipeline: checkout → install (npm ci) → lint → type-check → test → build → deploy (Netlify/Vercel/S3). Tools: GitHub Actions, GitLab CI, Jenkins."
+  }
+];

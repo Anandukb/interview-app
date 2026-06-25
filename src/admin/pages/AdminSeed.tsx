@@ -14,6 +14,9 @@ import {
   htmlTheoryQuestions,
   cssTheoryQuestions,
   reactNativeTheoryQuestions,
+  jsAdvancedTheoryQuestions,
+  reactAdvancedTheoryQuestions,
+  stateManagementTheoryQuestions,
   type TheoryQuestion,
 } from '../../data/parsedQuestions';
 import { Button } from '../../components/ui/Button';
@@ -37,6 +40,9 @@ const SOURCES: SeedSource[] = [
   { platformKey: 'html',         label: 'HTML',         list: htmlTheoryQuestions },
   { platformKey: 'css',          label: 'CSS',          list: cssTheoryQuestions },
   { platformKey: 'react-native', label: 'React Native', list: reactNativeTheoryQuestions },
+  { platformKey: 'js',           label: 'JS Advanced (Memory, Generators, Polyfills)', list: jsAdvancedTheoryQuestions },
+  { platformKey: 'react',        label: 'React Advanced (Fiber, Concurrent, Patterns)', list: reactAdvancedTheoryQuestions },
+  { platformKey: 'react',        label: 'State Mgmt, Auth & API', list: stateManagementTheoryQuestions },
 ];
 
 interface SeedError { platformKey: string; questionId: string; message: string; }

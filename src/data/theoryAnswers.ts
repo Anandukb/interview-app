@@ -1269,6 +1269,649 @@ Common use cases include:
 It is commonly used in JavaScript and React applications for handling dynamic behavior.
 `,
 
+  // ─── JAVASCRIPT ADVANCED ───────────────────────────────────────────────────
+
+  // Memory Management
+  "explainmemorymanagementinjavascript": `
+JavaScript uses automatic memory management through a garbage collector:
+
+1. **Stack Memory**: Stores primitives and function call frames (fast, LIFO).
+2. **Heap Memory**: Stores objects, arrays, functions (dynamic, managed by GC).
+
+**Memory Lifecycle**: Allocate → Use → Release (GC)
+
+Common memory leaks:
+- Global variables (unintentional)
+- Forgotten timers/intervals
+- Detached DOM nodes
+- Closures holding large references
+- Event listeners not removed
+
+\`\`\`js
+// Leak example
+let data = new Array(1000000).fill("x");
+setInterval(() => console.log(data.length), 1000); // data can never be GC'd
+\`\`\`
+`,
+
+  // Garbage Collection
+  "howdoesgarbagecollectionworkinjavascript": `
+Garbage Collection (GC) automatically frees memory no longer reachable by the program.
+
+**Mark-and-Sweep** (modern engines):
+1. Mark Phase: Starting from roots (global, active functions), traverse and mark reachable objects.
+2. Sweep Phase: Unreachable objects have their memory freed.
+
+**V8's Generational GC**:
+- Young Generation: New objects, frequently collected (Scavenge).
+- Old Generation: Survived multiple cycles, less frequently collected (Mark-Sweep-Compact).
+
+\`\`\`js
+// Circular reference (Mark-and-Sweep handles this)
+function test() {
+  let a = {}, b = {};
+  a.ref = b; b.ref = a;
+  // After test() returns, both are unreachable → GC'd
+}
+\`\`\`
+`,
+  "explaingarbagecollectioninjavascript": `
+Garbage Collection (GC) automatically frees memory no longer reachable by the program.
+
+**Mark-and-Sweep** (modern engines):
+1. Mark Phase: Starting from roots (global, active functions), traverse and mark reachable objects.
+2. Sweep Phase: Unreachable objects have their memory freed.
+
+**V8's Generational GC**:
+- Young Generation: New objects, frequently collected (Scavenge).
+- Old Generation: Survived multiple cycles, less frequently collected (Mark-Sweep-Compact).
+
+\`\`\`js
+function test() {
+  let a = {}, b = {};
+  a.ref = b; b.ref = a;
+  // Both unreachable after return → GC'd by Mark-and-Sweep
+}
+\`\`\`
+`,
+
+  // Symbols
+  "whataresymbolsinjavascript": `
+A Symbol is a unique, immutable primitive created via \`Symbol()\`. Each symbol is guaranteed unique.
+
+Key uses:
+1. Unique object keys (no name collisions)
+2. Custom iterators (\`Symbol.iterator\`)
+3. Customizing type coercion (\`Symbol.toPrimitive\`)
+
+\`\`\`js
+const id = Symbol('id');
+const user = { name: "John", [id]: 123 };
+console.log(Object.keys(user)); // ["name"] — symbol hidden
+console.log(user[id]); // 123
+\`\`\`
+`,
+
+  // WeakMap / WeakSet
+  "whatareweakmapandweakset": `
+WeakMap and WeakSet hold "weak" references — entries are garbage collected when no other reference exists.
+
+**WeakMap**: Keys must be objects, not iterable, no \`size\`.
+**WeakSet**: Values must be objects, not iterable, no \`size\`.
+
+\`\`\`js
+const cache = new WeakMap();
+function process(obj) {
+  if (cache.has(obj)) return cache.get(obj);
+  const result = expensiveCalc(obj);
+  cache.set(obj, result);
+  return result;
+}
+// When obj is GC'd, its cache entry is automatically removed
+\`\`\`
+
+Use cases: caching, private data, tracking visited objects without preventing GC.
+`,
+
+  // Browser Rendering Pipeline
+  "explainbrowserrenderingpipeline": `
+The Critical Rendering Path converts HTML/CSS/JS into pixels:
+
+1. **HTML → DOM Tree**
+2. **CSS → CSSOM Tree**
+3. **JS Execution** (can modify DOM/CSSOM)
+4. **Render Tree** (DOM + CSSOM, only visible nodes)
+5. **Layout (Reflow)** — calculates geometry
+6. **Paint** — fills pixels (colors, borders, text)
+7. **Composite** — layers combined (GPU-accelerated)
+
+**Performance tips**:
+- \`transform\` and \`opacity\` only trigger compositing (cheapest)
+- Avoid forced reflows (reading layout then writing in loops)
+- Batch DOM operations with DocumentFragment
+`,
+
+  // Execution Context
+  "whatisanexecutioncontext": `
+An Execution Context is the environment where JS code runs. Created for every function call.
+
+**Types**: Global, Function, Eval
+
+**Phases**:
+1. Creation: Hoist declarations, create scope chain, determine \`this\`
+2. Execution: Assign values, run code line by line
+
+**Call Stack**: LIFO structure managing execution contexts. Functions push on call, pop on return.
+
+\`\`\`js
+function a() { b(); }
+function b() { c(); }
+function c() { console.log("hi"); }
+a();
+// Stack: [Global] → [Global, a] → [Global, a, b] → [Global, a, b, c] → unwinds
+\`\`\`
+`,
+
+  // Microtasks vs Macrotasks
+  "explainmicrotasksvsmacrotasks": `
+**Macrotasks**: setTimeout, setInterval, I/O, UI events
+**Microtasks**: Promise.then, queueMicrotask, MutationObserver
+
+**Execution order**:
+1. Run sync code (call stack empties)
+2. Process ALL microtasks (including nested ones)
+3. Render UI updates
+4. Pick ONE macrotask, execute it
+5. Repeat from step 2
+
+\`\`\`js
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
+// Output: 1, 4, 3, 2
+\`\`\`
+`,
+
+  // Iterators
+  "whatareiteratorsinjavascript": `
+The Iterable Protocol: any object with \`[Symbol.iterator]()\` returning an iterator (object with \`next()\` method returning \`{ value, done }\`).
+
+\`\`\`js
+const range = {
+  [Symbol.iterator]() {
+    let n = 1;
+    return { next() { return n <= 5 ? { value: n++, done: false } : { done: true }; } };
+  }
+};
+for (const x of range) console.log(x); // 1,2,3,4,5
+[...range]; // [1,2,3,4,5]
+\`\`\`
+
+Built-in iterables: String, Array, Map, Set, TypedArray, arguments.
+`,
+
+  // Generators
+  "whataregenaratorsinjavascript": `
+Generators (\`function*\`) can pause (\`yield\`) and resume execution. They return a Generator object (both iterable and iterator).
+
+\`\`\`js
+function* idMaker() {
+  let id = 1;
+  while (true) yield id++;
+}
+const gen = idMaker();
+gen.next(); // { value: 1, done: false }
+gen.next(); // { value: 2, done: false }
+\`\`\`
+
+Use cases: lazy sequences, pagination, async flow control, infinite data streams.
+`,
+  "whataregenratorsinjavascript": `
+Generators (\`function*\`) can pause (\`yield\`) and resume execution. They return a Generator object (both iterable and iterator).
+
+\`\`\`js
+function* paginate(items, size) {
+  for (let i = 0; i < items.length; i += size)
+    yield items.slice(i, i + size);
+}
+const pages = paginate([1,2,3,4,5,6], 2);
+pages.next().value; // [1,2]
+pages.next().value; // [3,4]
+\`\`\`
+`,
+
+  // Currying
+  "whatiscurryinginjavascript": `
+Currying transforms a function with multiple arguments into a sequence of functions each taking one argument.
+
+\`\`\`js
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) return fn(...args);
+    return (...more) => curried(...args, ...more);
+  };
+}
+
+const add = curry((a, b, c) => a + b + c);
+add(1)(2)(3); // 6
+add(1, 2)(3); // 6
+
+// Practical: reusable utilities
+const multiply = curry((a, b) => a * b);
+const double = multiply(2);
+double(5); // 10
+\`\`\`
+`,
+
+  // Memoization
+  "whatismemoization": `
+Memoization caches results of expensive function calls, returning cached results for repeated inputs.
+
+\`\`\`js
+function memoize(fn) {
+  const cache = new Map();
+  return function(...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key);
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+const factorial = memoize((n) => n <= 1 ? 1 : n * factorial(n - 1));
+factorial(5); // computes
+factorial(5); // cached
+\`\`\`
+`,
+
+  // Polyfill
+  "whatisapolyfill": `
+A polyfill implements a feature on environments that don't natively support it.
+
+\`\`\`js
+// Array.prototype.flat polyfill
+if (!Array.prototype.flat) {
+  Array.prototype.flat = function(depth = 1) {
+    return depth > 0
+      ? this.reduce((acc, val) =>
+          acc.concat(Array.isArray(val) ? val.flat(depth - 1) : val), [])
+      : this.slice();
+  };
+}
+
+// Promise.allSettled polyfill
+if (!Promise.allSettled) {
+  Promise.allSettled = (promises) =>
+    Promise.all(promises.map(p =>
+      Promise.resolve(p)
+        .then(value => ({ status: 'fulfilled', value }))
+        .catch(reason => ({ status: 'rejected', reason }))
+    ));
+}
+\`\`\`
+`,
+
+  // ─── REACT ADVANCED ─────────────────────────────────────────────────────────
+
+  // Reconciliation
+  "whatisreconciliationinreact": `
+Reconciliation is React's process of comparing the new Virtual DOM with the previous one to determine minimum DOM updates.
+
+**Diffing rules** (O(n) heuristic):
+1. Different element types → tear down old tree, build new
+2. Same type → keep DOM node, update changed attributes
+3. Keys help React match children efficiently during reordering
+
+\`\`\`jsx
+// Keys enable efficient reordering (don't use index for dynamic lists)
+{items.map(item => <li key={item.id}>{item.name}</li>)}
+\`\`\`
+`,
+
+  // Fiber
+  "whatisreactfiber": `
+React Fiber is the reimplementation of React's reconciler (React 16+). It enables incremental, interruptible rendering.
+
+**Key concepts**:
+- Each element has a "fiber" node (unit of work)
+- Work loop can pause/resume between units
+- Priority-based: user input > data fetching > offscreen
+- Enables: Suspense, Transitions, automatic batching
+
+\`\`\`jsx
+import { useTransition } from 'react';
+const [isPending, startTransition] = useTransition();
+startTransition(() => setResults(filter(query))); // low priority, interruptible
+\`\`\`
+`,
+
+  // Concurrent Rendering
+  "whatisconcurrentrenderinginreact": `
+Concurrent Rendering (React 18+) allows React to prepare multiple UI versions simultaneously, interrupting renders based on priority.
+
+**Features**: Automatic batching, Transitions, Suspense improvements, useDeferredValue.
+
+\`\`\`jsx
+// useDeferredValue — shows stale content while computing new
+const deferredQuery = useDeferredValue(query);
+const isStale = query !== deferredQuery;
+<div style={{ opacity: isStale ? 0.5 : 1 }}>
+  <ExpensiveList query={deferredQuery} />
+</div>
+\`\`\`
+`,
+
+  // Suspense
+  "whatissuspenseinreact": `
+Suspense declaratively specifies loading states for async operations (lazy components, data fetching).
+
+\`\`\`jsx
+const Dashboard = lazy(() => import('./Dashboard'));
+
+<Suspense fallback={<Spinner />}>
+  <Dashboard />
+</Suspense>
+\`\`\`
+
+Benefits: smaller initial bundle, progressive loading, cleaner loading state management.
+`,
+
+  // Error Boundaries
+  "whatareerrboundariesinreact": `
+Error Boundaries catch JS errors in child component trees and display fallback UI instead of crashing the app. Must be class components.
+
+\`\`\`jsx
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+  static getDerivedStateFromError(error) { return { hasError: true }; }
+  componentDidCatch(error, info) { logError(error, info); }
+  render() {
+    if (this.state.hasError) return <FallbackUI />;
+    return this.props.children;
+  }
+}
+\`\`\`
+
+Do NOT catch: event handlers, async code, SSR, errors in boundary itself.
+`,
+
+  // Portals
+  "whatareportlsinreact": `
+Portals render children into a DOM node outside the parent hierarchy while preserving React event bubbling.
+
+\`\`\`jsx
+import { createPortal } from 'react-dom';
+function Modal({ children }) {
+  return createPortal(children, document.getElementById('modal-root'));
+}
+\`\`\`
+
+Use cases: modals, tooltips, popovers, notifications, elements needing to break out of \`overflow: hidden\`.
+`,
+  "whatarereactportalsandwherearetheyused": `
+Portals render children into a DOM node outside the parent hierarchy while preserving React event bubbling.
+
+\`\`\`jsx
+import { createPortal } from 'react-dom';
+function Modal({ children }) {
+  return createPortal(children, document.getElementById('modal-root'));
+}
+\`\`\`
+
+Use cases: modals, tooltips, popovers, notifications, elements needing to break out of \`overflow: hidden\`.
+`,
+
+  // HOC
+  "whatarehicerordercomponentshoc": `
+A Higher Order Component is a function that takes a component and returns a new enhanced component.
+
+\`\`\`jsx
+function withAuth(Component) {
+  return function(props) {
+    const { isAuth } = useAuth();
+    if (!isAuth) return <Navigate to="/login" />;
+    return <Component {...props} />;
+  };
+}
+const ProtectedDashboard = withAuth(Dashboard);
+\`\`\`
+
+Modern alternative: Custom hooks (less wrapper hell, better TypeScript support).
+`,
+
+  // Compound Components
+  "whatiscompoundcomponentspattern": `
+Compound Components share implicit state through Context. The parent manages state; children render specific parts.
+
+\`\`\`jsx
+<Tabs defaultTab="profile">
+  <Tabs.TabList>
+    <Tabs.Tab value="profile">Profile</Tabs.Tab>
+    <Tabs.Tab value="settings">Settings</Tabs.Tab>
+  </Tabs.TabList>
+  <Tabs.Panel value="profile"><ProfileContent /></Tabs.Panel>
+  <Tabs.Panel value="settings"><SettingsContent /></Tabs.Panel>
+</Tabs>
+\`\`\`
+
+Benefits: Clean API, flexible composition, encapsulated state logic.
+`,
+
+  // Context Performance
+  "howtooptimizecontextperformance": `
+Context re-renders ALL consumers when its value changes. Solutions:
+
+1. **Split contexts** by update frequency
+2. **Separate state from dispatch** (two contexts)
+3. **Memoize context value**: \`useMemo(() => ({ theme, setTheme }), [theme])\`
+4. **useMemo in consumers** for expensive renders
+
+\`\`\`jsx
+// Bad: single large context
+// Good: split into UserContext, ThemeContext, NotificationContext
+\`\`\`
+`,
+
+  // React Performance
+  "howdoyouoptimizereactperformance": `
+1. **React.memo** — skip re-renders when props haven't changed
+2. **useMemo** — cache expensive calculations
+3. **useCallback** — stable function references for memoized children
+4. **Code splitting** — lazy() + Suspense
+5. **Virtualization** — only render visible list items (react-virtual)
+6. **Avoid inline objects/arrays** in JSX props
+7. **Split Context** by update frequency
+8. **Profiler** — React DevTools to identify slow components
+`,
+
+  // useImperativeHandle
+  "explainuseimperativehandleandforwardref": `
+\`forwardRef\` passes a ref to a child. \`useImperativeHandle\` customizes what the parent can access.
+
+\`\`\`jsx
+const Input = forwardRef((props, ref) => {
+  const inputRef = useRef();
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current.focus(),
+    clear: () => { inputRef.current.value = ''; },
+  }));
+  return <input ref={inputRef} {...props} />;
+});
+
+// Parent
+const ref = useRef();
+<Input ref={ref} />
+<button onClick={() => ref.current.focus()}>Focus</button>
+\`\`\`
+`,
+
+  // ─── STATE MANAGEMENT ───────────────────────────────────────────────────────
+
+  // Redux Toolkit
+  "whatisreduxtoolkit": `
+Redux Toolkit (RTK) is the official way to write Redux. It simplifies store setup, reduces boilerplate with \`createSlice\`, and includes Immer for "mutable" update syntax.
+
+\`\`\`js
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment(state) { state.value += 1; }, // Immer handles immutability
+    incrementBy(state, action) { state.value += action.payload; },
+  },
+});
+export const { increment, incrementBy } = counterSlice.actions;
+\`\`\`
+`,
+
+  // Redux Middleware
+  "whatisreduxmiddleware": `
+Middleware intercepts dispatched actions before they reach the reducer. Used for logging, async ops, error reporting.
+
+Flow: \`dispatch(action) → Middleware → Reducer → New State\`
+
+\`\`\`js
+const logger = (store) => (next) => (action) => {
+  console.log('Action:', action.type);
+  const result = next(action);
+  console.log('New state:', store.getState());
+  return result;
+};
+\`\`\`
+
+RTK includes redux-thunk by default for async logic.
+`,
+
+  // Zustand
+  "whatiszustand": `
+Zustand is a minimal state management library (~1KB). No providers needed, less boilerplate than Redux.
+
+\`\`\`js
+import { create } from 'zustand';
+const useStore = create((set) => ({
+  count: 0,
+  increment: () => set((s) => ({ count: s.count + 1 })),
+  fetchUsers: async () => {
+    set({ loading: true });
+    const users = await fetch('/api/users').then(r => r.json());
+    set({ users, loading: false });
+  },
+}));
+// Components subscribe to specific slices:
+const count = useStore(s => s.count);
+\`\`\`
+`,
+
+  // ─── TANSTACK QUERY ─────────────────────────────────────────────────────────
+
+  // TanStack Query
+  "whatistandtackquery": `
+TanStack Query (React Query) manages server state separately from client state. Handles caching, refetching, pagination, and optimistic updates.
+
+\`\`\`jsx
+const { data, isLoading } = useQuery({
+  queryKey: ['users'],
+  queryFn: () => fetch('/api/users').then(r => r.json()),
+  staleTime: 5 * 60 * 1000,
+});
+\`\`\`
+
+Key concepts: query keys (cache identity), stale time, gc time, invalidation, mutations, infinite queries.
+`,
+
+  // ─── AUTHENTICATION ─────────────────────────────────────────────────────────
+
+  // JWT
+  "whatisajsonwebtoken": `
+JWT is a compact, self-contained token for stateless authentication. Structure: Header.Payload.Signature (Base64 encoded).
+
+**Flow**:
+1. Login → Server validates → Returns access + refresh tokens
+2. Client sends: \`Authorization: Bearer <token>\` with API requests
+3. Server verifies signature → grants access
+4. On expiry → use refresh token to get new access token
+
+**Storage**: Access token in memory, refresh token in httpOnly cookie (prevents XSS + CSRF).
+`,
+
+  // Access vs Refresh Token
+  "differencebetweenaccesstokenandrefreshtoken": `
+- **Access Token**: Short-lived (15min–1hr), sent with every request, stored in memory.
+- **Refresh Token**: Long-lived (7–30 days), only sent to refresh endpoint, stored in httpOnly cookie, revocable server-side.
+
+Token refresh flow:
+1. API returns 401 (expired access token)
+2. Client calls /refresh with httpOnly cookie
+3. Server validates refresh token → issues new access token
+4. Retry original request with new token
+`,
+
+  // OAuth
+  "whatisoauth": `
+OAuth 2.0 is an authorization framework allowing apps to access user resources via third parties (Google, GitHub) without exposing credentials.
+
+**Authorization Code Flow**:
+1. Redirect to provider's auth URL
+2. User grants consent
+3. Provider redirects back with auth code
+4. Server exchanges code for tokens (using client_secret)
+5. Server creates session/JWT for user
+
+Most secure for web apps because the client_secret never reaches the browser.
+`,
+
+  // ─── API INTEGRATION ────────────────────────────────────────────────────────
+
+  // Axios Interceptors
+  "whatareaxiosinterceptors": `
+Interceptors are middleware for HTTP requests/responses. Used for auth tokens, error handling, retries.
+
+\`\`\`js
+// Request: attach token
+api.interceptors.request.use(config => {
+  config.headers.Authorization = \`Bearer \${getToken()}\`;
+  return config;
+});
+
+// Response: handle 401 and refresh
+api.interceptors.response.use(
+  res => res.data,
+  async err => {
+    if (err.response?.status === 401) {
+      const newToken = await refresh();
+      err.config.headers.Authorization = \`Bearer \${newToken}\`;
+      return api(err.config); // retry
+    }
+    return Promise.reject(err);
+  }
+);
+\`\`\`
+`,
+
+  // ─── TESTING ────────────────────────────────────────────────────────────────
+
+  // React Testing
+  "howtotestareactcomponent": `
+Use React Testing Library (tests from user perspective):
+
+\`\`\`jsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+test('submits form data', async () => {
+  const onSubmit = vi.fn();
+  render(<Form onSubmit={onSubmit} />);
+  await userEvent.type(screen.getByLabelText(/email/i), 'a@b.com');
+  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+  expect(onSubmit).toHaveBeenCalledWith({ email: 'a@b.com' });
+});
+\`\`\`
+
+Mock APIs with MSW (Mock Service Worker) for integration tests.
+`,
+
   // Default Fallback
   "default": `
 In an actual interview, you should structure your response around three core areas:
