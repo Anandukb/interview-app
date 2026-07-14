@@ -1,27 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
-// ── Local credentials (env-driven, with safe fallbacks) ────────────────────────
-
-const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL as string | undefined) ?? 'admin@example.com';
-const ADMIN_PASSWORD = (import.meta.env.VITE_ADMIN_PASSWORD as string | undefined) ?? 'admin123';
-const STORAGE_KEY = 'admin_auth';
-
-const readPersisted = (): boolean => {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === '1';
-  } catch {
-    return false;
-  }
-};
-
-const writePersisted = (authed: boolean) => {
-  try {
-    if (authed) localStorage.setItem(STORAGE_KEY, '1');
-    else localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    /* ignore storage errors (private mode, quota, etc.) */
-  }
-};
+import { supabase } from '../../lib/supabase';
 
 // ── State ──────────────────────────────────────────────────────────────────────
 
@@ -39,11 +17,11 @@ const initialState: AdminAuthState = {
 
 // ── Thunks ─────────────────────────────────────────────────────────────────────
 
-/** Called once on app boot — restores admin session from localStorage. */
-export const initAdminAuth = createAsyncThunk(
-  'adminAuth/init',
-  async () => readPersisted()
-);
+/** Called once on app boot — restores session from Supabase (checks existing cookie/token). */
+export const initAdminAuth = createAsyncThunk('adminAuth/init', async () => {
+  const { data } = await supabase.auth.getSession();
+  return !!data.session;
+});
 
 export const loginAdmin = createAsyncThunk(
   'adminAuth/login',
@@ -51,27 +29,15 @@ export const loginAdmin = createAsyncThunk(
     { email, password }: { email: string; password: string },
     { rejectWithValue }
   ) => {
-    // Tiny artificial delay so the loading state is visible.
-    await new Promise((r) => setTimeout(r, 250));
-
-    const emailMatches = email.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase();
-    const passwordMatches = password === ADMIN_PASSWORD;
-
-    if (!emailMatches || !passwordMatches) {
-      return rejectWithValue('Invalid email or password.');
-    }
-
-    writePersisted(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return rejectWithValue(error.message);
     return true;
   }
 );
 
-export const logoutAdmin = createAsyncThunk(
-  'adminAuth/logout',
-  async () => {
-    writePersisted(false);
-  }
-);
+export const logoutAdmin = createAsyncThunk('adminAuth/logout', async () => {
+  await supabase.auth.signOut();
+});
 
 // ── Slice ──────────────────────────────────────────────────────────────────────
 
@@ -79,11 +45,6 @@ const adminAuthSlice = createSlice({
   name: 'adminAuth',
   initialState,
   reducers: {
-    setAdminAuthenticated(state, action: { payload: boolean }) {
-      state.isAuthenticated = action.payload;
-      writePersisted(action.payload);
-      if (!action.payload) state.error = null;
-    },
     clearAdminAuthError(state) {
       state.error = null;
     },
@@ -114,5 +75,5 @@ const adminAuthSlice = createSlice({
   },
 });
 
-export const { setAdminAuthenticated, clearAdminAuthError } = adminAuthSlice.actions;
+export const { clearAdminAuthError } = adminAuthSlice.actions;
 export default adminAuthSlice.reducer;
