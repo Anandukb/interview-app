@@ -38,7 +38,8 @@ export interface AdminQuestion {
   title: string;
   questions: string;          // the actual prompt text
   answer: string;             // markdown answer
-  code: string;               // code snippet
+  code: string;               // code snippet (starter code for practical)
+  solutionCode: string;       // reference solution code (practical only)
   options: MCOption[];        // multi-choice options (UI shape — flattened)
   expectedOutput: string;
   hint: string;

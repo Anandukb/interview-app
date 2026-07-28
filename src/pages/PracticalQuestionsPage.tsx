@@ -1,13 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-import {
-  jsPracticalQuestions, reactPracticalQuestions, tsPracticalQuestions,
-  htmlPracticalQuestions, cssPracticalQuestions,
-} from '../data/mockQuestions';
-import { nodePracticalQuestions } from '../data/nodeMockQuestions';
-import type { Question } from '../data/mockQuestions';
+import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { fetchQuestionsFor } from '../lib/publicQuestions';
 import QuestionCard from '../components/QuestionCard';
 import CodeCompiler from '../components/CodeCompiler';
 import { PageShell } from '../components/PageShell';
@@ -15,16 +10,55 @@ import { PageNav } from '../components/PageNav';
 import { Button } from '../components/ui/Button';
 import { cn } from '../lib/cn';
 
+interface Question {
+  id: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  description: string;
+  hint: string;
+  startingCode: string;
+  answerCode: string;
+}
+
+const capitalizeDifficulty = (d: string): Question['difficulty'] => {
+  if (d.toLowerCase() === 'medium') return 'Medium';
+  if (d.toLowerCase() === 'hard') return 'Hard';
+  return 'Easy';
+};
+
 const PracticalQuestionsPage = () => {
   const { platform } = useParams<{ platform: string }>();
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 
-  let questions = jsPracticalQuestions;
-  if (platform === 'node') questions = nodePracticalQuestions;
-  else if (platform === 'react') questions = reactPracticalQuestions;
-  else if (platform === 'ts') questions = tsPracticalQuestions;
-  else if (platform === 'html') questions = htmlPracticalQuestions;
-  else if (platform === 'css') questions = cssPracticalQuestions;
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    setError(null);
+    setSelectedQuestion(null);
+    fetchQuestionsFor(platform ?? 'js', 'practical')
+      .then((rows) => {
+        if (!alive) return;
+        setQuestions(rows.map((q) => ({
+          id: q.id,
+          title: q.title,
+          difficulty: capitalizeDifficulty(q.difficulty),
+          description: q.questions,
+          hint: q.hint,
+          startingCode: q.code,
+          answerCode: q.solutionCode,
+        })));
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (!alive) return;
+        setError(err instanceof Error ? err.message : String(err));
+        setLoading(false);
+      });
+    return () => { alive = false; };
+  }, [platform]);
 
   const inDetail = !!selectedQuestion;
 
@@ -53,6 +87,24 @@ const PracticalQuestionsPage = () => {
         )}
       </div>
 
+      {error && (
+        <div className="mb-4 flex items-center gap-2 px-4 py-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm">
+          <AlertCircle size={15} />
+          <span>Failed to load questions: {error}</span>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-24 rounded-xl border border-border bg-surface animate-pulse" />
+          ))}
+        </div>
+      ) : !inDetail && questions.length === 0 ? (
+        <div className="bg-surface border border-border rounded-xl p-10 text-center text-fg-muted">
+          No practical challenges available yet for this track.
+        </div>
+      ) : (
       <AnimatePresence mode="wait">
         {!inDetail ? (
           <motion.div
@@ -135,6 +187,7 @@ const PracticalQuestionsPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      )}
 
       {inDetail && (
         <button

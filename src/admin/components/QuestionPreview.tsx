@@ -10,7 +10,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { Badge, DifficultyBadge } from '../../components/ui/Badge';
 import { cn } from '../../lib/cn';
 import type { AdminQuestion, AdminPlatform, QuestionType } from '../types';
-import type { QuestionKind } from './questionKind';
+import type { QuestionKind } from '../../lib/questionKind';
 
 interface PreviewProps {
   form: Omit<AdminQuestion, 'id' | 'createdAt'>;
@@ -41,6 +41,7 @@ const QuestionPreview = ({ form, kind, platform, questionType }: PreviewProps) =
 
   const showAnswer = !!form.answer;
   const showCode = !!form.code && (kind === 'output-prediction' || kind === 'mcq' || kind === 'practical' || kind === 'unknown');
+  const showSolutionCode = !!form.solutionCode && kind === 'practical';
   const showExpected = expectedLines.length > 0 && (kind === 'output-prediction' || kind === 'unknown');
   const showOptions = form.options.length > 0 && (kind === 'mcq' || kind === 'output-prediction' || kind === 'unknown');
   const showHint = !!form.hint;
@@ -78,6 +79,25 @@ const QuestionPreview = ({ form, kind, platform, questionType }: PreviewProps) =
               height="240px"
               language="javascript"
               value={form.code}
+              theme="vs-dark"
+              options={{
+                readOnly: true, minimap: { enabled: false }, fontSize: 13,
+                lineNumbers: 'on', scrollBeyondLastLine: false,
+                padding: { top: 12, bottom: 12 },
+                fontFamily: 'ui-monospace, Menlo, Monaco, Consolas, monospace',
+              }}
+            />
+          </div>
+        </PreviewSection>
+      )}
+
+      {showSolutionCode && (
+        <PreviewSection title="Solution Code">
+          <div className="bg-[#1e1e1e]">
+            <Editor
+              height="240px"
+              language="javascript"
+              value={form.solutionCode}
               theme="vs-dark"
               options={{
                 readOnly: true, minimap: { enabled: false }, fontSize: 13,

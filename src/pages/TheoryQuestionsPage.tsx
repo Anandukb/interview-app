@@ -1,11 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Search } from 'lucide-react';
-import {
-  jsTheoryQuestions, reactTheoryQuestions, nodeTheoryQuestions, tsTheoryQuestions,
-  htmlTheoryQuestions, cssTheoryQuestions, reactNativeTheoryQuestions,
-} from '../data/parsedQuestions';
+import { ChevronDown, Search, AlertCircle } from 'lucide-react';
+import { fetchQuestionsFor } from '../lib/publicQuestions';
 import { PageShell } from '../components/PageShell';
 import { PageNav } from '../components/PageNav';
 import { Input } from '../components/ui/Input';
@@ -20,19 +17,43 @@ const TRACK_LABELS: Record<string, string> = {
   ts: 'TypeScript', html: 'HTML', css: 'CSS',
 };
 
-const QUESTION_LISTS = {
-  js: jsTheoryQuestions, node: nodeTheoryQuestions, react: reactTheoryQuestions,
-  'react-native': reactNativeTheoryQuestions, ts: tsTheoryQuestions,
-  html: htmlTheoryQuestions, css: cssTheoryQuestions,
-};
+interface TheoryQuestion {
+  id: string;
+  question: string;
+  answer: string;
+}
 
 const TheoryQuestionsPage = () => {
   const { platform } = useParams<{ platform: string }>();
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [questions, setQuestions] = useState<TheoryQuestion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const trackTitle = TRACK_LABELS[platform ?? 'js'] ?? 'JavaScript';
-  const questions = QUESTION_LISTS[(platform ?? 'js') as keyof typeof QUESTION_LISTS] ?? jsTheoryQuestions;
+
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    setError(null);
+    fetchQuestionsFor(platform ?? 'js', 'theory')
+      .then((rows) => {
+        if (!alive) return;
+        setQuestions(rows.map((q) => ({
+          id: q.id,
+          question: q.questions || q.title,
+          answer: q.answer,
+        })));
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (!alive) return;
+        setError(err instanceof Error ? err.message : String(err));
+        setLoading(false);
+      });
+    return () => { alive = false; };
+  }, [platform]);
 
   const toggle = (id: string) => {
     setOpenIds((prev) => {
@@ -71,9 +92,24 @@ const TheoryQuestionsPage = () => {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {error && (
+        <div className="mb-4 flex items-center gap-2 px-4 py-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm">
+          <AlertCircle size={15} />
+          <span>Failed to load questions: {error}</span>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="space-y-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-14 rounded-xl border border-border bg-surface animate-pulse" />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="bg-surface border border-border rounded-xl p-10 text-center text-fg-muted">
-          No questions found matching your search.
+          {questions.length === 0
+            ? 'No questions available yet for this track.'
+            : 'No questions found matching your search.'}
         </div>
       ) : (
         <div className="space-y-2">

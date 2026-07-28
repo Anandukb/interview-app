@@ -14,7 +14,7 @@ import type { AdminQuestion, MCOption, Difficulty } from '../types';
 import { Modal } from '../../components/ui/Modal';
 import RichTextEditor from '../components/RichTextEditor';
 import QuestionPreview from '../components/QuestionPreview';
-import { detectQuestionKind, isSectionVisible, type QuestionKind } from '../components/questionKind';
+import { detectQuestionKind, isSectionVisible, type QuestionKind } from '../../lib/questionKind';
 import { Button } from '../../components/ui/Button';
 import { Input, Textarea, Select, Field } from '../../components/ui/Input';
 import { Badge, DifficultyBadge } from '../../components/ui/Badge';
@@ -28,7 +28,7 @@ import { cn } from '../../lib/cn';
 type FormState = Omit<AdminQuestion, 'id' | 'createdAt'>;
 
 const EMPTY_FORM: FormState = {
-  title: '', questions: '', answer: '', code: '',
+  title: '', questions: '', answer: '', code: '', solutionCode: '',
   options: [], expectedOutput: '', hint: '',
   difficulty: '', platformId: '', questionTypeId: '', tags: '',
 };
@@ -209,6 +209,7 @@ const AdminQuestions = () => {
   const showExpected = isSectionVisible('expected-output', kind);
   const showOptions  = isSectionVisible('options',         kind);
   const showHint     = isSectionVisible('hint',            kind);
+  const showSolutionCode = isSectionVisible('solution-code', kind);
 
   const codeSectionTitle   = kind === 'practical' ? 'Starter Code' : 'Code';
   const answerSectionTitle = kind === 'practical' ? 'Solution / Explanation' : 'Answer';
@@ -613,6 +614,15 @@ const AdminQuestions = () => {
                             />
                           </FormSection>
                         )}
+                        {showSolutionCode && (
+                          <FormSection icon={<Code2 size={14} />} title="Solution Code">
+                            <CodeEditor
+                              value={form.solutionCode}
+                              onChange={(v) => setForm({ ...form, solutionCode: v })}
+                              resolvedMode={resolvedMode}
+                            />
+                          </FormSection>
+                        )}
                         {showExpected && (
                           <ExpectedOutputSection
                             form={form}
@@ -682,6 +692,15 @@ const AdminQuestions = () => {
                           <CodeEditor
                             value={form.code}
                             onChange={(v) => setForm({ ...form, code: v })}
+                            resolvedMode={resolvedMode}
+                          />
+                        </FormSection>
+                      )}
+                      {showSolutionCode && (
+                        <FormSection icon={<Code2 size={14} />} title="Solution Code">
+                          <CodeEditor
+                            value={form.solutionCode}
+                            onChange={(v) => setForm({ ...form, solutionCode: v })}
                             resolvedMode={resolvedMode}
                           />
                         </FormSection>
@@ -903,6 +922,7 @@ const applyKindMask = (form: FormState, kind: QuestionKind): FormState => {
   if (!isSectionVisible('code',            kind)) masked.code = '';
   if (!isSectionVisible('expected-output', kind)) masked.expectedOutput = '';
   if (!isSectionVisible('options',         kind)) masked.options = [];
+  if (!isSectionVisible('solution-code',   kind)) masked.solutionCode = '';
   return masked;
 };
 

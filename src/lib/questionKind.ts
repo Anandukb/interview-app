@@ -1,4 +1,5 @@
-// Shared question-kind detection used by both the form and the preview.
+// Shared question-kind detection used by the admin form/preview and by the
+// public pages when mapping Supabase rows into page-specific shapes.
 
 export type QuestionKind = 'theory' | 'output-prediction' | 'practical' | 'mcq' | 'unknown';
 
@@ -7,14 +8,14 @@ export const detectQuestionKind = (typeName: string | undefined | null): Questio
   if (!n) return 'unknown';
   if (/theory/.test(n)) return 'theory';
   if (/output|prediction/.test(n)) return 'output-prediction';
-  if (/practical/.test(n)) return 'practical';
+  if (/practical|program/.test(n)) return 'practical';
   if (/mcq|multiple/.test(n)) return 'mcq';
   return 'unknown';
 };
 
 /** Whether a given form section should be visible for this question kind. */
 export const isSectionVisible = (
-  section: 'basics' | 'answer' | 'code' | 'expected-output' | 'options' | 'hint',
+  section: 'basics' | 'answer' | 'code' | 'expected-output' | 'options' | 'hint' | 'solution-code',
   kind: QuestionKind,
 ): boolean => {
   switch (section) {
@@ -31,5 +32,7 @@ export const isSectionVisible = (
       return kind === 'output-prediction' || kind === 'unknown';
     case 'options':
       return kind === 'mcq' || kind === 'output-prediction' || kind === 'unknown';
+    case 'solution-code':
+      return kind === 'practical';
   }
 };

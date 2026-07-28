@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  jsOutputPredictionQuestions, reactOutputPredictionQuestions, nodeOutputPredictionQuestions,
-  tsOutputPredictionQuestions, htmlOutputPredictionQuestions, cssOutputPredictionQuestions,
-} from '../data/parsedQuestions';
-import type { OutputPredictionQuestion } from '../data/parsedQuestions';
+import { fetchQuestionsFor } from '../lib/publicQuestions';
 import Editor from '@monaco-editor/react';
-import { CheckCircle, XCircle, RotateCcw, ArrowLeft, ArrowRight } from 'lucide-react';
+import { CheckCircle, XCircle, RotateCcw, ArrowLeft, ArrowRight, AlertCircle } from 'lucide-react';
 import QuestionCard from '../components/QuestionCard';
 import { PageShell } from '../components/PageShell';
 import { PageNav } from '../components/PageNav';
@@ -16,20 +12,51 @@ import { useTheme } from '../theme/ThemeProvider';
 import { cn } from '../lib/cn';
 import { renderFormattedAnswer } from '../lib/markdown';
 
+interface OutputPredictionQuestion {
+  id: string;
+  title: string;
+  code: string;
+  expectedOutput: string[];
+  options: string[];
+  answer?: string;
+}
+
 const OutputPredictionPage = () => {
   const { platform } = useParams<{ platform: string }>();
   const { resolvedMode } = useTheme();
+  const [questions, setQuestions] = useState<OutputPredictionQuestion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<OutputPredictionQuestion | null>(null);
   const [selectedOutput, setSelectedOutput] = useState<string[]>([]);
   const [isAnswerShown, setIsAnswerShown] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  let questions = jsOutputPredictionQuestions;
-  if (platform === 'node') questions = nodeOutputPredictionQuestions;
-  else if (platform === 'react') questions = reactOutputPredictionQuestions;
-  else if (platform === 'ts') questions = tsOutputPredictionQuestions;
-  else if (platform === 'html') questions = htmlOutputPredictionQuestions;
-  else if (platform === 'css') questions = cssOutputPredictionQuestions;
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    setError(null);
+    setSelectedQuestion(null);
+    fetchQuestionsFor(platform ?? 'js', 'output-prediction')
+      .then((rows) => {
+        if (!alive) return;
+        setQuestions(rows.map((q) => ({
+          id: q.id,
+          title: q.title || q.questions,
+          code: q.code,
+          options: q.options.map((o) => o.label),
+          expectedOutput: q.expectedOutput.split('\n').map((s) => s.trim()).filter(Boolean),
+          answer: q.answer || undefined,
+        })));
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (!alive) return;
+        setError(err instanceof Error ? err.message : String(err));
+        setLoading(false);
+      });
+    return () => { alive = false; };
+  }, [platform]);
 
   const isMultiSelect = selectedQuestion ? selectedQuestion.expectedOutput.length > 1 : false;
 
@@ -96,6 +123,24 @@ const OutputPredictionPage = () => {
         )}
       </div>
 
+      {error && (
+        <div className="mb-4 flex items-center gap-2 px-4 py-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm">
+          <AlertCircle size={15} />
+          <span>Failed to load questions: {error}</span>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-24 rounded-xl border border-border bg-surface animate-pulse" />
+          ))}
+        </div>
+      ) : !inDetail && questions.length === 0 ? (
+        <div className="bg-surface border border-border rounded-xl p-10 text-center text-fg-muted">
+          No output-prediction questions available yet for this track.
+        </div>
+      ) : (
       <AnimatePresence mode="wait">
         {!inDetail ? (
           <motion.div
@@ -320,6 +365,7 @@ const OutputPredictionPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      )}
 
       {/* Mobile back-to-list FAB when in detail view */}
       {inDetail && (

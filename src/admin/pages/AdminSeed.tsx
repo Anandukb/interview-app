@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Database, AlertCircle, CheckCircle2, Sparkles, Loader2, RefreshCw,
@@ -6,6 +6,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchAdminQuestions } from '../../store/slices/adminQuestionsSlice';
 import { supabase } from '../../lib/supabase';
+import { detectQuestionKind, type QuestionKind } from '../../lib/questionKind';
 import {
   jsTheoryQuestions,
   reactTheoryQuestions,
@@ -17,35 +18,107 @@ import {
   jsAdvancedTheoryQuestions,
   reactAdvancedTheoryQuestions,
   stateManagementTheoryQuestions,
+  jsOutputPredictionQuestions,
+  reactOutputPredictionQuestions,
+  nodeOutputPredictionQuestions,
+  tsOutputPredictionQuestions,
+  htmlOutputPredictionQuestions,
+  cssOutputPredictionQuestions,
   type TheoryQuestion,
+  type OutputPredictionQuestion,
 } from '../../data/parsedQuestions';
+import {
+  jsPracticalQuestions,
+  reactPracticalQuestions,
+  tsPracticalQuestions,
+  htmlPracticalQuestions,
+  cssPracticalQuestions,
+  type Question,
+} from '../../data/mockQuestions';
+import { nodePracticalQuestions } from '../../data/nodeMockQuestions';
 import { Button } from '../../components/ui/Button';
-import { Select, Field } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
 import { PageHeader, ErrorBanner } from '../../components/ui/PageHeader';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
 
+// ── Per-kind row builders ───────────────────────────────────────────────────
+// Each dummy-data item is turned into a `{ title, row }` pair up front: `title`
+// is only used for the dedupe check, `row` is the exact insert payload (minus
+// platform_id / question_type_id, which get stamped on per-source below).
+
+interface PreparedItem {
+  title: string;
+  row: Record<string, unknown>;
+}
+
+const theoryItem = (q: TheoryQuestion): PreparedItem => ({
+  title: q.question,
+  row: { title: q.question, questions: q.question, answer: q.answer, tags: 'theory' },
+});
+
+const outputItem = (q: OutputPredictionQuestion): PreparedItem => ({
+  title: q.title,
+  row: {
+    title: q.title,
+    questions: q.title,
+    code: q.code,
+    options: q.options.map((label, i) => ({ id: `opt-${i}`, label })),
+    expected_output: q.expectedOutput.join('\n'),
+    answer: q.answer ?? '',
+    tags: 'output-prediction',
+  },
+});
+
+const practicalItem = (q: Question): PreparedItem => ({
+  title: q.title,
+  row: {
+    title: q.title,
+    questions: q.description,
+    code: q.startingCode,
+    solution_code: q.answerCode,
+    hint: q.hint,
+    difficulty: q.difficulty.toLowerCase(),
+    tags: 'practical',
+  },
+});
+
 interface SeedSource {
   platformKey: string;
+  kind: QuestionKind;
   label: string;
-  list: TheoryQuestion[];
+  items: PreparedItem[];
 }
 
 const SOURCES: SeedSource[] = [
-  { platformKey: 'js',           label: 'JavaScript',   list: jsTheoryQuestions },
-  { platformKey: 'react',        label: 'React',        list: reactTheoryQuestions },
-  { platformKey: 'node',         label: 'Node.js',      list: nodeTheoryQuestions },
-  { platformKey: 'ts',           label: 'TypeScript',   list: tsTheoryQuestions },
-  { platformKey: 'html',         label: 'HTML',         list: htmlTheoryQuestions },
-  { platformKey: 'css',          label: 'CSS',          list: cssTheoryQuestions },
-  { platformKey: 'react-native', label: 'React Native', list: reactNativeTheoryQuestions },
-  { platformKey: 'js',           label: 'JS Advanced (Memory, Generators, Polyfills)', list: jsAdvancedTheoryQuestions },
-  { platformKey: 'react',        label: 'React Advanced (Fiber, Concurrent, Patterns)', list: reactAdvancedTheoryQuestions },
-  { platformKey: 'react',        label: 'State Mgmt, Auth & API', list: stateManagementTheoryQuestions },
+  // ── Theory ──
+  { platformKey: 'js',           kind: 'theory', label: 'JavaScript — Theory',              items: jsTheoryQuestions.map(theoryItem) },
+  { platformKey: 'react',        kind: 'theory', label: 'React — Theory',                   items: reactTheoryQuestions.map(theoryItem) },
+  { platformKey: 'node',         kind: 'theory', label: 'Node.js — Theory',                  items: nodeTheoryQuestions.map(theoryItem) },
+  { platformKey: 'ts',           kind: 'theory', label: 'TypeScript — Theory',               items: tsTheoryQuestions.map(theoryItem) },
+  { platformKey: 'html',         kind: 'theory', label: 'HTML — Theory',                     items: htmlTheoryQuestions.map(theoryItem) },
+  { platformKey: 'css',          kind: 'theory', label: 'CSS — Theory',                      items: cssTheoryQuestions.map(theoryItem) },
+  { platformKey: 'react-native', kind: 'theory', label: 'React Native — Theory',             items: reactNativeTheoryQuestions.map(theoryItem) },
+  { platformKey: 'js',           kind: 'theory', label: 'JS Advanced — Theory',               items: jsAdvancedTheoryQuestions.map(theoryItem) },
+  { platformKey: 'react',        kind: 'theory', label: 'React Advanced — Theory',            items: reactAdvancedTheoryQuestions.map(theoryItem) },
+  { platformKey: 'react',        kind: 'theory', label: 'State Mgmt, Auth & API — Theory',    items: stateManagementTheoryQuestions.map(theoryItem) },
+  // ── Output prediction ──
+  { platformKey: 'js',    kind: 'output-prediction', label: 'JavaScript — Output Prediction', items: jsOutputPredictionQuestions.map(outputItem) },
+  { platformKey: 'react', kind: 'output-prediction', label: 'React — Output Prediction',      items: reactOutputPredictionQuestions.map(outputItem) },
+  { platformKey: 'node',  kind: 'output-prediction', label: 'Node.js — Output Prediction',    items: nodeOutputPredictionQuestions.map(outputItem) },
+  { platformKey: 'ts',    kind: 'output-prediction', label: 'TypeScript — Output Prediction', items: tsOutputPredictionQuestions.map(outputItem) },
+  { platformKey: 'html',  kind: 'output-prediction', label: 'HTML — Output Prediction',       items: htmlOutputPredictionQuestions.map(outputItem) },
+  { platformKey: 'css',   kind: 'output-prediction', label: 'CSS — Output Prediction',        items: cssOutputPredictionQuestions.map(outputItem) },
+  // ── Practical ──
+  { platformKey: 'js',    kind: 'practical', label: 'JavaScript — Practical', items: jsPracticalQuestions.map(practicalItem) },
+  { platformKey: 'react', kind: 'practical', label: 'React — Practical',     items: reactPracticalQuestions.map(practicalItem) },
+  { platformKey: 'node',  kind: 'practical', label: 'Node.js — Practical',   items: nodePracticalQuestions.map(practicalItem) },
+  { platformKey: 'ts',    kind: 'practical', label: 'TypeScript — Practical', items: tsPracticalQuestions.map(practicalItem) },
+  { platformKey: 'html',  kind: 'practical', label: 'HTML — Practical',      items: htmlPracticalQuestions.map(practicalItem) },
+  { platformKey: 'css',   kind: 'practical', label: 'CSS — Practical',       items: cssPracticalQuestions.map(practicalItem) },
 ];
 
-interface SeedError { platformKey: string; questionId: string; message: string; }
+interface SeedError { source: string; title: string; message: string; }
 interface SeedProgress {
   done: number;
   total: number;
@@ -53,10 +126,20 @@ interface SeedProgress {
   skipped: number;
   errors: SeedError[];
   current: string;
-  perPlatform: Record<string, { inserted: number; skipped: number }>;
+  perSource: Record<string, { inserted: number; skipped: number }>;
 }
 const EMPTY_PROGRESS: SeedProgress = {
-  done: 0, total: 0, inserted: 0, skipped: 0, errors: [], current: '', perPlatform: {},
+  done: 0, total: 0, inserted: 0, skipped: 0, errors: [], current: '', perSource: {},
+};
+
+const kindLabel = (kind: QuestionKind) => {
+  switch (kind) {
+    case 'theory': return 'Theory';
+    case 'output-prediction': return 'Output Prediction';
+    case 'practical': return 'Practical';
+    case 'mcq': return 'Multiple Choice';
+    default: return 'Unknown';
+  }
 };
 
 const AdminSeed = () => {
@@ -64,33 +147,29 @@ const AdminSeed = () => {
   const platforms = useAppSelector((s) => s.adminPlatforms.data);
   const questionTypes = useAppSelector((s) => s.adminQuestionTypes.data);
 
-  const [selectedTypeId, setSelectedTypeId] = useState<string>('');
   const [seeding, setSeeding] = useState(false);
   const [progress, setProgress] = useState<SeedProgress>(EMPTY_PROGRESS);
   const [completed, setCompleted] = useState(false);
-
-  useEffect(() => {
-    if (!selectedTypeId && questionTypes.length) {
-      const theory = questionTypes.find((qt) => /theory/i.test(qt.name));
-      setSelectedTypeId(theory?.id ?? questionTypes[0].id);
-    }
-  }, [questionTypes, selectedTypeId]);
 
   const summary = useMemo(() =>
     SOURCES.map((src) => ({
       ...src,
       platform: platforms.find((p) => p.key === src.platformKey),
-      count: src.list.length,
+      typeId: questionTypes.find((qt) => detectQuestionKind(qt.name) === src.kind)?.id,
+      count: src.items.length,
     })),
-    [platforms]
+    [platforms, questionTypes]
   );
 
+  const sourceKey = (s: { platformKey: string; kind: QuestionKind }) => `${s.platformKey}|${s.kind}`;
+
   const totalCount = summary.reduce((s, x) => s + x.count, 0);
-  const missingPlatforms = summary.filter((s) => !s.platform);
+  const missingPlatforms = [...new Set(summary.filter((s) => !s.platform).map((s) => s.platformKey))];
+  const missingKinds = [...new Set(summary.filter((s) => !s.typeId).map((s) => s.kind))];
+  const readySources = summary.filter((s) => s.platform && s.typeId);
+  const readyCount = readySources.reduce((s, x) => s + x.count, 0);
 
   const handleSeed = async () => {
-    if (!selectedTypeId) return;
-
     setSeeding(true);
     setCompleted(false);
     setProgress({ ...EMPTY_PROGRESS, total: totalCount });
@@ -99,12 +178,11 @@ const AdminSeed = () => {
     try {
       const { data, error } = await supabase
         .from('Quesitons')
-        .select('title, platform_id')
-        .eq('question_type_id', Number(selectedTypeId));
+        .select('title, platform_id, question_type_id');
       if (error) throw new Error(error.message);
       existingKeys = new Set(
-        (data ?? []).map((r: { title: string | null; platform_id: number | string | null }) =>
-          `${r.platform_id}|${(r.title ?? '').trim().toLowerCase()}`
+        (data ?? []).map((r: { title: string | null; platform_id: number | string | null; question_type_id: number | string | null }) =>
+          `${r.platform_id}|${r.question_type_id}|${(r.title ?? '').trim().toLowerCase()}`
         )
       );
     } catch (e) {
@@ -112,49 +190,54 @@ const AdminSeed = () => {
     }
 
     for (const src of summary) {
-      if (!src.platform) {
-        for (const q of src.list) {
+      const key = sourceKey(src);
+
+      if (!src.platform || !src.typeId) {
+        for (const item of src.items) {
           setProgress((p) => ({
             ...p,
             done: p.done + 1, skipped: p.skipped + 1,
-            current: `Skipped ${q.id} — platform "${src.platformKey}" not in DB`,
-            perPlatform: bumpPlatform(p.perPlatform, src.platformKey, 'skipped'),
+            current: !src.platform
+              ? `Skipped ${item.title.slice(0, 60)} — platform "${src.platformKey}" not in DB`
+              : `Skipped ${item.title.slice(0, 60)} — no question type maps to "${src.kind}"`,
+            perSource: bumpSource(p.perSource, key, 'skipped'),
           }));
         }
         continue;
       }
 
       const platformId = Number(src.platform.id);
+      const typeId = Number(src.typeId);
 
-      for (const q of src.list) {
-        const key = `${platformId}|${q.question.trim().toLowerCase()}`;
-        setProgress((p) => ({ ...p, current: `${src.label}: ${q.question.slice(0, 80)}` }));
+      for (const item of src.items) {
+        const dedupeKey = `${platformId}|${typeId}|${item.title.trim().toLowerCase()}`;
+        setProgress((p) => ({ ...p, current: `${src.label}: ${item.title.slice(0, 80)}` }));
 
-        if (existingKeys.has(key)) {
+        if (existingKeys.has(dedupeKey)) {
           setProgress((p) => ({
             ...p, done: p.done + 1, skipped: p.skipped + 1,
-            perPlatform: bumpPlatform(p.perPlatform, src.platformKey, 'skipped'),
+            perSource: bumpSource(p.perSource, key, 'skipped'),
           }));
           continue;
         }
 
         try {
           const { error } = await supabase.from('Quesitons').insert({
-            title: q.question, questions: q.question, answer: q.answer,
-            platform_id: platformId, question_type_id: Number(selectedTypeId),
-            tags: 'theory',
+            ...item.row,
+            platform_id: platformId,
+            question_type_id: typeId,
           });
           if (error) throw new Error(error.message);
 
-          existingKeys.add(key);
+          existingKeys.add(dedupeKey);
           setProgress((p) => ({
             ...p, done: p.done + 1, inserted: p.inserted + 1,
-            perPlatform: bumpPlatform(p.perPlatform, src.platformKey, 'inserted'),
+            perSource: bumpSource(p.perSource, key, 'inserted'),
           }));
         } catch (err) {
           setProgress((p) => ({
             ...p, done: p.done + 1,
-            errors: [...p.errors, { platformKey: src.platformKey, questionId: q.id, message: errMsg(err) }],
+            errors: [...p.errors, { source: src.label, title: item.title, message: errMsg(err) }],
           }));
         }
       }
@@ -172,8 +255,8 @@ const AdminSeed = () => {
   return (
     <div>
       <PageHeader
-        title="Seed Theory Questions"
-        description="Import all hardcoded theory questions into Supabase, mapped by platform."
+        title="Seed Questions"
+        description="Import every hardcoded question (theory, output-prediction, practical) into Supabase, mapped by platform and type."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4">
@@ -187,27 +270,31 @@ const AdminSeed = () => {
             <Table>
               <thead>
                 <tr>
+                  <Th>Source</Th>
                   <Th>Platform</Th>
-                  <Th>DB key</Th>
-                  <Th>Mapped to</Th>
+                  <Th>Type</Th>
                   <Th className="text-right">Questions</Th>
                 </tr>
               </thead>
               <tbody>
                 {summary.map((s) => (
-                  <TableRow key={s.platformKey}>
+                  <TableRow key={sourceKey(s) + s.label}>
                     <Td className="font-medium">{s.label}</Td>
-                    <Td><code className="px-1.5 py-0.5 rounded bg-brand/10 text-brand text-xs font-mono">{s.platformKey}</code></Td>
                     <Td>
                       {s.platform
                         ? <Badge tone="brand">{s.platform.name}</Badge>
-                        : <Badge tone="danger">Missing</Badge>}
+                        : <Badge tone="danger">Missing "{s.platformKey}"</Badge>}
+                    </Td>
+                    <Td>
+                      {s.typeId
+                        ? <Badge tone="success">{kindLabel(s.kind)}</Badge>
+                        : <Badge tone="danger">No "{kindLabel(s.kind)}" type</Badge>}
                     </Td>
                     <Td className="text-right font-mono">{s.count}</Td>
                   </TableRow>
                 ))}
                 <TableRow className="bg-surface-2">
-                  <Td colSpan={3} className="text-right font-semibold">Total</Td>
+                  <Td colSpan={3} className="text-right font-semibold">Total ({readyCount} ready)</Td>
                   <Td className="text-right font-mono font-bold text-brand">{totalCount}</Td>
                 </TableRow>
               </tbody>
@@ -219,33 +306,25 @@ const AdminSeed = () => {
         <Card className="lg:col-span-2 flex flex-col gap-4">
           <CardHeader>
             <Sparkles size={16} className="text-brand" />
-            <CardTitle>Target settings</CardTitle>
+            <CardTitle>Seed everything</CardTitle>
           </CardHeader>
 
-          <Field
-            label="Question Type"
-            required
-            hint='Pick the Supabase question type to attach these to (e.g. "Theory").'
-          >
-            <Select
-              value={selectedTypeId}
-              onChange={(e) => setSelectedTypeId(e.target.value)}
-              disabled={seeding || questionTypes.length === 0}
-            >
-              <option value="" disabled>Select type…</option>
-              {questionTypes.map((qt) => (
-                <option key={qt.id} value={qt.id}>{qt.name}</option>
-              ))}
-            </Select>
-          </Field>
+          <p className="text-sm text-fg-muted">
+            One click inserts every question above that isn't already in Supabase (matched by
+            platform + type + title), across all three question kinds.
+          </p>
 
-          {missingPlatforms.length > 0 && (
+          {(missingPlatforms.length > 0 || missingKinds.length > 0) && (
             <ErrorBanner>
               <AlertCircle size={14} />
               <span>
-                Missing platform key{missingPlatforms.length > 1 ? 's' : ''}:{' '}
-                {missingPlatforms.map((m) => m.platformKey).join(', ')}.
-                Add them on Platforms first — those questions will be skipped.
+                {missingPlatforms.length > 0 && (
+                  <>Missing platform key{missingPlatforms.length > 1 ? 's' : ''}: {missingPlatforms.join(', ')}. </>
+                )}
+                {missingKinds.length > 0 && (
+                  <>No question type maps to: {missingKinds.map(kindLabel).join(', ')}. </>
+                )}
+                Those rows will be skipped.
               </span>
             </ErrorBanner>
           )}
@@ -253,7 +332,7 @@ const AdminSeed = () => {
           <div className="flex items-center gap-2 mt-auto">
             <Button
               onClick={handleSeed}
-              disabled={!selectedTypeId || questionTypes.length === 0}
+              disabled={readyCount === 0}
               loading={seeding}
               leftIcon={!seeding && <Database size={16} />}
               className="flex-1"
@@ -306,20 +385,20 @@ const AdminSeed = () => {
             </div>
           )}
 
-          {/* Per-platform */}
-          {Object.keys(progress.perPlatform).length > 0 && (
+          {/* Per-source */}
+          {Object.keys(progress.perSource).length > 0 && (
             <div className="mt-4">
               <TableWrap>
                 <Table>
                   <thead>
-                    <tr><Th>Platform</Th><Th>Inserted</Th><Th>Skipped</Th></tr>
+                    <tr><Th>Source</Th><Th>Inserted</Th><Th>Skipped</Th></tr>
                   </thead>
                   <tbody>
                     {summary.map((src) => {
-                      const stats = progress.perPlatform[src.platformKey];
+                      const stats = progress.perSource[sourceKey(src)];
                       if (!stats) return null;
                       return (
-                        <TableRow key={src.platformKey}>
+                        <TableRow key={sourceKey(src) + src.label}>
                           <Td className="font-medium">{src.label}</Td>
                           <Td className="font-mono text-success">{stats.inserted ?? 0}</Td>
                           <Td className="font-mono text-fg-muted">{stats.skipped ?? 0}</Td>
@@ -340,8 +419,8 @@ const AdminSeed = () => {
               <ul className="mt-2 pl-5 text-sm text-fg-muted space-y-1">
                 {progress.errors.slice(0, 50).map((err, i) => (
                   <li key={i}>
-                    <code className="px-1.5 py-0.5 rounded bg-surface-3 text-xs font-mono">{err.questionId}</code>
-                    {' '}({err.platformKey}) — {err.message}
+                    <code className="px-1.5 py-0.5 rounded bg-surface-3 text-xs font-mono">{err.title.slice(0, 40)}</code>
+                    {' '}({err.source}) — {err.message}
                   </li>
                 ))}
                 {progress.errors.length > 50 && (
@@ -368,9 +447,9 @@ const StatTile = ({
   );
 };
 
-const bumpPlatform = (
-  current: SeedProgress['perPlatform'], key: string, bucket: 'inserted' | 'skipped',
-): SeedProgress['perPlatform'] => {
+const bumpSource = (
+  current: SeedProgress['perSource'], key: string, bucket: 'inserted' | 'skipped',
+): SeedProgress['perSource'] => {
   const prev = current[key] ?? { inserted: 0, skipped: 0 };
   return { ...current, [key]: { ...prev, [bucket]: prev[bucket] + 1 } };
 };
