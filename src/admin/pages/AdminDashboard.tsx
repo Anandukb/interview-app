@@ -1,17 +1,40 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Layers, ListChecks, HelpCircle, ArrowRight, TrendingUp } from 'lucide-react';
-import { useAppSelector } from '../../store/hooks';
+import {
+  Layers, ListChecks, HelpCircle, ArrowRight, TrendingUp, Users, UserCheck, Inbox,
+} from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchProfiles } from '../../store/slices/profilesSlice';
 import { Badge } from '../../components/ui/Badge';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
 import { cn } from '../../lib/cn';
 
+const STATUS_TONE = { pending: 'warning', approved: 'success', rejected: 'danger' } as const;
+const TABLE_LABEL = { Quesitons: 'Question', Platforms: 'Platform', 'Questions Types': 'Question Type' } as const;
+
+const summarize = (row: Record<string, unknown> | null): string => {
+  if (!row) return '(untitled)';
+  return (row.title as string) || (row.Name as string) || (row.name as string) || (row.questions as string) || '(untitled)';
+};
+
 const AdminDashboard = () => {
+  const dispatch = useAppDispatch();
   const platforms = useAppSelector((s) => s.adminPlatforms.data);
   const questionTypes = useAppSelector((s) => s.adminQuestionTypes.data);
   const questions = useAppSelector((s) => s.adminQuestions.data);
+  const profiles = useAppSelector((s) => s.profiles.data);
+  const pendingChanges = useAppSelector((s) => s.pendingChanges.data);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchProfiles());
+  }, [dispatch]);
+
+  const contributorCount = profiles.filter((p) => p.role === 'contributor').length;
+  const pendingSignups = profiles.filter((p) => p.role === 'pending').length;
+  const pendingReview = pendingChanges.filter((c) => c.status === 'pending').length;
 
   const stats = [
     {
@@ -32,7 +55,29 @@ const AdminDashboard = () => {
       desc: 'Interview question bank',
       gradient: 'from-emerald-500 to-teal-500',
     },
+    {
+      label: 'Contributors', value: contributorCount, icon: Users,
+      to: '/admin/contributors',
+      desc: 'Approved contributor accounts',
+      gradient: 'from-sky-500 to-indigo-500',
+    },
+    {
+      label: 'Pending Signups', value: pendingSignups, icon: UserCheck,
+      to: '/admin/contributors',
+      desc: 'Awaiting your approval',
+      gradient: 'from-amber-500 to-orange-500',
+    },
+    {
+      label: 'Pending Changes', value: pendingReview, icon: Inbox,
+      to: '/admin/pending-changes',
+      desc: 'Contributor submissions to review',
+      gradient: 'from-rose-500 to-pink-600',
+    },
   ];
+
+  const recentChanges = [...pendingChanges]
+    .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
+    .slice(0, 6);
 
   return (
     <div>
@@ -86,7 +131,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Lists */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-fg uppercase tracking-wider">Platforms</h2>
@@ -158,6 +203,42 @@ const AdminDashboard = () => {
           </TableWrap>
         </section>
       </div>
+
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-fg uppercase tracking-wider">Recent submissions</h2>
+          <button
+            onClick={() => navigate('/admin/pending-changes')}
+            className="text-xs font-semibold text-brand hover:underline"
+          >
+            View all →
+          </button>
+        </div>
+        <TableWrap>
+          <Table>
+            <thead>
+              <tr><Th>Type</Th><Th>Summary</Th><Th>Submitted</Th><Th>Status</Th></tr>
+            </thead>
+            <tbody>
+              {recentChanges.map((c) => (
+                <TableRow key={c.id}>
+                  <Td><Badge tone="brand">{TABLE_LABEL[c.targetTable]}</Badge></Td>
+                  <Td className="max-w-[320px]">
+                    <div className="line-clamp-1 text-sm">{summarize(c.payload ?? c.previous)}</div>
+                  </Td>
+                  <Td className="text-fg-subtle text-xs">{new Date(c.submittedAt).toLocaleDateString()}</Td>
+                  <Td><Badge tone={STATUS_TONE[c.status]} className="capitalize">{c.status}</Badge></Td>
+                </TableRow>
+              ))}
+              {recentChanges.length === 0 && (
+                <TableRow>
+                  <Td colSpan={4} className="text-center py-8 text-fg-subtle">No submissions yet</Td>
+                </TableRow>
+              )}
+            </tbody>
+          </Table>
+        </TableWrap>
+      </section>
     </div>
   );
 };

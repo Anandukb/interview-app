@@ -40,6 +40,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { MotionConfig } from 'framer-motion';
 import { store } from './store/store';
 import { ThemeProvider } from './theme/ThemeProvider';
 import './index.css';
@@ -49,9 +50,14 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <ThemeProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        {/* reducedMotion="user" makes Framer honour the OS setting the same way
+            the stylesheet's prefers-reduced-motion block does — transforms are
+            dropped, opacity fades are kept. */}
+        <MotionConfig reducedMotion="user">
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </MotionConfig>
       </ThemeProvider>
     </Provider>
   </StrictMode>,

@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent, type ReactNode, type Dispatch, type SetStateAction } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Plus, Pencil, Trash2, HelpCircle, RefreshCw, AlertCircle,
+  Plus, Pencil, Trash2, HelpCircle, RefreshCw, AlertCircle, Info,
   FileText, Code2, ListChecks, Lightbulb, Eye, ArrowLeft, X, Search,
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchAdminQuestions, addAdminQuestion, updateAdminQuestion, deleteAdminQuestion,
 } from '../../store/slices/adminQuestionsSlice';
+import { submitChange } from '../../store/slices/pendingChangesSlice';
+import { questionToInsertRow } from '../../lib/questions';
 import type { AdminQuestion, MCOption, Difficulty } from '../types';
 import { Modal } from '../../components/ui/Modal';
 import RichTextEditor from '../components/RichTextEditor';
@@ -47,6 +49,8 @@ const DIFFICULTIES: { value: Difficulty; label: string }[] = [
 const AdminQuestions = () => {
   const dispatch = useAppDispatch();
   const { resolvedMode } = useTheme();
+  const role = useAppSelector((s) => s.adminAuth.role);
+  const isContributor = role === 'contributor';
   const questions = useAppSelector((s) => s.adminQuestions.data);
   const loading = useAppSelector((s) => s.adminQuestions.loading);
   const error = useAppSelector((s) => s.adminQuestions.error);
@@ -177,8 +181,19 @@ const AdminQuestions = () => {
     setSaveError(null);
     try {
       const cleaned = applyKindMask(form, kind);
-      if (editTarget) await dispatch(updateAdminQuestion({ id: editTarget.id, patch: cleaned })).unwrap();
-      else            await dispatch(addAdminQuestion(cleaned)).unwrap();
+      if (isContributor) {
+        await dispatch(submitChange({
+          targetTable: 'Quesitons',
+          targetId: editTarget ? editTarget.id : null,
+          action: editTarget ? 'update' : 'create',
+          payload: questionToInsertRow(cleaned),
+          previous: editTarget ? questionToInsertRow(editTarget) : null,
+        })).unwrap();
+      } else if (editTarget) {
+        await dispatch(updateAdminQuestion({ id: editTarget.id, patch: cleaned })).unwrap();
+      } else {
+        await dispatch(addAdminQuestion(cleaned)).unwrap();
+      }
       handleClose();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -188,7 +203,18 @@ const AdminQuestions = () => {
   };
 
   const handleDelete = async (id: string) => {
-    await dispatch(deleteAdminQuestion(id));
+    if (isContributor) {
+      const target = questions.find((q) => q.id === id);
+      await dispatch(submitChange({
+        targetTable: 'Quesitons',
+        targetId: id,
+        action: 'delete',
+        payload: null,
+        previous: target ? questionToInsertRow(target) : null,
+      }));
+    } else {
+      await dispatch(deleteAdminQuestion(id));
+    }
     setDeleteConfirm(null);
   };
 
@@ -222,7 +248,9 @@ const AdminQuestions = () => {
     <div>
       <PageHeader
         title="Questions"
-        description="Manage interview questions — synced with Supabase"
+        description={isContributor
+          ? 'Propose questions — changes are reviewed by a superadmin before going live'
+          : 'Manage interview questions — synced with Supabase'}
         actions={
           <>
             <Button
@@ -475,6 +503,12 @@ const AdminQuestions = () => {
             >
               {/* Sticky basics row */}
               <div className="px-6 pt-4 pb-3 border-b border-border bg-surface-2/40 shrink-0">
+                {isContributor && (
+                  <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-brand/10 border border-brand/25 text-brand text-xs">
+                    <Info size={14} />
+                    <span>Your changes will be submitted for a superadmin to review before going live.</span>
+                  </div>
+                )}
                 <BasicsRow
                   form={form}
                   setForm={setForm}
@@ -765,7 +799,7 @@ const AdminQuestions = () => {
                     Preview
                   </Button>
                   <Button type="submit" loading={saving}>
-                    {editTarget ? 'Save Changes' : 'Add Question'}
+                    {isContributor ? 'Submit for Review' : editTarget ? 'Save Changes' : 'Add Question'}
                   </Button>
                 </div>
               </div>

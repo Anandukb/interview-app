@@ -46,7 +46,7 @@ export const Modal = ({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[1000] flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[1000] flex items-center justify-center p-3 sm:p-6 bg-black/55 backdrop-blur-md"
           onClick={onClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -57,16 +57,16 @@ export const Modal = ({
         >
           <motion.div
             className={cn(
-              'relative w-full bg-surface border border-border rounded-2xl shadow-2xl flex flex-col',
+              'relative w-full bg-surface border border-border rounded-3xl shadow-xl flex flex-col edge-light',
               maxWidth,
               maxHeight,
               'overflow-hidden'
             )}
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 6, scale: 0.99 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 350 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 30, stiffness: 400, mass: 0.6 }}
           >
             {/* Header */}
             <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-border shrink-0">
@@ -79,7 +79,7 @@ export const Modal = ({
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="shrink-0 -mt-0.5 -mr-1 h-8 w-8 inline-flex items-center justify-center rounded-lg text-fg-muted hover:text-fg hover:bg-surface-3 transition-colors"
+                className="shrink-0 -mt-0.5 -mr-1 h-8 w-8 inline-flex items-center justify-center rounded-lg text-fg-muted hover:text-fg hover:bg-surface-3 hover:rotate-90 transition-all duration-300"
               >
                 <X size={18} />
               </button>

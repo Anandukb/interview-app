@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { HelpCircle, CheckSquare, Laptop, ArrowRight } from 'lucide-react';
 import { PageShell } from '../components/PageShell';
 import { PageNav } from '../components/PageNav';
+import { InteractiveCard } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
+import { fadeUp, popIn, stagger, spring } from '../lib/motion';
 import { cn } from '../lib/cn';
 
 const PLATFORM_INFO: Record<string, { name: string; color: string }> = {
@@ -23,86 +26,113 @@ const QuestionTypesPage = () => {
   const navigate = useNavigate();
   const { platform } = useParams<{ platform: string }>();
   const platformKey = platform?.toLowerCase() ?? '';
-  const trackInfo = PLATFORM_INFO[platformKey] ?? { name: 'JavaScript', color: '#a78bfa' };
+  const trackInfo = PLATFORM_INFO[platformKey] ?? { name: 'JavaScript', color: '#60a5fa' };
 
   const types = [
     {
-      id: 'theory', name: 'Theory Questions', tag: 'Concepts',
-      icon: HelpCircle, gradient: 'from-violet-500 to-fuchsia-500',
+      id: 'theory',
+      name: 'Theory',
+      tag: 'Concepts',
+      icon: HelpCircle,
+      gradient: 'from-violet-500 to-purple-600',
       desc: getTheoryDesc(platform),
     },
     {
-      id: 'output-prediction', name: 'Output Prediction', tag: 'Tricky',
-      icon: CheckSquare, gradient: 'from-amber-500 to-orange-500',
+      id: 'output-prediction',
+      name: 'Output Prediction',
+      tag: 'Tricky',
+      icon: CheckSquare,
+      gradient: 'from-amber-400 to-orange-500',
       desc: getOutputDesc(platform),
     },
     {
-      id: 'practical', name: 'Practical Coding', tag: 'Hands-on',
-      icon: Laptop, gradient: 'from-cyan-500 to-blue-500',
+      id: 'practical',
+      name: 'Practical Coding',
+      tag: 'Hands-on',
+      icon: Laptop,
+      gradient: 'from-cyan-400 to-blue-500',
       desc: getPracticalDesc(platform),
     },
-  ].filter((type) => {
-    if (platform === 'react-native') return type.id === 'theory';
-    return true;
-  });
+  ].filter((type) => (platform === 'react-native' ? type.id === 'theory' : true));
 
   return (
     <PageShell>
-      <PageNav backTo="/" backLabel="Languages" />
-
-      <div aria-hidden className="pointer-events-none absolute top-40 right-0 h-[320px] w-[320px] rounded-full bg-brand/10 blur-[100px]" />
+      <PageNav backTo="/" backLabel="All tracks" />
 
       <motion.header
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-        className="mb-6 relative"
+        variants={stagger(0.07)}
+        initial="hidden"
+        animate="show"
+        className="relative max-w-2xl pt-4 pb-10 sm:pt-8 sm:pb-12"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-3 border border-border mb-3">
-          <span className="h-2 w-2 rounded-full" style={{ background: trackInfo.color }} />
-          <span className="text-xs font-semibold text-fg-muted">{trackInfo.name}</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-          {trackInfo.name} <span className="gradient-text">Practice</span>
-        </h1>
-        <p className="mt-1.5 text-sm text-fg-muted">
-          Pick a format to start practicing.
-        </p>
+        <motion.div variants={fadeUp}>
+          <span className="inline-flex items-center gap-2 pl-2.5 pr-3.5 py-1.5 rounded-full border border-border bg-surface/70 backdrop-blur-sm">
+            <span
+              className="h-2 w-2 rounded-full animate-pulse-ring"
+              style={{ background: trackInfo.color }}
+            />
+            <span className="text-xs font-semibold text-fg-muted">{trackInfo.name}</span>
+          </span>
+        </motion.div>
+
+        <motion.h1
+          variants={fadeUp}
+          className="mt-5 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.08]"
+        >
+          How do you want to <span className="gradient-text">practice?</span>
+        </motion.h1>
+
+        <motion.p variants={fadeUp} className="mt-4 text-base text-fg-muted">
+          Three formats, same goal — walk into the interview having already seen the question.
+        </motion.p>
       </motion.header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {types.map((type, i) => {
+      <motion.div
+        variants={stagger(0.06)}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
+        {types.map((type) => {
           const Icon = type.icon;
           return (
-            <motion.button
-              key={type.id}
-              type="button"
-              onClick={() => navigate(`/${platform}/${type.id}`)}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 * i, duration: 0.25 }}
-              whileHover={{ y: -3 }}
-              className="group relative text-left bg-surface border border-border rounded-2xl p-5 overflow-hidden shadow-sm hover:shadow-xl hover:border-border-strong transition-all"
-            >
-              <div className={cn('absolute inset-x-0 top-0 h-1 bg-gradient-to-r', type.gradient)} />
-              <div className="flex items-start justify-between mb-4">
-                <div className={cn('h-11 w-11 grid place-items-center rounded-xl text-white shadow-md bg-gradient-to-br', type.gradient)}>
-                  <Icon size={20} />
+            <motion.div key={type.id} variants={popIn}>
+              <InteractiveCard
+                accent={type.gradient}
+                onClick={() => navigate(`/${platform}/${type.id}`)}
+                className="h-full flex flex-col p-6"
+              >
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <motion.span
+                    whileHover={{ rotate: -6, scale: 1.06 }}
+                    transition={spring}
+                    className={cn(
+                      'grid h-12 w-12 place-items-center rounded-2xl text-white shadow-md bg-gradient-to-br',
+                      type.gradient
+                    )}
+                  >
+                    <Icon size={22} />
+                  </motion.span>
+                  <Badge tone="neutral" className="uppercase tracking-[0.1em]">
+                    {type.tag}
+                  </Badge>
                 </div>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-3 text-fg-muted border border-border">
-                  {type.tag}
+
+                <h2 className="text-lg font-bold tracking-tight mb-1.5">{type.name}</h2>
+                <p className="text-[13px] leading-relaxed text-fg-muted flex-1">{type.desc}</p>
+
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand">
+                  Start practising
+                  <ArrowRight
+                    size={14}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
                 </span>
-              </div>
-              <h2 className="text-base font-bold mb-1">{type.name}</h2>
-              <p className="text-xs text-fg-muted leading-relaxed line-clamp-3">{type.desc}</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-brand opacity-70 group-hover:opacity-100 transition-opacity">
-                Start
-                <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </motion.button>
+              </InteractiveCard>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </PageShell>
   );
 };

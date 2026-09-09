@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
-import { Lightbulb, Play, CheckCircle, SplitSquareHorizontal, SplitSquareVertical } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Lightbulb, Play, CheckCircle, SplitSquareHorizontal, SplitSquareVertical, Trash2, Terminal } from 'lucide-react';
 import { useTheme } from '../theme/ThemeProvider';
 import { Button } from './ui/Button';
+import { collapse } from '../lib/motion';
 import { cn } from '../lib/cn';
 
 interface CodeCompilerProps {
@@ -119,58 +121,45 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
   };
 
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-surface overflow-hidden h-full shadow-sm">
-      {/* Header */}
+    <div className="flex flex-col h-full overflow-hidden rounded-2xl border border-border bg-surface shadow-sm edge-light">
+      {/* ── Toolbar ──────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-border bg-surface-2">
         <div className="flex items-center gap-1">
-          <button
+          <FileTab
+            label="index.js"
+            active={activeTab === 'index.js'}
             onClick={() => { setActiveTab('index.js'); setOutput(''); }}
-            className={cn(
-              'px-3 py-1.5 rounded-md text-xs font-mono font-semibold transition-colors',
-              activeTab === 'index.js'
-                ? 'bg-surface text-fg shadow-sm'
-                : 'text-fg-muted hover:bg-surface'
-            )}
-          >
-            index.js
-          </button>
+          />
           {showSolutionTab && (
-            <button
+            <FileTab
+              label="solution.js"
+              tone="success"
+              active={activeTab === 'solution.js'}
               onClick={() => setActiveTab('solution.js')}
-              className={cn(
-                'px-3 py-1.5 rounded-md text-xs font-mono font-semibold transition-colors',
-                activeTab === 'solution.js'
-                  ? 'bg-success/15 text-success shadow-sm'
-                  : 'text-success/70 hover:bg-success/10'
-              )}
-            >
-              solution.js
-            </button>
+            />
           )}
         </div>
 
         <div className="flex items-center gap-1.5">
           <Button
-            variant="ghost" size="icon-sm"
-            onClick={() => setConsolePosition(p => p === 'bottom' ? 'side' : 'bottom')}
-            title="Toggle console position"
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => setConsolePosition((p) => (p === 'bottom' ? 'side' : 'bottom'))}
+            title={`Move console to the ${consolePosition === 'bottom' ? 'side' : 'bottom'}`}
           >
             {consolePosition === 'bottom' ? <SplitSquareHorizontal size={14} /> : <SplitSquareVertical size={14} />}
           </Button>
           <Button
-            variant="ghost" size="sm"
+            variant="ghost"
+            size="sm"
             onClick={() => setShowHint(!showHint)}
-            leftIcon={<Lightbulb size={14} />}
+            leftIcon={<Lightbulb size={14} className={cn(showHint && 'text-warning')} />}
           >
-            {showHint ? 'Hide Hint' : 'Hint'}
+            <span className="hidden sm:inline">{showHint ? 'Hide hint' : 'Hint'}</span>
           </Button>
           {!showSolutionTab && (
-            <Button
-              variant="subtle" size="sm"
-              onClick={handleShowResult}
-              leftIcon={<CheckCircle size={14} />}
-            >
-              Show Result
+            <Button variant="subtle" size="sm" onClick={handleShowResult} leftIcon={<CheckCircle size={14} />}>
+              <span className="hidden sm:inline">Solution</span>
             </Button>
           )}
           <Button size="sm" onClick={handleRunCode} leftIcon={<Play size={14} />}>
@@ -179,28 +168,26 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
         </div>
       </div>
 
-      {/* Hint */}
-      {showHint && (
-        <div className="px-4 py-3 bg-warning/8 border-b border-warning/30 text-sm text-warning">
-          <strong className="font-bold">Hint:</strong> {hint}
-        </div>
-      )}
+      {/* ── Hint ─────────────────────────────────────────────────────────── */}
+      <AnimatePresence initial={false}>
+        {showHint && (
+          <motion.div variants={collapse} initial="hidden" animate="show" exit="hidden" className="overflow-hidden">
+            <div className="flex items-start gap-2.5 px-4 py-3 bg-warning/8 border-b border-warning/25 text-sm text-warning">
+              <Lightbulb size={15} className="mt-0.5 shrink-0" />
+              <span className="leading-relaxed">{hint}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Workspace */}
+      {/* ── Workspace ────────────────────────────────────────────────────── */}
       <div
         ref={workspaceRef}
-        className={cn(
-          'flex flex-1 min-h-0',
-          consolePosition === 'side' ? 'flex-row' : 'flex-col'
-        )}
+        className={cn('flex flex-1 min-h-0', consolePosition === 'side' ? 'flex-row' : 'flex-col')}
       >
         <div
           className="min-w-0 min-h-0"
-          style={
-            consolePosition === 'side'
-              ? { width: `${sideSplitPercent}%`, flexShrink: 0 }
-              : { flex: 1 }
-          }
+          style={consolePosition === 'side' ? { width: `${sideSplitPercent}%`, flexShrink: 0 } : { flex: 1 }}
         >
           <Editor
             key={activeTab}
@@ -212,25 +199,40 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
             options={{
               readOnly: activeTab === 'solution.js',
               minimap: { enabled: false },
-              fontSize: 14,
+              fontSize: 13.5,
               fontFamily: 'ui-monospace, Menlo, Monaco, Consolas, monospace',
-              padding: { top: 12, bottom: 12 },
+              padding: { top: 14, bottom: 14 },
               scrollBeyondLastLine: false,
               automaticLayout: true,
+              renderLineHighlight: 'line',
+              cursorBlinking: 'smooth',
+              smoothScrolling: true,
             }}
           />
         </div>
 
-        {/* Splitter */}
+        {/* Splitter — wide hit area, grip appears on hover. */}
         <div
+          role="separator"
+          aria-orientation={consolePosition === 'side' ? 'vertical' : 'horizontal'}
           onMouseDown={(e) => { e.preventDefault(); setIsDragging(true); }}
           className={cn(
-            'bg-border hover:bg-brand transition-colors flex-shrink-0',
+            'group relative flex-shrink-0 grid place-items-center transition-colors',
             consolePosition === 'side' ? 'w-1 cursor-col-resize' : 'h-1 cursor-row-resize',
-            isDragging && 'bg-brand'
+            isDragging ? 'bg-brand' : 'bg-border hover:bg-brand/60'
           )}
-        />
+        >
+          <span
+            aria-hidden
+            className={cn(
+              'absolute rounded-full bg-fg-subtle opacity-0 transition-opacity group-hover:opacity-50',
+              consolePosition === 'side' ? 'h-8 w-[3px]' : 'w-8 h-[3px]',
+              isDragging && 'opacity-70'
+            )}
+          />
+        </div>
 
+        {/* ── Console ────────────────────────────────────────────────────── */}
         <div
           className="flex flex-col bg-surface-2 min-w-0 min-h-0"
           style={
@@ -239,16 +241,62 @@ const CodeCompiler: React.FC<CodeCompilerProps> = ({ initialCode, answerCode, hi
               : { height: `${bottomSplitHeight}px`, flexShrink: 0 }
           }
         >
-          <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-fg-subtle border-b border-border">
-            Console Output
+          <div className="flex items-center justify-between gap-2 px-3 py-1.5 border-b border-border">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-fg-subtle">
+              <Terminal size={11} />
+              Console
+            </span>
+            {output && (
+              <button
+                onClick={() => setOutput('')}
+                title="Clear console"
+                className="grid h-6 w-6 place-items-center rounded-md text-fg-subtle hover:text-danger hover:bg-danger/10 transition-colors"
+              >
+                <Trash2 size={12} />
+              </button>
+            )}
           </div>
-          <pre className="flex-1 overflow-auto px-4 py-3 text-xs font-mono text-fg whitespace-pre-wrap">
-            {output || <span className="text-fg-subtle">Run your code to see output here…</span>}
+
+          <pre className="flex-1 overflow-auto px-4 py-3 text-xs font-mono leading-relaxed text-fg whitespace-pre-wrap">
+            {output || <span className="text-fg-subtle italic">Run your code to see output here…</span>}
           </pre>
         </div>
       </div>
     </div>
   );
 };
+
+interface FileTabProps {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  tone?: 'default' | 'success';
+}
+
+/** Editor-style file tab. The active pill is a shared layout element, so it
+ *  slides between tabs instead of popping. */
+const FileTab = ({ label, active, onClick, tone = 'default' }: FileTabProps) => (
+  <button
+    onClick={onClick}
+    className={cn(
+      'relative px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors',
+      active
+        ? tone === 'success' ? 'text-success' : 'text-fg'
+        : tone === 'success' ? 'text-success/60 hover:text-success' : 'text-fg-muted hover:text-fg'
+    )}
+  >
+    {active && (
+      <motion.span
+        layoutId="compiler-tab"
+        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+        className={cn(
+          'absolute inset-0 rounded-lg shadow-sm',
+          tone === 'success' ? 'bg-success/15' : 'bg-surface'
+        )}
+      />
+    )}
+    <span className="relative z-10">{label}</span>
+  </button>
+);
 
 export default CodeCompiler;

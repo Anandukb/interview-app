@@ -9,21 +9,17 @@ import { Input, Field } from '../../components/ui/Input';
 import { ThemeToggle } from '../../components/ui/ThemeToggle';
 import { Logo } from '../../components/Logo';
 
-const AdminLogin = () => {
+const ContributorLogin = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, loading, error } = useAppSelector((s) => s.adminAuth);
 
-  const [email, setEmail] = useState(
-    (import.meta.env.VITE_ADMIN_EMAIL as string | undefined) ?? ''
-  );
-  const [password, setPassword] = useState(
-    (import.meta.env.VITE_ADMIN_PASSWORD as string | undefined) ?? ''
-  );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/admin/dashboard', { replace: true });
+    if (isAuthenticated) navigate('/contributor/dashboard', { replace: true });
   }, [isAuthenticated, navigate]);
 
   useEffect(() => () => { dispatch(clearAdminAuthError()); }, [dispatch]);
@@ -42,7 +38,6 @@ const AdminLogin = () => {
         <div className="ambient-orb ambient-orb-b" />
       </div>
 
-      {/* Theme toggle */}
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -54,21 +49,18 @@ const AdminLogin = () => {
         className="relative w-full max-w-md"
       >
         <div className="glass rounded-3xl shadow-xl p-8 edge-light">
-          {/* Header */}
           <div className="flex flex-col items-center text-center mb-8">
             <Logo height={64} className="mb-4" />
-            <p className="text-sm text-fg-muted">Sign in to manage your interview app</p>
+            <p className="text-sm text-fg-muted">Contributor Portal</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <Field label="Email" required>
               <Input
-                id="admin-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@example.com"
+                placeholder="you@example.com"
                 autoComplete="email"
                 autoFocus
                 required
@@ -78,7 +70,6 @@ const AdminLogin = () => {
             <Field label="Password" required>
               <div className="relative">
                 <Input
-                  id="admin-password"
                   type={showPass ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -112,18 +103,18 @@ const AdminLogin = () => {
             <Button type="submit" loading={loading} className="w-full" size="lg">
               {loading ? 'Signing in…' : 'Sign In'}
             </Button>
-          </form>
 
-          <p className="mt-6 text-center text-xs text-fg-subtle">
-            Looking to contribute?{' '}
-            <Link to="/contributor/login" className="font-semibold text-brand hover:underline">
-              Go to the Contributor Portal
-            </Link>
-          </p>
+            <p className="text-center text-xs text-fg-subtle">
+              Not a contributor yet?{' '}
+              <Link to="/contributor/signup" className="font-semibold text-brand hover:underline">
+                Request access
+              </Link>
+            </p>
+          </form>
         </div>
       </motion.div>
     </div>
   );
 };
 
-export default AdminLogin;
+export default ContributorLogin;

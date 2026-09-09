@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Pencil, Trash2, Layers, RefreshCw, AlertCircle } from 'lucide-react';
+import { Plus, Pencil, Trash2, Layers, RefreshCw, AlertCircle, Info } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchAdminPlatforms,
@@ -8,6 +8,8 @@ import {
   updateAdminPlatform,
   deleteAdminPlatform,
 } from '../../store/slices/adminPlatformsSlice';
+import { submitChange } from '../../store/slices/pendingChangesSlice';
+import { platformToInsertRow } from '../../lib/platforms';
 import type { AdminPlatform } from '../types';
 import AdminModal from '../components/AdminModal';
 import { Button } from '../../components/ui/Button';
@@ -27,6 +29,8 @@ const EMPTY_FORM: FormState = { name: '', key: '', description: '', color: '#8b5
 
 const AdminPlatforms = () => {
   const dispatch = useAppDispatch();
+  const role = useAppSelector((s) => s.adminAuth.role);
+  const isContributor = role === 'contributor';
   const platforms = useAppSelector((s) => s.adminPlatforms.data);
   const platformsLoading = useAppSelector((s) => s.adminPlatforms.loading);
   const platformsError = useAppSelector((s) => s.adminPlatforms.error);
@@ -52,8 +56,19 @@ const AdminPlatforms = () => {
     setSaving(true);
     setSaveError(null);
     try {
-      if (editTarget) await dispatch(updateAdminPlatform({ id: editTarget.id, patch: form })).unwrap();
-      else            await dispatch(addAdminPlatform(form)).unwrap();
+      if (isContributor) {
+        await dispatch(submitChange({
+          targetTable: 'Platforms',
+          targetId: editTarget ? editTarget.id : null,
+          action: editTarget ? 'update' : 'create',
+          payload: platformToInsertRow(form),
+          previous: editTarget ? platformToInsertRow(editTarget) : null,
+        })).unwrap();
+      } else if (editTarget) {
+        await dispatch(updateAdminPlatform({ id: editTarget.id, patch: form })).unwrap();
+      } else {
+        await dispatch(addAdminPlatform(form)).unwrap();
+      }
       handleClose();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -63,7 +78,18 @@ const AdminPlatforms = () => {
   };
 
   const handleDelete = async (id: string) => {
-    await dispatch(deleteAdminPlatform(id));
+    if (isContributor) {
+      const target = platforms.find((p) => p.id === id);
+      await dispatch(submitChange({
+        targetTable: 'Platforms',
+        targetId: id,
+        action: 'delete',
+        payload: null,
+        previous: target ? platformToInsertRow(target) : null,
+      }));
+    } else {
+      await dispatch(deleteAdminPlatform(id));
+    }
     setDeleteConfirm(null);
   };
 
@@ -79,7 +105,9 @@ const AdminPlatforms = () => {
     <div>
       <PageHeader
         title="Platforms"
-        description="Manage interview topics — synced with Supabase"
+        description={isContributor
+          ? 'Propose platforms — changes are reviewed by a superadmin before going live'
+          : 'Manage interview topics — synced with Supabase'}
         actions={
           <>
             <Button
@@ -170,6 +198,12 @@ const AdminPlatforms = () => {
 
       <AdminModal open={modalOpen} onClose={handleClose} title={editTarget ? 'Edit Platform' : 'Add Platform'}>
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isContributor && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand/10 border border-brand/25 text-brand text-xs">
+              <Info size={14} />
+              <span>Your changes will be submitted for a superadmin to review before going live.</span>
+            </div>
+          )}
           <Field label="Name" required>
             <Input
               value={form.name}
@@ -235,7 +269,7 @@ const AdminPlatforms = () => {
           <div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
             <Button type="button" variant="secondary" onClick={handleClose}>Cancel</Button>
             <Button type="submit" loading={saving}>
-              {editTarget ? 'Update Platform' : 'Add Platform'}
+              {isContributor ? 'Submit for Review' : editTarget ? 'Update Platform' : 'Add Platform'}
             </Button>
           </div>
         </form>

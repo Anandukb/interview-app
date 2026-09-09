@@ -1,23 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Layers, ListChecks, HelpCircle,
-  LogOut, ChevronRight, ChevronDown, Menu, X, Database,
+  LogOut, ChevronRight, ChevronDown, Menu, X, Database, Inbox, Users,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { logoutAdmin } from '../../store/slices/adminAuthSlice';
+import { fetchPendingChanges } from '../../store/slices/pendingChangesSlice';
+import { supabase } from '../../lib/supabase';
 import { ThemeToggle } from '../../components/ui/ThemeToggle';
 import { Logo } from '../../components/Logo';
 import { cn } from '../../lib/cn';
 
-const NAV_ITEMS = [
-  { to: '/admin/dashboard',      icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/admin/platforms',      icon: Layers,          label: 'Platforms' },
-  { to: '/admin/question-types', icon: ListChecks,      label: 'Question Types' },
-  { to: '/admin/questions',      icon: HelpCircle,      label: 'Questions' },
-  { to: '/admin/seed',           icon: Database,        label: 'Seed Data' },
-];
+interface NavItem {
+  to: string;
+  icon: typeof LayoutDashboard;
+  label: string;
+  badge?: number;
+}
 
 const QUESTIONS_PATH = '/admin/questions';
 
@@ -30,7 +31,33 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const platforms = useAppSelector((s) => s.adminPlatforms.data);
+  const pendingCount = useAppSelector(
+    (s) => s.pendingChanges.data.filter((c) => c.status === 'pending').length
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // ── Live-refresh the pending-changes badge via Supabase Realtime ────────────
+  useEffect(() => {
+    const channel = supabase
+      .channel('pending_changes_admin_layout')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pending_changes' }, () => {
+        dispatch(fetchPendingChanges());
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [dispatch]);
+
+  // This layout only ever renders for superadmins (contributors are routed to
+  // the separate /contributor/* portal), so the full nav is always shown.
+  const NAV_ITEMS: NavItem[] = useMemo(() => [
+    { to: '/admin/dashboard',      icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/admin/platforms',      icon: Layers,          label: 'Platforms' },
+    { to: '/admin/question-types', icon: ListChecks,      label: 'Question Types' },
+    { to: '/admin/questions',      icon: HelpCircle,      label: 'Questions' },
+    { to: '/admin/pending-changes', icon: Inbox, label: 'Pending Changes', badge: pendingCount || undefined },
+    { to: '/admin/seed',           icon: Database, label: 'Seed Data' },
+    { to: '/admin/contributors',   icon: Users, label: 'Contributors' },
+  ], [pendingCount]);
 
   const isQuestionsActive = location.pathname.startsWith(QUESTIONS_PATH);
   const activePlatformKey = new URLSearchParams(location.search).get('platform');
@@ -69,7 +96,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         className={cn(
           'fixed top-0 left-0 z-40 h-screen w-64 flex flex-col',
           'bg-surface border-r border-border',
-          'transition-transform duration-300 ease-out',
+          'transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
@@ -100,9 +127,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     end={isQuestionsItem}
                     className={({ isActive }) =>
                       cn(
-                        'group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                        'group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium',
+                        'transition-colors duration-200',
                         isActive || (isQuestionsItem && isQuestionsActive)
-                          ? 'bg-brand/12 text-brand'
+                          ? 'text-brand'
                           : 'text-fg-muted hover:bg-surface-3 hover:text-fg'
                       )
                     }
@@ -114,15 +142,36 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                         : ChevronRight;
                       return (
                         <>
+                          {/* Active background is a shared layout element, so it
+                              slides between items instead of blinking. */}
+                          {showActive && (
+                            <motion.span
+                              layoutId="admin-nav-active"
+                              transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                              className="absolute inset-0 rounded-xl bg-brand/12"
+                            />
+                          )}
+                          {showActive && (
+                            <motion.span
+                              layoutId="admin-nav-rail"
+                              transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                              className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-brand"
+                            />
+                          )}
                           <Icon
                             size={18}
-                            className={cn(showActive ? 'text-brand' : 'text-fg-subtle group-hover:text-fg')}
+                            className={cn('relative z-10', showActive ? 'text-brand' : 'text-fg-subtle group-hover:text-fg')}
                           />
-                          <span className="flex-1">{item.label}</span>
+                          <span className="relative z-10 flex-1">{item.label}</span>
+                          {!!item.badge && (
+                            <span className="relative z-10 inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-brand text-white text-[10px] font-bold tabular-nums">
+                              {item.badge}
+                            </span>
+                          )}
                           <Caret
                             size={14}
                             className={cn(
-                              'transition-transform',
+                              'relative z-10 transition-transform duration-300',
                               showActive
                                 ? 'opacity-100 translate-x-0 text-brand'
                                 : 'opacity-0 -translate-x-1 group-hover:opacity-60 group-hover:translate-x-0'
@@ -185,7 +234,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-danger hover:bg-danger/10 transition-colors"
+            className="group w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-danger hover:bg-danger/10 transition-colors"
           >
             <LogOut size={16} />
             <span>Logout</span>
@@ -196,11 +245,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       {/* ── Main column ───────────────────────────────────────────────────── */}
       <div className="lg:pl-64">
         {/* Topbar */}
-        <header className="sticky top-0 z-20 h-16 px-4 sm:px-6 flex items-center justify-between bg-surface/80 backdrop-blur border-b border-border">
+        <header className="sticky top-0 z-20 h-16 px-4 sm:px-6 flex items-center justify-between glass border-b border-border">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="Toggle sidebar"
-            className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-lg text-fg-muted hover:bg-surface-3 hover:text-fg transition-colors"
+            className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-xl text-fg-muted hover:bg-surface-3 hover:text-fg transition-colors"
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -216,17 +265,17 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-3 border border-border">
+            <div className="hidden sm:flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full bg-surface-3 border border-border">
               <div className="h-6 w-6 grid place-items-center rounded-full bg-gradient-to-br from-brand to-brand-2 text-white text-xs font-bold">
-                A
+                S
               </div>
-              <span className="text-sm font-medium">Admin</span>
+              <span className="text-[13px] font-semibold">Superadmin</span>
             </div>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="mx-auto w-4/5 px-4 sm:px-6 py-6 sm:py-8">
+        <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 sm:py-8">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -252,7 +301,8 @@ const SubNavLink = ({ to, active, label, onClick }: SubNavLinkProps) => (
     to={to}
     onClick={onClick}
     className={cn(
-      'block px-3 py-1.5 rounded-md text-[13px] font-medium transition-colors truncate',
+      'block px-3 py-1.5 rounded-lg text-[13px] font-medium truncate',
+      'transition-colors duration-200',
       active
         ? 'bg-brand/10 text-brand'
         : 'text-fg-muted hover:bg-surface-3 hover:text-fg'

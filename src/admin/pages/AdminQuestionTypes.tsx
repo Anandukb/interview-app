@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Plus, Pencil, Trash2, ListChecks, RefreshCw, AlertCircle } from 'lucide-react';
+import { Plus, Pencil, Trash2, ListChecks, RefreshCw, AlertCircle, Info } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchAdminQuestionTypes,
@@ -7,6 +7,8 @@ import {
   updateAdminQuestionType,
   deleteAdminQuestionType,
 } from '../../store/slices/adminQuestionTypesSlice';
+import { submitChange } from '../../store/slices/pendingChangesSlice';
+import { questionTypeToInsertRow } from '../../lib/questionTypes';
 import type { QuestionType } from '../types';
 import AdminModal from '../components/AdminModal';
 import { Button } from '../../components/ui/Button';
@@ -16,6 +18,8 @@ import { TableWrap, Table, Th, Td, TableRow } from '../../components/ui/Table';
 
 const AdminQuestionTypes = () => {
   const dispatch = useAppDispatch();
+  const role = useAppSelector((s) => s.adminAuth.role);
+  const isContributor = role === 'contributor';
   const questionTypes = useAppSelector((s) => s.adminQuestionTypes.data);
   const loading = useAppSelector((s) => s.adminQuestionTypes.loading);
   const error = useAppSelector((s) => s.adminQuestionTypes.error);
@@ -36,8 +40,19 @@ const AdminQuestionTypes = () => {
     setSaving(true);
     setSaveError(null);
     try {
-      if (editTarget) await dispatch(updateAdminQuestionType({ id: editTarget.id, patch: form })).unwrap();
-      else            await dispatch(addAdminQuestionType(form)).unwrap();
+      if (isContributor) {
+        await dispatch(submitChange({
+          targetTable: 'Questions Types',
+          targetId: editTarget ? editTarget.id : null,
+          action: editTarget ? 'update' : 'create',
+          payload: questionTypeToInsertRow(form),
+          previous: editTarget ? questionTypeToInsertRow(editTarget) : null,
+        })).unwrap();
+      } else if (editTarget) {
+        await dispatch(updateAdminQuestionType({ id: editTarget.id, patch: form })).unwrap();
+      } else {
+        await dispatch(addAdminQuestionType(form)).unwrap();
+      }
       handleClose();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -47,7 +62,18 @@ const AdminQuestionTypes = () => {
   };
 
   const handleDelete = async (id: string) => {
-    await dispatch(deleteAdminQuestionType(id));
+    if (isContributor) {
+      const target = questionTypes.find((qt) => qt.id === id);
+      await dispatch(submitChange({
+        targetTable: 'Questions Types',
+        targetId: id,
+        action: 'delete',
+        payload: null,
+        previous: target ? questionTypeToInsertRow(target) : null,
+      }));
+    } else {
+      await dispatch(deleteAdminQuestionType(id));
+    }
     setDeleteConfirm(null);
   };
 
@@ -55,7 +81,9 @@ const AdminQuestionTypes = () => {
     <div>
       <PageHeader
         title="Question Types"
-        description="Categorize questions — synced with Supabase"
+        description={isContributor
+          ? 'Propose question types — changes are reviewed by a superadmin before going live'
+          : 'Categorize questions — synced with Supabase'}
         actions={
           <>
             <Button
@@ -133,6 +161,12 @@ const AdminQuestionTypes = () => {
 
       <AdminModal open={modalOpen} onClose={handleClose} title={editTarget ? `Edit: ${editTarget.name}` : 'New Question Type'}>
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isContributor && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand/10 border border-brand/25 text-brand text-xs">
+              <Info size={14} />
+              <span>Your changes will be submitted for a superadmin to review before going live.</span>
+            </div>
+          )}
           <Field label="Name" required>
             <Input
               value={form.name}
@@ -153,7 +187,7 @@ const AdminQuestionTypes = () => {
           <div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
             <Button type="button" variant="secondary" onClick={handleClose}>Cancel</Button>
             <Button type="submit" loading={saving}>
-              {editTarget ? 'Save Changes' : 'Create Type'}
+              {isContributor ? 'Submit for Review' : editTarget ? 'Save Changes' : 'Create Type'}
             </Button>
           </div>
         </form>
